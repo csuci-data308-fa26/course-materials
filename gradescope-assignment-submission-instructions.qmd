@@ -1,0 +1,9 @@
+---
+title: "Submission to Gradescope"
+format: pdf
+---
+
+To submit an assignment on Gradescope the format needs to be a pdf. 
+When you render a document with `format: pdf` it should produce a pdf to upload.
+Check that the pdf looks as expected before submitting your assignment.
+

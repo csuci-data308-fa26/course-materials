@@ -1,10 +1,16 @@
 ---
 title: "DATA 208: Lab 1a"
 subtitle: "Familiarizing yourself with a Quarto document"
-date: 2026-08-25
+date: "2026-08-25"
 author: "Your name here"
+lang: en
 format: 
   html:
+    echo: false
+    message: false
+    warning: false
+    toc: true
+    toc-depth: 4
     embed-resources: true
 ---
 

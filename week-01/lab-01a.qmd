@@ -18,6 +18,9 @@ format:
 library(tidyverse)
 ```
 
+Start off this lab by clicking the "Render" (the blue arrow) at the top. This will produce an html report, where you can view the plots and questions. The .qmd file is a Quarto document, this document is where you will make changes, render, and then see those changes reflected in the html report it procudes.
+
+
 In this lab we will be exploring California unemployment rates.
 This data is available on the [CA Open Data Portal](https://data.ca.gov/dataset/unemployment-rate-by-age-groups).
 
@@ -78,31 +81,6 @@ What is a "typical" unemployment rate? What would be an unusual rate?
 
 [You can erase this and type your response here, without the brackets.]
 
-## Question 3
-
-Do you notice anything interesting in the trends?
-
-### Response
-
-[You can erase this and type your response here, without the brackets.]
-
-## Question 4
-
-Given this data, what would you predict the average unemployment rate of 2026 to be for people aged 25-34? Why?
-
-### Response
-
-[You can erase this and type your response here, without the brackets.]
-
-## Question 5
-
-Given this data, what would you predict the average unemployment rate of 2026 to be for people aged 55-64? Why?
-
-### Response
-
-[You can erase this and type your response here, without the brackets.]
-
-
 ## Unemployment trends for each age group
 
 ```{r}
@@ -121,7 +99,24 @@ ggplot(
   )
 ```
 
-## Question 6
+## Question 3
+
+Given this data, what would you predict the average unemployment rate of 2027 to be for people aged 25-34? Why?
+
+### Response
+
+[You can erase this and type your response here, without the brackets.]
+
+## Question 4
+
+Given this data, what would you predict the average unemployment rate of 2035 to be for people aged 55-64? Why?
+
+### Response
+
+[You can erase this and type your response here, without the brackets.]
+
+
+## Question 5
 
 Which age group(s) had the highest unemployment rate in general?
 
@@ -129,7 +124,7 @@ Which age group(s) had the highest unemployment rate in general?
 
 [You can erase this and type your response here, without the brackets.]
 
-## Question 7
+## Question 6
 
 Which age group(s) had the lowest unemployment rate in general?
 
@@ -137,7 +132,7 @@ Which age group(s) had the lowest unemployment rate in general?
 
 [You can erase this and type your response here, without the brackets.]
 
-## Question 8
+## Question 7
 
 Would you say there is a meaningful difference in unemployment rates between 55-64 year olds and 20-24 year olds? Why?
 
@@ -145,7 +140,7 @@ Would you say there is a meaningful difference in unemployment rates between 55-
 
 [You can erase this and type your response here, without the brackets.]
 
-## Question 9
+## Question 8
 
 Would you say there is a meaningful difference in unemployment rates between 55-64 year olds and 35-34 year olds? Why?
 

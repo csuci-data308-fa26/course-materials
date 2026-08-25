@@ -1,0 +1,151 @@
+---
+title: "DATA 208: Lab 1a"
+subtitle: "Familiarizing yourself with a Quarto document"
+date: 2026-08-25
+author: "Your name here"
+format: 
+  html:
+    embed-resources: true
+---
+
+```{r}
+library(tidyverse)
+```
+
+In this lab we will be exploring California unemployment rates.
+This data is available on the [CA Open Data Portal](https://data.ca.gov/dataset/unemployment-rate-by-age-groups).
+
+We will begin by reading in this data and saving it into an **object** called `unemployment`.
+
+```{r}
+unemployment <- read_csv("http://csuci-data308-fa26.github.io/course-materials/week-01/data/unemployment_rate_by_age_groups.csv")
+```
+
+We can view what is in the `employment` object by printing it.
+
+```{r}
+unemployment
+```
+
+You can skip over the following code chunk, I needed to do some data cleaning and wrangling to get it in a good format for plotting.
+
+```{r}
+unemployment_new <- unemployment |>
+  mutate(new_date = as_date(Date, format = "%m/%d/%Y")) |> 
+  pivot_longer(
+    cols = starts_with("Age "),
+    names_to = "age_group",
+    names_prefix = "Age ",
+    values_to = "unemployment_rate"
+  )
+```
+
+
+## Unemployment over time
+
+```{r}
+unemployment_new |> 
+  filter(age_group == "25-34") |> 
+  ggplot(aes(x = new_date, y = unemployment_rate)) +
+  geom_point() +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(
+    x = "Date",
+    y = "Unemployment rate \n for individuals ages 25-34"
+  )
+```
+
+## Question 1
+
+If you were to describe these trends to someone what would you say?
+
+### Response
+
+[You can erase this and type your response here, without the brackets.]
+
+## Question 2
+
+What is a "typical" unemployment rate? What would be an unusual rate?
+
+### Response
+
+[You can erase this and type your response here, without the brackets.]
+
+## Question 3
+
+Do you notice anything interesting in the trends?
+
+### Response
+
+[You can erase this and type your response here, without the brackets.]
+
+## Question 4
+
+Given this data, what would you predict the average unemployment rate of 2026 to be for people aged 25-34? Why?
+
+### Response
+
+[You can erase this and type your response here, without the brackets.]
+
+## Question 5
+
+Given this data, what would you predict the average unemployment rate of 2026 to be for people aged 55-64? Why?
+
+### Response
+
+[You can erase this and type your response here, without the brackets.]
+
+
+## Unemployment trends for each age group
+
+```{r}
+ggplot(
+  unemployment_new, 
+  aes(x = new_date, y = unemployment_rate, color = age_group, linetype = age_group)
+) +
+  geom_line() +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(
+    x = "Date",
+    y = "Unemployment rate",
+    color = "Age group",
+    linetype = "Age group"
+  )
+```
+
+## Question 6
+
+Which age group(s) had the highest unemployment rate in general?
+
+### Response
+
+[You can erase this and type your response here, without the brackets.]
+
+## Question 7
+
+Which age group(s) had the lowest unemployment rate in general?
+
+### Response
+
+[You can erase this and type your response here, without the brackets.]
+
+## Question 8
+
+Would you say there is a meaningful difference in unemployment rates between 55-64 year olds and 20-24 year olds? Why?
+
+### Response
+
+[You can erase this and type your response here, without the brackets.]
+
+## Question 9
+
+Would you say there is a meaningful difference in unemployment rates between 55-64 year olds and 35-34 year olds? Why?
+
+### Response
+
+[You can erase this and type your response here, without the brackets.]
+
+
+When you are done, click "Render" (the blue arrow) at the top. Submit the rendered html report to CI Learn.

@@ -1,7 +1,7 @@
 ---
 title: "Data 308: Lecture 1a"
 subtitle: "Welcome to Applied Statistical Modeling!"
-author: "Professor Catalina Medina"
+author: "CSUCI - Dr. Catalina Medina"
 format: 
   revealjs:
     theme: [sky, ../slide-style.scss]

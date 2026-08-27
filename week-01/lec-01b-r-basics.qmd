@@ -1,0 +1,185 @@
+---
+title: "Data 308: Lecture 1b"
+subtitle: "Programming in `R` for statistical modeling"
+author: "CSUCI - Dr. Catalina Medina"
+format: 
+  revealjs:
+    theme: [sky, ../slide-style.scss]
+    slide-number: true
+echo: true
+---
+
+# Foundations of programing with `R`
+
+## Functions
+
+Functions perform actions for us. For example: 
+
+```{r}
+number_of_siblings <- c(4, 1, 7, 2, 0)
+number_of_siblings
+```
+
+```{r}
+sort(number_of_siblings)
+```
+
+## Packages
+
+Most functions are stored in packages, which need to be installed and loaded before they can be used.
+
+- installation only needs to happen once per device
+```{r}
+#| eval: false
+install.packages("tidyverse")
+```
+
+- loading needs to happen once per document / R session
+```{r}
+#| eval: false
+library(tidyverse)
+```
+
+```{r}
+#| echo: false
+
+library(tidyverse)
+```
+
+
+## Reading in data
+
+Ex: Data from online. The input is the link to the data
+
+```{r}
+game_films <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-06-09/game_films.csv')
+```
+
+Ex: Data from the same folder as the Quarto (.qmd) document. The input is the name of the data
+
+```{r}
+#| eval: false
+unemployment <- read_csv("game_films.csv")
+```
+
+Ex: Data from an R package
+```{r}
+library(usdata)
+data("us_crime_rates")
+```
+
+
+## Viewing data
+
+Use `head()` (or `tail()`) to view the first (or last) 6 rows
+```{r}
+head(game_films)
+tail(game_films)
+```
+
+## Viewing data
+
+Use `glimpse()` to view column names, types, and some values
+```{r}
+glimpse(game_films)
+```
+
+# Creating plots
+
+## Bar plots - Single categorical variable
+
+```{r}
+ggplot(game_films, aes(y = category)) +
+  geom_bar()
+```
+
+## Histogram - Single numerical variable
+
+```{r}
+ggplot(game_films, aes(x = worldwide_box_office)) +
+  geom_histogram()
+```
+
+## Using AI to improve our plot
+
+> Prompt: Provide improvements for this plot including alt text, axis labels, and a smoothed curve. Here is my code: ggplot(game_films, aes(x = worldwide_box_office)) +
+  geom_histogram()
+
+```{r}
+#| output-location: slide
+ggplot(game_films, aes(x = worldwide_box_office)) +
+  geom_histogram(
+    aes(y = after_stat(density)),
+    bins = 30,
+    fill = "grey60",
+    color = "white"
+  ) +
+  geom_density(
+    linewidth = 1,
+    adjust = 1.2
+  ) +
+  scale_x_continuous(
+    labels = scales::label_dollar(scale = 1e-9, suffix = "B")
+  ) +
+  labs(
+    title = "Distribution of Worldwide Box Office Revenue",
+    x = "Worldwide box office revenue (USD, billions)",
+    y = "Density",
+    alt = "Histogram of worldwide box office revenue for films. Most films are concentrated at the lower end of the revenue range, with a long right tail extending beyond 5 billion dollars. A smoothed density curve overlays the histogram."
+  ) +
+  theme_minimal()
+```
+
+*Check that it still tells the story you wanted to deliver!*
+
+## Scatterplot - Two numerical variables
+
+```{r}
+ggplot(game_films, aes(x = release_date, y = worldwide_box_office)) +
+  geom_point()
+```
+
+## Scatterplot - Two numerical one categorical
+
+```{r}
+ggplot(game_films, aes(x = release_date, y = worldwide_box_office, color = worldwide_box_office_currency)) +
+  geom_point()
+```
+
+## Scatterplot - Two numerical one categorical
+
+```{r}
+ggplot(game_films, aes(x = release_date, y = worldwide_box_office, color = worldwide_box_office_currency)) +
+  geom_point() +
+  geom_smooth()
+```
+
+## Computing multiple summary statistics
+
+```{r}
+game_films |> 
+  filter(worldwide_box_office_currency == "$") |> 
+summarize(
+  median(worldwide_box_office),
+  sd(worldwide_box_office)
+)
+  
+```
+
+
+## What are you expected to know?
+
+You are expected to be able to utilize your resources to develop code to compute summary statistics, produce plots, and later on to fit models.
+
+- I want you to decide what variable(s) you want to plot, and what the purpose of your plot / summary statistic is. 
+
+- You can use AI to suggest pros and cons of plot types or summary statistics and to improve your plots
+  - Think of AI as your simple-minded assistant that needs revision and clear guidance
+  
+## Now you try!
+
+Download lab-01b.qmd and explore the `game_films` dataset further!
+
+Reference:
+
+The `game_films` dataset was shared by [TidyTuesday](https://github.com/rfordatascience/tidytuesday) and originally from [Wikipedia](https://en.wikipedia.org/wiki/List_of_films_based_on_video_games)

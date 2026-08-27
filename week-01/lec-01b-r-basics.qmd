@@ -156,12 +156,14 @@ ggplot(game_films, aes(x = release_date, y = worldwide_box_office, color = world
 
 ## Computing multiple summary statistics
 
+The `na.rm = TRUE` argument/input specifies it should ignore missing data in calculations
 ```{r}
 game_films |> 
   filter(worldwide_box_office_currency == "$") |> 
 summarize(
-  median(worldwide_box_office),
-  sd(worldwide_box_office)
+  median(worldwide_box_office, na.rm = TRUE),
+  sd(worldwide_box_office, na.rm = TRUE),
+  quantile(worldwide_box_office, probs = 0.5, na.rm = TRUE)
 )
   
 ```

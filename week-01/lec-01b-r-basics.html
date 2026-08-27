@@ -423,18 +423,23 @@ $ network                       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, 
 <img data-src="lec-01b-r-basics_files/figure-revealjs/unnamed-chunk-16-1.png" width="960" class="r-stretch"></section>
 <section id="computing-multiple-summary-statistics" class="slide level2">
 <h2>Computing multiple summary statistics</h2>
+<p>The <code>na.rm = TRUE</code> argument/input specifies it should ignore missing data in calculations</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="" aria-label="1"></a>game_films <span class="sc">|&gt;</span> </span>
 <span id="cb22-2"><a href="" aria-label="2"></a>  <span class="fu">filter</span>(worldwide_box_office_currency <span class="sc">==</span> <span class="st">"$"</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb22-3"><a href="" aria-label="3"></a><span class="fu">summarize</span>(</span>
-<span id="cb22-4"><a href="" aria-label="4"></a>  <span class="fu">median</span>(worldwide_box_office),</span>
-<span id="cb22-5"><a href="" aria-label="5"></a>  <span class="fu">sd</span>(worldwide_box_office)</span>
-<span id="cb22-6"><a href="" aria-label="6"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb22-4"><a href="" aria-label="4"></a>  <span class="fu">median</span>(worldwide_box_office, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb22-5"><a href="" aria-label="5"></a>  <span class="fu">sd</span>(worldwide_box_office, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb22-6"><a href="" aria-label="6"></a>  <span class="fu">quantile</span>(worldwide_box_office, <span class="at">probs =</span> <span class="fl">0.5</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb22-7"><a href="" aria-label="7"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 2
-  `median(worldwide_box_office)` `sd(worldwide_box_office)`
-                           &lt;dbl&gt;                      &lt;dbl&gt;
-1                      54145058.                 224745067.</code></pre>
+<pre><code># A tibble: 1 × 3
+  median(worldwide_box_office, n…¹ sd(worldwide_box_off…² quantile(worldwide_b…³
+                             &lt;dbl&gt;                  &lt;dbl&gt;                  &lt;dbl&gt;
+1                        54145058.             224745067.              54145058.
+# ℹ abbreviated names: ¹​`median(worldwide_box_office, na.rm = TRUE)`,
+#   ²​`sd(worldwide_box_office, na.rm = TRUE)`,
+#   ³​`quantile(worldwide_box_office, probs = 0.5, na.rm = TRUE)`</code></pre>
 </div>
 </div>
 </section>

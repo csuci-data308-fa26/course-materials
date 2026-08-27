@@ -1,5 +1,5 @@
 ---
-title: "DATA 208: Lab 1a"
+title: "DATA 308: Lab 1a"
 subtitle: "Familiarizing yourself with a Quarto document"
 date: "2026-08-25"
 author: "Your name here"

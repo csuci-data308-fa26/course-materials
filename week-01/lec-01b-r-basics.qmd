@@ -176,7 +176,33 @@ You are expected to be able to utilize your resources to develop code to compute
 - You can use AI to suggest pros and cons of plot types or summary statistics and to improve your plots
   - Think of AI as your simple-minded assistant that needs revision and clear guidance
   
-## Now you try!
+  
+# Quarto documents
+
+![Artwork from 'Hello, Quarto' keynote by Julia Lowndes and Mine Çetinkaya-Rundel, presented at RStudio Conference 2022. Illustrated by Allison Horst.](img/quarto-illustration.png){fig-alt="A schematic representing the multi-language input (e.g. Python, R, Observable, Julia) and multi-format output (e.g. PDF, html, Word documents, and more) versatility of Quarto."}
+
+## Render formats
+
+An advantage of Quarto documents is that you can choose what type of file you want to generate. 
+
+![New File > Quarto Document
+](img/new-quarto-doc.jpg){fig-alt="A screenshot of the 'New Quarto Document' popout. There are spaces to specify a title and author for the document. The user can then select from 'HTML', 'PDF (Typst)', 'PDF (Latex)', and 'Word'." width=80%}
+ 
+# Installations
+
+1. [Install `R`](https://www.r-project.org/)
+
+2. [Install `RStudio`](https://docs.posit.co/ide/user/#rstudio-ide-oss-downloads)
+
+3. The PDF (Latex) option requires an additional installation. Open RStudio and in the Console enter:
+
+```{r}
+#| eval: false
+install.packages("tinytex")
+tinytex::install_tinytex()
+```
+  
+# Now you try!
 
 Download lab-01b.qmd and explore the `game_films` dataset further!
 

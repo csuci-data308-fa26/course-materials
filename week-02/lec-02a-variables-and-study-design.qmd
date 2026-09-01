@@ -1,6 +1,6 @@
 ---
 title: "Data 308: Lecture 2a"
-subtitle: "Foundations of inferential statistics"
+subtitle: "Variables and study design"
 author: "CSUCI - Dr. Catalina Medina"
 format: 
   revealjs:
@@ -21,6 +21,7 @@ library(tidyverse)
 #| fig-align: center
 #| fig-out: 80%
 #| fig-cap: "Image from <https://bookdown.org/pkaldunn/SRM-Textbook/Intro.html>"
+#| fig-alt: "Diagram showing 6 steps that flow linearly into one another, from 'Ask' to 'Design' to 'Collect' to 'Summarise' to 'Analyse' to 'Report'."
 knitr::include_graphics("img/research-steps.png")
 ```
 
@@ -95,7 +96,11 @@ Variable types are important because they affect every part of the research proc
 ::: {.callout-tip icon=false}
 ## Example: Do CSUCI students who exercise regularly have higher GPAs?
 
-Suppose we want to investigate this research question. What variables are involved and what type are they?
+Suppose we want to investigate this research question. 
+
+- What variables are involved and what type are they?
+- How could we collect data to investigate this?
+
 ::: 
 
 ## Relationship between two variables
@@ -183,10 +188,21 @@ knitr::include_graphics("img/diagram-causal.png")
 
 ##
 
+```{r}
+#| label: diag-causal2
+#| echo: false
+#| fig-align: center
+#| fig-alt: "Repeat diagram from previous slide showing the letters 'X' and 'Y', with an arrow pointing from 'X' to 'Y' with a question mark above."
+#| out-width: "50%"
+knitr::include_graphics("img/diagram-causal.png") 
+
+```
+
+
 ::: {.callout-tip icon=false}
 ## Example: Do CSUCI students who exercise regularly have higher GPAs?
 
-Which variable is our response and our explanatory?
+Which variables are our response and our explanatory?
 ::: 
 
 ## Confounding variables
@@ -195,8 +211,6 @@ Which variable is our response and our explanatory?
 We can not generally conclude causation, there could be other variables at play.
 
 **Confounding variables** are variables that are causally related to both the explanatory and response variable
-
-**ASSOCIATION DOES NOT IMPLY CAUSATION!!**
 
 ```{r}
 #| label: diag-confounding
@@ -232,6 +246,11 @@ tmp <- capture.output(rsvg::rsvg_png(
 knitr::include_graphics("img/diagram-confounding.png") 
 
 ```
+
+. . .
+
+**ASSOCIATION DOES NOT IMPLY CAUSATION!!**
+
 
 ## Confounding variable example
 
@@ -270,14 +289,63 @@ knitr::include_graphics("img/diagram-confounding-example.png")
 
 ```
 
+. . .
 
-# Study design
+Can you think of another?
+
+```{r}
+#| label: diag-confounding-ex-unknown
+#| echo: false
+#| fig-align: center
+#| fig-alt: "Diagram showing the phrase 'Exercising' with an arrow pointing to the word 'GPA'. There are also arrows point to both of these variables from the symbol '?'."
+#| out-width: "50%"
+diagram <- DiagrammeR::grViz("
+    digraph {
+        # graph aesthetics
+        graph [ranksep = 0.3]
+
+        # node definitions with substituted label text
+        1 [label = '?']
+        2 [label = 'Exercising']
+        3 [label = 'GPA']
+        
+        # force nodes to same vertical height
+        { rank = same; 2; 3 }
+        
+        # edge definitions with the node
+        1 -> 2
+        1 -> 3
+    }
+")
+
+tmp <- capture.output(rsvg::rsvg_png(
+  charToRaw(DiagrammeRsvg::export_svg(diagram)),
+  file = "img/diagram-confounding-example-unknown.png",
+  height = 250
+))
+
+knitr::include_graphics("img/diagram-confounding-example-unknown.png") 
+
+```
+
+# Research process: step 2
+
+```{r}
+#| echo: false
+#| fig-align: center
+#| fig-out: 80%
+#| fig-cap: "Image from <https://bookdown.org/pkaldunn/SRM-Textbook/Intro.html>"
+#| fig-alt: "Repeate diagram of research process showing 6 steps that flow linearly into one another, from 'Ask' to 'Design' to 'Collect' to 'Summarise' to 'Analyse' to 'Report'."
+knitr::include_graphics("img/research-steps.png")
+```
+
+# Types of studies
 
 ## Observational Study
 
-In **observational studies**, researchers study the research question without imposing any treatment or intervention (manipulated variable). 
+In **observational studies**, researchers study the research question without imposing any treatment / intervention (manipulated variable). 
 
-- Causal relationships between variables cannot be established from a single observational study.
+- Causal relationships between variables cannot be established from a single observational study because of the possibility of confounding
 
 
 ::: {.callout-tip icon=false}
@@ -289,17 +357,27 @@ If we just surveyed students, even if we observe that CSUCI students who exercis
 :::
 
 
-## Experiment Design
+## Experiment design
 
-In __experiments__, researchers assign cases to treatments/interventions.
+In **experiments**, researchers assign the treatments / interventions, the values of the explanatory variable
 
 . . .
 
-In __randomized experiments__, researchers randomly assign cases  to treatments/interventions. In order to establish causal link between variables, we need randomized experiments. 
+- In **randomized experiments**, researchers randomly assign cases to treatments/interventions. In order to establish causal link between variables, we need randomized experiments. 
+  - Randomization helps control for confounding, but is not always ethical.
+  
+. . .
 
-Randomization helps control for confounding, but is not always ethical.
+- In **quasi-experiments**, researchers do not separate the cases into groups, but they do randomly assign treatment to each group.
 
-##
+## Experimental design video
+
+Starting at 3 minutes:
+[Video on random assignment](https://youtu.be/4s_QTi2AJ4k?si=z21fGGOWkypJCRin)
+
+
+
+## Design example
 
 ::: {.callout-tip icon=false}
 
@@ -307,11 +385,35 @@ Randomization helps control for confounding, but is not always ethical.
 
 ~~Do CSUCI students who exercise regularly have higher GPA?~~
 
-Does exercising regularly increase GPA for CSUCI students?
-
+How can we set up an experiment to assess if regular exercise causes increased GPA? Is it ethical?
 :::
 
+## Between-subjects versus within-subjects 
 
+In a **between-subjects** experiment each case gets one level of the treatment (the explanatory variable)
 
+- Can use **matching** to match on variables you think may be confounding between cases in both groups
+
+In a **within-subjects** experiment each case experiences all levels of the treatment
+
+- Need to alternate how treatment is experiences so order does not affect the response
+
+## Exploratory versus confirmatory research
+
+In **exploratory** research you are exploring to find patterns or associations
+
+In **confirmatory** research you have a specific hypothesis that you are testing
+
+- Exploratory research can often lead to confirmatory research, but those would be different studies!
+
+## Cough drop study
+
+Let's discuss the assigned [research article](https://www.jabfm.org/content/jabfp/31/2/183.full.pdf) which investigated cough drops.
+
+- What was their research question?
+- What was their response and explanatory variables?
+- What was their study design?
+- Was it exploratory or confirmatory research?
+- Was a causal conclusion possible?
 
 

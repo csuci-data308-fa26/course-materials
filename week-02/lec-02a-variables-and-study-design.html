@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-<script src="lec-02a-foundations_files/libs/clipboard/clipboard.min.js"></script>
-<script src="lec-02a-foundations_files/libs/quarto-html/tabby.min.js"></script>
-<script src="lec-02a-foundations_files/libs/quarto-html/popper.min.js"></script>
-<script src="lec-02a-foundations_files/libs/quarto-html/tippy.umd.min.js"></script>
-<link href="lec-02a-foundations_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="lec-02a-foundations_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="lec-02a-foundations_files/libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<script src="lec-02a-variables-and-study-design_files/libs/clipboard/clipboard.min.js"></script>
+<script src="lec-02a-variables-and-study-design_files/libs/quarto-html/tabby.min.js"></script>
+<script src="lec-02a-variables-and-study-design_files/libs/quarto-html/popper.min.js"></script>
+<script src="lec-02a-variables-and-study-design_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="lec-02a-variables-and-study-design_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="lec-02a-variables-and-study-design_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="lec-02a-variables-and-study-design_files/libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.10.18">
 
   <meta name="author" content="CSUCI - Dr.&nbsp;Catalina Medina">
@@ -14,8 +14,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="lec-02a-foundations_files/libs/revealjs/dist/reset.css">
-  <link rel="stylesheet" href="lec-02a-foundations_files/libs/revealjs/dist/reveal.css">
+  <link rel="stylesheet" href="lec-02a-variables-and-study-design_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="lec-02a-variables-and-study-design_files/libs/revealjs/dist/reveal.css">
   <style>
     /* Default styles provided by pandoc.
     ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -35,11 +35,11 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="lec-02a-foundations_files/libs/revealjs/dist/theme/quarto-c99231f18bc440273635742d2c598c24.css">
-  <link href="lec-02a-foundations_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-  <link href="lec-02a-foundations_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-  <link href="lec-02a-foundations_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-  <link href="lec-02a-foundations_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <link rel="stylesheet" href="lec-02a-variables-and-study-design_files/libs/revealjs/dist/theme/quarto-c99231f18bc440273635742d2c598c24.css">
+  <link href="lec-02a-variables-and-study-design_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="lec-02a-variables-and-study-design_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="lec-02a-variables-and-study-design_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="lec-02a-variables-and-study-design_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
     .reveal div.sourceCode {
       margin: 0;
@@ -134,7 +134,7 @@
 
 <section id="title-slide" class="quarto-title-block center">
   <h1 class="title">Data 308: Lecture 2a</h1>
-  <p class="subtitle">Foundations of inferential statistics</p>
+  <p class="subtitle">Variables and study design</p>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -151,7 +151,7 @@ CSUCI - Dr.&nbsp;Catalina Medina
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="img/research-steps.png"></p>
+<p><img data-src="img/research-steps.png" alt="Diagram showing 6 steps that flow linearly into one another, from 'Ask' to 'Design' to 'Collect' to 'Summarise' to 'Analyse' to 'Report'."></p>
 <figcaption>Image from <a href="https://bookdown.org/pkaldunn/SRM-Textbook/Intro.html" class="uri">https://bookdown.org/pkaldunn/SRM-Textbook/Intro.html</a></figcaption>
 </figure>
 </div>
@@ -205,7 +205,11 @@ CSUCI - Dr.&nbsp;Catalina Medina
 <p><strong>Example: Do CSUCI students who exercise regularly have higher GPAs?</strong></p>
 </div>
 <div class="callout-content">
-<p>Suppose we want to investigate this research question. What variables are involved and what type are they?</p>
+<p>Suppose we want to investigate this research question.</p>
+<ul>
+<li>What variables are involved and what type are they?</li>
+<li>How could we collect data to investigate this?</li>
+</ul>
 </div>
 </div>
 </div>
@@ -243,13 +247,22 @@ CSUCI - Dr.&nbsp;Catalina Medina
 </section>
 <section id="section" class="slide level2">
 <h2></h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img/diagram-causal.png" class="quarto-figure quarto-figure-center" style="width:50.0%" alt="Repeat diagram from previous slide showing the letters 'X' and 'Y', with an arrow pointing from 'X' to 'Y' with a question mark above."></p>
+</figure>
+</div>
+</div>
+</div>
 <div class="callout callout-tip no-icon callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
 <p><strong>Example: Do CSUCI students who exercise regularly have higher GPAs?</strong></p>
 </div>
 <div class="callout-content">
-<p>Which variable is our response and our explanatory?</p>
+<p>Which variables are our response and our explanatory?</p>
 </div>
 </div>
 </div>
@@ -258,7 +271,6 @@ CSUCI - Dr.&nbsp;Catalina Medina
 <h2>Confounding variables</h2>
 <p>We can not generally conclude causation, there could be other variables at play.</p>
 <p><strong>Confounding variables</strong> are variables that are causally related to both the explanatory and response variable</p>
-<p><strong>ASSOCIATION DOES NOT IMPLY CAUSATION!!</strong></p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -267,6 +279,9 @@ CSUCI - Dr.&nbsp;Catalina Medina
 </figure>
 </div>
 </div>
+</div>
+<div class="fragment">
+<p><strong>ASSOCIATION DOES NOT IMPLY CAUSATION!!</strong></p>
 </div>
 </section>
 <section id="confounding-variable-example" class="slide level2">
@@ -280,17 +295,43 @@ CSUCI - Dr.&nbsp;Catalina Medina
 </div>
 </div>
 </div>
+<div class="fragment">
+<p>Can you think of another?</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img/diagram-confounding-example-unknown.png" class="quarto-figure quarto-figure-center" style="width:50.0%" alt="Diagram showing the phrase 'Exercising' with an arrow pointing to the word 'GPA'. There are also arrows point to both of these variables from the symbol '?'."></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
 </section></section>
+<section id="research-process-step-2" class="title-slide slide level1 center">
+<h1>Research process: step 2</h1>
+<div class="cell" data-layout-align="center" data-fig-out="80%">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img/research-steps.png" alt="Repeate diagram of research process showing 6 steps that flow linearly into one another, from 'Ask' to 'Design' to 'Collect' to 'Summarise' to 'Analyse' to 'Report'."></p>
+<figcaption>Image from <a href="https://bookdown.org/pkaldunn/SRM-Textbook/Intro.html" class="uri">https://bookdown.org/pkaldunn/SRM-Textbook/Intro.html</a></figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+
 <section>
-<section id="study-design" class="title-slide slide level1 center">
-<h1>Study design</h1>
+<section id="types-of-studies" class="title-slide slide level1 center">
+<h1>Types of studies</h1>
 
 </section>
 <section id="observational-study" class="slide level2">
 <h2>Observational Study</h2>
-<p>In <strong>observational studies</strong>, researchers study the research question without imposing any treatment or intervention (manipulated variable).</p>
+<p>In <strong>observational studies</strong>, researchers study the research question without imposing any treatment / intervention (manipulated variable).</p>
 <ul>
-<li>Causal relationships between variables cannot be established from a single observational study.</li>
+<li>Causal relationships between variables cannot be established from a single observational study because of the possibility of confounding</li>
 </ul>
 <div class="callout callout-tip no-icon callout-titled callout-style-default">
 <div class="callout-body">
@@ -304,15 +345,28 @@ CSUCI - Dr.&nbsp;Catalina Medina
 </div>
 </section>
 <section id="experiment-design" class="slide level2">
-<h2>Experiment Design</h2>
-<p>In <strong>experiments</strong>, researchers assign cases to treatments/interventions.</p>
+<h2>Experiment design</h2>
+<p>In <strong>experiments</strong>, researchers assign the treatments / interventions, the values of the explanatory variable</p>
 <div class="fragment">
-<p>In <strong>randomized experiments</strong>, researchers randomly assign cases to treatments/interventions. In order to establish causal link between variables, we need randomized experiments.</p>
-<p>Randomization helps control for confounding, but is not always ethical.</p>
+<ul>
+<li>In <strong>randomized experiments</strong>, researchers randomly assign cases to treatments/interventions. In order to establish causal link between variables, we need randomized experiments.
+<ul>
+<li>Randomization helps control for confounding, but is not always ethical.</li>
+</ul></li>
+</ul>
+</div>
+<div class="fragment">
+<ul>
+<li>In <strong>quasi-experiments</strong>, researchers do not separate the cases into groups, but they do randomly assign treatment to each group.</li>
+</ul>
 </div>
 </section>
-<section id="section-1" class="slide level2">
-<h2></h2>
+<section id="experimental-design-video" class="slide level2">
+<h2>Experimental design video</h2>
+<p>Starting at 3 minutes: <a href="https://youtu.be/4s_QTi2AJ4k?si=z21fGGOWkypJCRin">Video on random assignment</a></p>
+</section>
+<section id="design-example" class="slide level2">
+<h2>Design example</h2>
 <div class="callout callout-tip no-icon callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -320,10 +374,40 @@ CSUCI - Dr.&nbsp;Catalina Medina
 </div>
 <div class="callout-content">
 <p><del>Do CSUCI students who exercise regularly have higher GPA?</del></p>
-<p>Does exercising regularly increase GPA for CSUCI students?</p>
+<p>How can we set up an experiment to assess if regular exercise causes increased GPA? Is it ethical?</p>
 </div>
 </div>
 </div>
+</section>
+<section id="between-subjects-versus-within-subjects" class="slide level2">
+<h2>Between-subjects versus within-subjects</h2>
+<p>In a <strong>between-subjects</strong> experiment each case gets one level of the treatment (the explanatory variable)</p>
+<ul>
+<li>Can use <strong>matching</strong> to match on variables you think may be confounding between cases in both groups</li>
+</ul>
+<p>In a <strong>within-subjects</strong> experiment each case experiences all levels of the treatment</p>
+<ul>
+<li>Need to alternate how treatment is experiences so order does not affect the response</li>
+</ul>
+</section>
+<section id="exploratory-versus-confirmatory-research" class="slide level2">
+<h2>Exploratory versus confirmatory research</h2>
+<p>In <strong>exploratory</strong> research you are exploring to find patterns or associations</p>
+<p>In <strong>confirmatory</strong> research you have a specific hypothesis that you are testing</p>
+<ul>
+<li>Exploratory research can often lead to confirmatory research, but those would be different studies!</li>
+</ul>
+</section>
+<section id="cough-drop-study" class="slide level2">
+<h2>Cough drop study</h2>
+<p>Let’s discuss the assigned <a href="https://www.jabfm.org/content/jabfp/31/2/183.full.pdf">research article</a> which investigated cough drops.</p>
+<ul>
+<li>What was their research question?</li>
+<li>What was their response and explanatory variables?</li>
+<li>What was their study design?</li>
+<li>Was it exploratory or confirmatory research?</li>
+<li>Was a causal conclusion possible?</li>
+</ul>
 
 </section></section>
     </div>
@@ -334,19 +418,19 @@ CSUCI - Dr.&nbsp;Catalina Medina
 </div></div>
 
   <script>window.backupDefine = window.define; window.define = undefined;</script>
-  <script src="lec-02a-foundations_files/libs/revealjs/dist/reveal.js"></script>
+  <script src="lec-02a-variables-and-study-design_files/libs/revealjs/dist/reveal.js"></script>
   <!-- reveal.js plugins -->
-  <script src="lec-02a-foundations_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
-  <script src="lec-02a-foundations_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
-  <script src="lec-02a-foundations_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
-  <script src="lec-02a-foundations_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
-  <script src="lec-02a-foundations_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  <script src="lec-02a-variables-and-study-design_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="lec-02a-variables-and-study-design_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="lec-02a-variables-and-study-design_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="lec-02a-variables-and-study-design_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="lec-02a-variables-and-study-design_files/libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
-  <script src="lec-02a-foundations_files/libs/revealjs/plugin/notes/notes.js"></script>
-  <script src="lec-02a-foundations_files/libs/revealjs/plugin/search/search.js"></script>
-  <script src="lec-02a-foundations_files/libs/revealjs/plugin/zoom/zoom.js"></script>
-  <script src="lec-02a-foundations_files/libs/revealjs/plugin/math/math.js"></script>
+  <script src="lec-02a-variables-and-study-design_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="lec-02a-variables-and-study-design_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="lec-02a-variables-and-study-design_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="lec-02a-variables-and-study-design_files/libs/revealjs/plugin/math/math.js"></script>
   <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
 
   <script>

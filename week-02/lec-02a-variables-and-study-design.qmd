@@ -406,6 +406,12 @@ In **confirmatory** research you have a specific hypothesis that you are testing
 
 - Exploratory research can often lead to confirmatory research, but those would be different studies!
 
+## Cross-sectional versus longitudinal
+
+In **cross-sectional** studies the data is collected at one point in time 
+
+In **longitudinal** studies there are multiple observations on each participant / case  from multiple points in time
+
 ## Cough drop study
 
 Let's discuss the assigned [research article](https://www.jabfm.org/content/jabfp/31/2/183.full.pdf) which investigated cough drops.

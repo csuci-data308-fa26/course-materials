@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-<script src="lec-02a-variables-and-study-design_files/libs/clipboard/clipboard.min.js"></script>
-<script src="lec-02a-variables-and-study-design_files/libs/quarto-html/tabby.min.js"></script>
-<script src="lec-02a-variables-and-study-design_files/libs/quarto-html/popper.min.js"></script>
-<script src="lec-02a-variables-and-study-design_files/libs/quarto-html/tippy.umd.min.js"></script>
-<link href="lec-02a-variables-and-study-design_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="lec-02a-variables-and-study-design_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="lec-02a-variables-and-study-design_files/libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<script src="lec-3a-linear-regression_files/libs/clipboard/clipboard.min.js"></script>
+<script src="lec-3a-linear-regression_files/libs/quarto-html/tabby.min.js"></script>
+<script src="lec-3a-linear-regression_files/libs/quarto-html/popper.min.js"></script>
+<script src="lec-3a-linear-regression_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="lec-3a-linear-regression_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="lec-3a-linear-regression_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="lec-3a-linear-regression_files/libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.10.18">
 
   <meta name="author" content="CSUCI - Dr.&nbsp;Catalina Medina">
-  <title>Data 308: Lecture 2a</title>
+  <title>Data 308: Lecture 3a</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="lec-02a-variables-and-study-design_files/libs/revealjs/dist/reset.css">
-  <link rel="stylesheet" href="lec-02a-variables-and-study-design_files/libs/revealjs/dist/reveal.css">
+  <link rel="stylesheet" href="lec-3a-linear-regression_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="lec-3a-linear-regression_files/libs/revealjs/dist/reveal.css">
   <style>
     /* Default styles provided by pandoc.
     ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -35,11 +35,11 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="lec-02a-variables-and-study-design_files/libs/revealjs/dist/theme/quarto-c99231f18bc440273635742d2c598c24.css">
-  <link href="lec-02a-variables-and-study-design_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-  <link href="lec-02a-variables-and-study-design_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-  <link href="lec-02a-variables-and-study-design_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-  <link href="lec-02a-variables-and-study-design_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <link rel="stylesheet" href="lec-3a-linear-regression_files/libs/revealjs/dist/theme/quarto-c99231f18bc440273635742d2c598c24.css">
+  <link href="lec-3a-linear-regression_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="lec-3a-linear-regression_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="lec-3a-linear-regression_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="lec-3a-linear-regression_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
     .reveal div.sourceCode {
       margin: 0;
@@ -133,8 +133,8 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Data 308: Lecture 2a</h1>
-  <p class="subtitle">Variables and study design</p>
+  <h1 class="title">Data 308: Lecture 3a</h1>
+  <p class="subtitle">Sampling</p>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -145,284 +145,227 @@ CSUCI - Dr.&nbsp;Catalina Medina
 </div>
 
 </section>
+<section>
 <section id="research-process" class="title-slide slide level1 center">
 <h1>Research process</h1>
 <div class="cell" data-layout-align="center" data-fig-out="80%">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="img/research-steps.png" alt="Diagram showing 6 steps that flow linearly into one another, from 'Ask' to 'Design' to 'Collect' to 'Summarise' to 'Analyse' to 'Report'."></p>
+<p><img data-src="img/research-steps.png"></p>
 <figcaption>Image from <a href="https://bookdown.org/pkaldunn/SRM-Textbook/Intro.html" class="uri">https://bookdown.org/pkaldunn/SRM-Textbook/Intro.html</a></figcaption>
 </figure>
 </div>
 </div>
 </div>
 </section>
-
-<section>
-<section id="variables" class="title-slide slide level1 center">
-<h1>Variables</h1>
-<p><strong>Variables</strong> are characteristics we measure and record as columns in our data</p>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="img/diagram-variable-types.png" class="quarto-figure quarto-figure-center" style="width:80.0%" alt="Hierarchical diagram showing the classification of statistical variables. The diagram illustrates that variables are divided into two main categories: Categorical and Numerical. Categorical variables are further subdivided into Binary, Nominal, and Ordinal. Numerical variables are subdivided into Discrete and Continuous."></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="numerical-variables" class="slide level2">
-<h2>Numerical variables</h2>
-<p><strong>Numerical variables</strong> (or quantitative) have mathematical meaning. There are two types:</p>
+<section id="research-questions" class="slide level2">
+<h2>Research questions</h2>
+<p>Consider the following three research questions:</p>
 <ul>
-<li><strong>Continuous variabels</strong> are numerical variables with uncountably infinite number of possiblilities
-<ul>
-<li>Often measurements. Example: distance (2 miles, 2.2 miles 2.22 miles…)</li>
-</ul></li>
-<li><strong>Discrete variables</strong> are numerical variables that are not continuous
-<ul>
-<li>Often variables that can only take integers. Example: number of siblings (0, 1, 2, 3, …)</li>
-</ul></li>
+<li>What is the average mercury content in swordfish in the Atlantic Ocean?</li>
+<li>Do domestic cats live longer than domestic dogs on average?</li>
+<li>Does a new drug reduce the number of deaths in patients with severe heart disease?</li>
 </ul>
 </section>
-<section id="categorical-variables" class="slide level2">
-<h2>Categorical variables</h2>
-<p><strong>Categorical variables</strong> (or qualitative) do not have mathematical meaning.</p>
+<section id="population" class="slide level2">
+<h2>Population</h2>
+<p>Each research question refers to a target <strong>population</strong></p>
 <ul>
-<li><strong>Binary variables</strong> are categorical variables with only two options. Example: Can play guitar (true, false)</li>
-<li><strong>Ordinal variables</strong> are categorical variables with a natural ordering. Example: seasons (spring -&gt; summer -&gt; fall -&gt; winter)</li>
-<li><strong>Nominal variables</strong> are categorical variables without a natural ordering. Example: eye colors (green, blue, brown, …)</li>
+<li>What is the average mercury content in <u>swordfish in the Atlantic Ocean</u>?</li>
+<li>Do <u>domestic cats</u> live longer than <u>domestic</u> <u>dogs</u> on average?</li>
+<li>Does a new drug reduce the number of deaths in <u>patients with severe heart disease</u>?</li>
 </ul>
 </section>
-<section id="why-variable-types-matter" class="slide level2">
-<h2>Why variable types matter</h2>
-<p>Variable types are important because they affect every part of the research process.</p>
+<section id="data" class="slide level2">
+<h2>Data</h2>
+<p>If we were able to collect data on everyone in our target population we would have a <strong>census</strong></p>
+<p>If we can only collect data on a proportion of the population we have a <strong>sample</strong></p>
+<ul>
+<li>We use <span class="math inline">\(n\)</span> to represent the number of people we have in our sample</li>
+</ul>
+</section>
+<section id="parameter-versus-statistic" class="slide level2">
+<h2>Parameter versus statistic</h2>
+<p>We want to understand something about the population, the <strong>population parameter</strong></p>
+<p>Since we can typically only obtain a sample, we use a <strong>sample statistic</strong> to infer about the population parameter</p>
+<ul>
+<li>The goal is to have a sample that is <strong>representative</strong> of the population so that the findings of the study can generalize to the population.</li>
+</ul>
+</section>
+<section id="review-of-notation" class="slide level2">
+<h2>Review of Notation</h2>
+<table align="center">
+<thead>
+<tr><th>
+</th>
+<th>
+Sample Statistic
+</th>
+<th>
+Population Parameter
+</th>
+</tr></thead>
+<tbody><tr>
+<td>
+Mean
+</td>
+<td>
+x̄
+</td>
+<td>
+μ
+</td>
+</tr>
+<tr>
+<td>
+Standard Deviation
+</td>
+<td>
+s
+</td>
+<td>
+σ
+</td>
+</tr>
+<tr>
+<td>
+Variance
+</td>
+<td>
+s<sup>2</sup>
+</td>
+<td>
+σ<sup>2</sup>
+</td>
+</tr>
+</tbody></table>
+</section>
+<section id="example-parameter-versus-statistic" class="slide level2">
+<h2>Example parameter versus statistic</h2>
+<p>Example: What is the average mercury content in swordfish in the Atlantic Ocean?</p>
+<p>Population parameter: Average mercury content in <u>all swordfish</u> in the Atlantic Ocean (<span class="math inline">\(\mu\)</span>)</p>
+<p>Sample statistic: Average mercury content in <u>swordfish in our sample</u> of fish from the Atlantic (<span class="math inline">\(\bar{x}\)</span>)</p>
+</section>
+<section id="sampling-methods" class="slide level2">
+<h2>Sampling methods</h2>
+<p>We want the data in our sample to be as representative of our population as possible, to reduce bias</p>
+<p><strong>Bias</strong> refers to any systematic misrepresentation of the target population or a parameter caused by the sampling or the study design.</p>
+</section>
+<section id="example" class="slide level2">
+<h2>Example</h2>
 <div class="callout callout-tip no-icon callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
-<p><strong>Example: Do CSUCI students who exercise regularly have higher GPAs?</strong></p>
+<p><strong>Do CSUCI students who exercise regularly have higher GPA?</strong></p>
 </div>
 <div class="callout-content">
-<p>Suppose we want to investigate this research question.</p>
+<p>Consider that we design a survey with the following questions to study the research question:</p>
 <ul>
-<li>What variables are involved and what type are they?</li>
-<li>How could we collect data to investigate this?</li>
+<li>Do you exercise “regularly”?</li>
+<li>What is your GPA?</li>
 </ul>
 </div>
 </div>
 </div>
 </section>
-<section id="relationship-between-two-variables" class="slide level2">
-<h2>Relationship between two variables</h2>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="img/diagram-association.png" class="quarto-figure quarto-figure-center" style="width:50.0%" alt="Diagram showing the words 'Exercising' and 'GPA', with arrows pointing between them with question marks above."></p>
-</figure>
-</div>
-</div>
-</div>
-<p>If two variables are related to each other in some way we would call them <strong>associated</strong>.</p>
-<p>If two variables are not related to each other in any way we would call them <strong>unassociated</strong>.</p>
-</section>
-<section id="relationship-between-two-variables-1" class="slide level2">
-<h2>Relationship between two variables</h2>
-<p>We often want to know if there is a <strong>causal relationship</strong> between two variables.</p>
-<ul>
-<li><strong>Response variable</strong> = (denoted <span class="math inline">\(Y\)</span>) variable of interest</li>
-<li><strong>Explanatory variable</strong> = (denoted <span class="math inline">\(X\)</span>) variable we think may explain or even cause changes in our response variable</li>
-</ul>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="img/diagram-causal.png" class="quarto-figure quarto-figure-center" style="width:50.0%" alt="Diagram showing the letters 'X' and 'Y', with an arrow pointing from 'X' to 'Y' with a question mark above."></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="section" class="slide level2">
-<h2></h2>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="img/diagram-causal.png" class="quarto-figure quarto-figure-center" style="width:50.0%" alt="Repeat diagram from previous slide showing the letters 'X' and 'Y', with an arrow pointing from 'X' to 'Y' with a question mark above."></p>
-</figure>
-</div>
-</div>
-</div>
+<section id="convenience-availability-sampling" class="slide level2">
+<h2>Convenience (Availability) Sampling</h2>
+<p><strong>Convenience sampling</strong> occurs when a specific sample is selected because the sample is easy to access.</p>
 <div class="callout callout-tip no-icon callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
-<p><strong>Example: Do CSUCI students who exercise regularly have higher GPAs?</strong></p>
+<p><strong>Example: Do CSUCI students who exercise regularly have higher GPA?</strong></p>
 </div>
 <div class="callout-content">
-<p>Which variables are our response and our explanatory?</p>
-</div>
-</div>
-</div>
-</section>
-<section id="confounding-variables" class="slide level2">
-<h2>Confounding variables</h2>
-<p>We can not generally conclude causation, there could be other variables at play.</p>
-<p><strong>Confounding variables</strong> are variables that are causally related to both the explanatory and response variable</p>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="img/diagram-confounding.png" class="quarto-figure quarto-figure-center" style="width:50.0%" alt="Diagram showing the words 'Explanatory' and 'Response', with an arrow pointing from 'Explanatory' to 'Response'. The is also the letter 'Confounder' above pointing to both 'Explanatory' and 'Response'."></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="fragment">
-<p><strong>ASSOCIATION DOES NOT IMPLY CAUSATION!!</strong></p>
-</div>
-</section>
-<section id="confounding-variable-example" class="slide level2">
-<h2>Confounding variable example</h2>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="img/diagram-confounding-example.png" class="quarto-figure quarto-figure-center" style="width:50.0%" alt="Diagram showing the phrase 'Exercising' with an arrow pointing to the word 'GPA'. There are also arrows point to both of these variables from the phrase 'Time management skills'."></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="fragment">
-<p>Can you think of another?</p>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="img/diagram-confounding-example-unknown.png" class="quarto-figure quarto-figure-center" style="width:50.0%" alt="Diagram showing the phrase 'Exercising' with an arrow pointing to the word 'GPA'. There are also arrows point to both of these variables from the symbol '?'."></p>
-</figure>
-</div>
-</div>
-</div>
-</div>
-</section></section>
-<section id="research-process-step-2" class="title-slide slide level1 center">
-<h1>Research process: step 2</h1>
-<div class="cell" data-layout-align="center" data-fig-out="80%">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="img/research-steps.png" alt="Repeate diagram of research process showing 6 steps that flow linearly into one another, from 'Ask' to 'Design' to 'Collect' to 'Summarise' to 'Analyse' to 'Report'."></p>
-<figcaption>Image from <a href="https://bookdown.org/pkaldunn/SRM-Textbook/Intro.html" class="uri">https://bookdown.org/pkaldunn/SRM-Textbook/Intro.html</a></figcaption>
-</figure>
-</div>
-</div>
-</div>
-</section>
-
-<section>
-<section id="types-of-studies" class="title-slide slide level1 center">
-<h1>Types of studies</h1>
-
-</section>
-<section id="observational-study" class="slide level2">
-<h2>Observational Study</h2>
-<p>In <strong>observational studies</strong>, researchers study the research question without imposing any treatment / intervention (manipulated variable).</p>
 <ul>
-<li>Causal relationships between variables cannot be established from a single observational study because of the possibility of confounding</li>
+<li>Stand in front of the Broome library</li>
+<li>Give the survey to 100 CSUCI students</li>
 </ul>
+</div>
+</div>
+</div>
+<p>This could introduce (sampling) bias and the findings may not generalize to the population. It is possible that those in front of the library</p>
+<ul>
+<li>may study more and thus may have higher GPA</li>
+<li>may be more active than those who study at home</li>
+</ul>
+</section>
+<section id="random-sampling" class="slide level2">
+<h2>Random sampling</h2>
+<p>We want to use a random sampling method to obtain a sample that is representative of the population we want to learn about.</p>
+<ul>
+<li>simple random sample</li>
+<li>cluster sample</li>
+<li>stratified sample</li>
+<li>multistage sample</li>
+</ul>
+</section>
+<section id="simple-random-sample" class="slide level2">
+<h2>Simple random sample</h2>
+<p>We typically want a <strong>simple random sample</strong>. Meaning each case in the population has an equal chance of being included and the cases in the sample are not related to each other.</p>
 <div class="callout callout-tip no-icon callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
-<p><strong>Example: Do CSUCI students who exercise regularly have higher GPAs?</strong></p>
+<p><strong>Example: Do CSUCI students who exercise regularly have higher GPA?</strong></p>
 </div>
 <div class="callout-content">
-<p>If we just surveyed students, even if we observe that CSUCI students who exercise regularly have higher GPA, we cannot conclude that exercising regularly increases GPA.</p>
+<p>The researcher can - reach out to the registrar to get student emails - randomly select and email the survey to 100 students</p>
 </div>
 </div>
 </div>
 </section>
-<section id="experiment-design" class="slide level2">
-<h2>Experiment design</h2>
-<p>In <strong>experiments</strong>, researchers assign the treatments / interventions, the values of the explanatory variable</p>
+<section id="cluster-sampling" class="slide level2">
+<h2>Cluster Sampling</h2>
+<p>In <strong>cluster sampling</strong> the population is divided into group (i.e, clusters). The sample consists of elements in randomly selected clusters.</p>
 <div class="fragment">
-<ul>
-<li>In <strong>randomized experiments</strong>, researchers randomly assign cases to treatments/interventions. In order to establish causal link between variables, we need randomized experiments.
-<ul>
-<li>Randomization helps control for confounding, but is not always ethical.</li>
-</ul></li>
-</ul>
-</div>
-<div class="fragment">
-<ul>
-<li>In <strong>quasi-experiments</strong>, researchers do not separate the cases into groups, but they do randomly assign treatment to each group.</li>
-</ul>
-</div>
-</section>
-<section id="experimental-design-video" class="slide level2">
-<h2>Experimental design video</h2>
-<p>Starting at 3 minutes: <a href="https://youtu.be/4s_QTi2AJ4k?si=z21fGGOWkypJCRin">Video on random assignment</a></p>
-</section>
-<section id="design-example" class="slide level2">
-<h2>Design example</h2>
 <div class="callout callout-tip no-icon callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
 <p><strong>Example</strong></p>
 </div>
 <div class="callout-content">
-<p><del>Do CSUCI students who exercise regularly have higher GPA?</del></p>
-<p>How can we set up an experiment to assess if regular exercise causes increased GPA? Is it ethical?</p>
+<p>The researchers may get a list of classes taught at CSUCI. They randomly select 10 classes. All the students in those 10 classes will be in the sample.</p>
 </div>
 </div>
 </div>
+</div>
 </section>
-<section id="ab-testing" class="slide level2">
-<h2>A/B Testing</h2>
-<p>A/B testing is terminology used in tech when you want to compare two methods</p>
-<ul>
-<li><p>E.g., Comparing two web designs to see which has a higher user engagement</p></li>
-<li><p>Fancy sounding wording for a randomized experiment with a binary explanatory variable</p></li>
-</ul>
+<section id="stratified-sampling" class="slide level2">
+<h2>Stratified Sampling</h2>
+<p>In stratified sampling the population is first divided into groups (i.e., stratas) and then the sample is selected randomly within each strata.</p>
+<div class="fragment">
+<div class="callout callout-tip no-icon callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Example</strong></p>
+</div>
+<div class="callout-content">
+<p>The researchers suspect that exercising patterns might be different across different class years. Thus they want to make sure that the sample includes first-years, sophomores, juniors, and seniors. They get a list of students with class year information from the registrar. They then randomly select 25 students who are first years, 25 sophomores, 25 juniors, and 25 seniors.</p>
+</div>
+</div>
+</div>
+</div>
 </section>
-<section id="between-subjects-versus-within-subjects" class="slide level2">
-<h2>Between-subjects versus within-subjects</h2>
-<p>In a <strong>between-subjects</strong> experiment each case gets one level of the treatment (the explanatory variable)</p>
+<section id="random-sampling-with-grouping" class="slide level2">
+<h2>Random sampling with grouping</h2>
+<p>Stratified, Clustering, and Multistage sampling are all random sampling methods that involve grouping.</p>
 <ul>
-<li>Can use <strong>matching</strong> to match on variables you think may be confounding between cases in both groups</li>
+<li>That grouping should be accounted for in your model</li>
 </ul>
-<p>In a <strong>within-subjects</strong> experiment each case experiences all levels of the treatment</p>
-<ul>
-<li>Need to alternate how treatment is experiences so order does not affect the response</li>
-</ul>
-</section>
-<section id="exploratory-versus-confirmatory-research" class="slide level2">
-<h2>Exploratory versus confirmatory research</h2>
-<p>In <strong>exploratory</strong> research you are exploring to find patterns or associations</p>
-<p>In <strong>confirmatory</strong> research you have a specific hypothesis that you are testing</p>
-<ul>
-<li>Exploratory research can often lead to confirmatory research, but those would be different studies!</li>
-</ul>
-</section>
-<section id="cross-sectional-versus-longitudinal" class="slide level2">
-<h2>Cross-sectional versus longitudinal</h2>
-<p>In <strong>cross-sectional</strong> studies the data is collected at one point in time</p>
-<p>In <strong>longitudinal</strong> studies there are multiple observations on each participant / case from multiple points in time</p>
-</section>
-<section id="cough-drop-study" class="slide level2">
-<h2>Cough drop study</h2>
-<p>Let’s discuss the assigned <a href="https://www.jabfm.org/content/jabfp/31/2/183.full.pdf">research article</a> which investigated cough drops.</p>
-<ul>
-<li>What was their research question?</li>
-<li>What was their response and explanatory variables?</li>
-<li>What was their study design?</li>
-<li>Was it exploratory or confirmatory research?</li>
-<li>Was a causal conclusion possible?</li>
-</ul>
-
 </section></section>
+<section id="lab-3a" class="title-slide slide level1 center">
+<h1>Lab 3a</h1>
+<p>We are going to do a small activity to practice the various sampling strategies.</p>
+<p>We will use code to randomly select people to be in our sample. Since we will use randomness, we want to set our seed so our results are reproducible.</p>
+<p>This code says: out of the numbers 1-40, sample 20.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 11 17  8  9 24 25 18  4  5 19</code></pre>
+</div>
+</div>
+
+</section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
@@ -431,19 +374,19 @@ CSUCI - Dr.&nbsp;Catalina Medina
 </div></div>
 
   <script>window.backupDefine = window.define; window.define = undefined;</script>
-  <script src="lec-02a-variables-and-study-design_files/libs/revealjs/dist/reveal.js"></script>
+  <script src="lec-3a-linear-regression_files/libs/revealjs/dist/reveal.js"></script>
   <!-- reveal.js plugins -->
-  <script src="lec-02a-variables-and-study-design_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
-  <script src="lec-02a-variables-and-study-design_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
-  <script src="lec-02a-variables-and-study-design_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
-  <script src="lec-02a-variables-and-study-design_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
-  <script src="lec-02a-variables-and-study-design_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  <script src="lec-3a-linear-regression_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="lec-3a-linear-regression_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="lec-3a-linear-regression_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="lec-3a-linear-regression_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="lec-3a-linear-regression_files/libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
-  <script src="lec-02a-variables-and-study-design_files/libs/revealjs/plugin/notes/notes.js"></script>
-  <script src="lec-02a-variables-and-study-design_files/libs/revealjs/plugin/search/search.js"></script>
-  <script src="lec-02a-variables-and-study-design_files/libs/revealjs/plugin/zoom/zoom.js"></script>
-  <script src="lec-02a-variables-and-study-design_files/libs/revealjs/plugin/math/math.js"></script>
+  <script src="lec-3a-linear-regression_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="lec-3a-linear-regression_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="lec-3a-linear-regression_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="lec-3a-linear-regression_files/libs/revealjs/plugin/math/math.js"></script>
   <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
 
   <script>

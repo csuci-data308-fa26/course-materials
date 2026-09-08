@@ -1,0 +1,208 @@
+---
+title: "Data 308: Lecture 3a"
+subtitle: "Sampling"
+author: "CSUCI - Dr. Catalina Medina"
+format: 
+  revealjs:
+    theme: [sky, ../slide-style.scss]
+    slide-number: true
+    auto-stretch: false
+echo: false
+---
+
+```{r}
+library(tidyverse)
+```
+
+# Research process
+
+```{r}
+#| echo: false
+#| fig-align: center
+#| fig-out: 80%
+#| fig-cap: "Image from <https://bookdown.org/pkaldunn/SRM-Textbook/Intro.html>"
+knitr::include_graphics("img/research-steps.png")
+```
+
+## Research questions
+
+Consider the following three research questions:
+
+-   What is the average mercury content in swordfish in the Atlantic Ocean?
+-   Do domestic cats live longer than domestic dogs on average?
+-   Does a new drug reduce the number of deaths in patients with severe heart disease?
+
+## Population
+
+Each research question refers to a target **population**
+
+-   What is the average mercury content in [swordfish in the Atlantic Ocean]{.underline}?
+-   Do [domestic cats]{.underline} live longer than [domestic]{.underline} [dogs]{.underline} on average?
+-   Does a new drug reduce the number of deaths in [patients with severe heart disease]{.underline}?
+
+## Data
+
+If we were able to collect data on everyone in our target population we would have a **census**
+
+If we can only collect data on a proportion of the population we have a **sample**
+
+- We use $n$ to represent the number of people we have in our sample 
+
+## Parameter versus statistic
+
+We want to understand something about the population, the **population parameter**
+
+Since we can typically only obtain a sample, we use a **sample statistic** to infer about the population parameter
+
+- The goal is to have a sample that is **representative** of the population so that the findings of the study can generalize to the population.
+
+## Review of Notation
+
+<table align ="center">
+
+<thead>
+<th> </th>
+<th>Sample Statistic</th>
+<th>Population Parameter</th>
+</thead>
+
+<tr>
+<td>Mean</td>
+<td> x&#772; </td>
+<td> &mu;</td>
+
+</tr>
+
+<tr>
+<td> Standard Deviation </td>
+<td> s </td>
+<td> &sigma;</td>
+
+</tr>
+
+<tr>
+<td> Variance </td>
+<td> s<sup>2</sup> </td>
+<td> &sigma;<sup>2</sup></td>
+
+</tr>
+
+</table>
+
+## Example parameter versus statistic
+
+Example: What is the average mercury content in swordfish in the Atlantic Ocean?
+
+Population parameter: Average mercury content in [all swordfish]{.underline} in the Atlantic Ocean ($\mu$)
+
+Sample statistic: Average mercury content in [swordfish in our sample]{.underline} of fish from the Atlantic ($\bar{x}$)
+
+## Sampling methods
+
+We want the data in our sample to be as representative of our population as possible, to reduce bias
+
+**Bias** refers to any systematic misrepresentation of the target population or a parameter caused by the sampling or the study design.  
+
+## Example
+
+::: {.callout-tip icon=false}
+## Do CSUCI students who exercise regularly have higher GPA?
+
+Consider that we design a survey with the following questions to study the research question:
+
+- Do you exercise "regularly"?
+- What is your GPA?
+
+::: 
+
+
+## Convenience (Availability) Sampling
+
+**Convenience sampling** occurs when a specific sample is selected because the sample is easy to access.
+
+::: {.callout-tip icon=false}
+## Example: Do CSUCI students who exercise regularly have higher GPA?
+
+- Stand in front of the Broome library
+- Give the survey to 100 CSUCI students
+:::
+
+This could introduce (sampling) bias and the findings may not generalize to the population. It is possible that those in front of the library
+
+- may study more and thus may have higher GPA
+- may be more active than those who study at home
+
+## Random sampling
+
+We want to use a random sampling method to obtain a sample that is representative of the population we want to learn about.
+
+- simple random sample
+- cluster sample
+- stratified sample
+- multistage sample
+
+## Simple random sample
+
+We typically want a **simple random sample**. Meaning each case in the population has an equal chance of being included and the cases in the sample are not related to each other.
+
+::: {.callout-tip icon=false}
+## Example: Do CSUCI students who exercise regularly have higher GPA?
+
+The researcher can
+- reach out to the registrar to get student emails
+- randomly select and email the survey to 100 students
+:::
+
+## Cluster Sampling 
+
+In **cluster sampling** the population is divided into group (i.e, clusters). The sample consists of elements in randomly selected clusters. 
+
+. . .
+
+::: {.callout-tip icon=false}
+
+## Example
+
+The researchers may get a list of classes taught at CSUCI. They randomly select 10 classes. All the students in those 10 classes will be in the sample.
+
+:::
+
+## Stratified Sampling 
+
+In stratified sampling the population is first divided into groups (i.e., stratas) and then the sample is selected randomly within each strata.
+
+. . .
+
+::: {.callout-tip icon=false}
+
+## Example
+
+The researchers suspect that exercising patterns might be different across different class years. Thus they want to make sure that the sample includes first-years, sophomores, juniors, and seniors. They get a list of students with class year information from the registrar. They then randomly select 25 students who are first years, 25 sophomores, 25 juniors, and 25 seniors.
+
+:::
+
+## Random sampling with grouping
+
+Stratified, Clustering, and Multistage sampling are all random sampling methods that involve grouping.
+
+- That grouping should be accounted for in your model
+
+# Lab 3a
+
+We are going to do a small activity to practice the various sampling strategies.
+
+We will use code to randomly select people to be in our sample.
+Since we will use randomness, we want to set our seed so our results are reproducible.
+```{r}
+set.seed(0523)
+```
+
+This code says: out of the numbers 1-40, sample 20.
+```{r}
+sample(1:30, size = 10)
+```
+
+
+
+
+

@@ -388,6 +388,14 @@ Starting at 3 minutes:
 How can we set up an experiment to assess if regular exercise causes increased GPA? Is it ethical?
 :::
 
+## A/B Testing
+
+A/B testing is terminology used in tech when you want to compare two methods
+
+- E.g., Comparing two web designs to see which has a higher user engagement
+
+- Fancy sounding wording for a randomized experiment with a binary explanatory variable
+
 ## Between-subjects versus within-subjects 
 
 In a **between-subjects** experiment each case gets one level of the treatment (the explanatory variable)

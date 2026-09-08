@@ -181,6 +181,32 @@ The researchers suspect that exercising patterns might be different across diffe
 
 :::
 
+## Stratified Sampling 
+
+In stratified sampling the population is first divided into groups (i.e., stratas) and then the sample is selected randomly within each strata.
+
+. . .
+
+::: {.callout-tip icon=false}
+
+## Example
+
+The researchers suspect that exercising patterns might be different across different class years. Thus they want to make sure that the sample includes first-years, sophomores, juniors, and seniors. They get a list of students with class year information from the registrar. They then randomly select 25 students who are first years, 25 sophomores, 25 juniors, and 25 seniors.
+
+:::
+
+## Multistage sampling
+
+In multistage clustering the population is divided into groups, then groups are randomly sampled, then random sampling occurs within each sampled group. This is a combination of stratified and cluster sampling.
+
+::: {.callout-tip icon=false}
+
+## Example
+
+Suppose that classes at CSUCI are my groups, I can randomly sample classes, then within each class I can randomly sample which people within each class that I am going to include in my sample.
+
+:::
+
 ## Random sampling with grouping
 
 Stratified, Clustering, and Multistage sampling are all random sampling methods that involve grouping.

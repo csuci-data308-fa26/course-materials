@@ -1,0 +1,558 @@
+---
+title: "Data 308: Lecture 4a"
+subtitle: "Simple Linear Regression"
+author: "CSUCI - Dr. Catalina Medina"
+format: 
+  revealjs:
+    theme: [sky, ../slide-style.scss]
+    slide-number: true
+    auto-stretch: false
+echo: false
+---
+
+```{r}
+library(tidyverse)
+library(janitor)
+```
+
+# Notation
+
+We are all starting with different background, so let's make sure we are on the same page with notation
+
+## Toy data
+
+Suppose we had 5 observations of our response variable $Y$: 2, 1, 2, 3, 4.
+
+- $Y_i$ = the $i$th $Y$ value 
+  - e.g., $Y_5$ = 4, $Y_2$ = 1
+  
+. . .
+
+- $\sum_{i = 1}^{n} Y_i = Y_1 + Y_2 + Y_3 + Y_4 + Y_5$ 
+  - e.g., $\sum_{i = 1}^{n} Y_i = 2 + 1 + 2 + 3 + 4 = 12$
+ 
+. . .
+
+- $\bar{Y} = \frac{1}{n} \sum_{i = 1}^{n} Y_i$ 
+  - e.g., $\bar{Y} = \frac{1}{5} \sum_{i=1}^{5} Y_i = 12/5$
+  
+## Practice with notation
+
+Suppose our response variable was GPA and we have 6 observations: 4.0, 3.5, 3.0, 3.0, 2.5, 2.0
+
+**Q1:** For this data identify:
+
+- $Y_3$ = ?
+- $\sum_{i = 1}^{n}Y_i$ = ?
+- $\bar{Y}$ = ?
+
+. . .
+
+- $\sum_{i = 1}^{n} (Y_i - \bar{Y})^2$ = ?
+
+## Recall formula for a line
+
+$$Y = mx + b$$
+
+- $m$ = slope
+- $b$ = $y$-intercept
+
+. . .
+
+**Q2:** Identify slope and $y$-intercept for these lines:
+
+::::{.columns}
+
+:::{.column width="50%"}
+
+```{r}
+ggplot() +
+  geom_abline(
+    intercept = 0,
+    slope = 3, 
+    linewidth = 2, 
+    linetype = "dashed", 
+    color = "blue"
+  ) +
+  geom_vline(xintercept = 0) +
+  geom_hline(yintercept = 0) +
+  lims(x = c(-4, 4), y = c(-4, 4)) +
+  theme_minimal(base_size = 20)
+```
+
+:::
+
+:::{.column width="50%"}
+
+```{r}
+ggplot() +
+  geom_abline(
+    intercept = 2,
+    slope = -1, 
+    linewidth = 2, 
+    linetype = "dashed", 
+    color = "blue"
+  ) +
+  geom_vline(xintercept = 0) +
+  geom_hline(yintercept = 0) +
+  lims(x = c(-4, 4), y = c(-4, 4)) +
+  theme_minimal(base_size = 20)
+```
+
+:::
+
+::::
+
+# Idea of simple linear regression
+
+*Why simple linear regression?*
+
+1. Some of you may not have been exposed to it before and it is a good starting point for more complicated models.
+
+2. It is very interpretable. If a model we can easily explain fits the data well, why use a more complicated less explainable model?
+
+## Example: Elephant Mass
+
+::::{.columns}
+
+:::{.column width="50%"}
+Weighing elephants is not an easy task, but an elephant's mass can help inform about appropriate diet and medicine for elephants in captivity.
+
+:::
+
+:::{.column width="50%"}
+[![Elphants as San Diego Zoo](img/san-diego-zoo-elephant.jpg)](https://sandiegozoowildlifealliance.org/story-hub/zoonooz/social-giants){height=50%}
+
+:::
+::::
+
+. . .
+
+[Lalande et. al. 2022](https://doi.org/10.1111/jeb.14008) figured height could be a useful proxy for elephants. 
+
+
+## Example: Elephant Mass by height
+
+The idea is to:
+
+1. Collect height and mass for a sample of elephants.
+2. Use that sample to fit a model, predicting mass from height.
+3. Predict the mass for elephants outside of our sample using their height in the model, with some  understanding of uncertainty.
+
+## 1. Collect sample
+
+```{r}
+#| echo: true
+elephants <- read_csv(
+  "http://csuci-data308-fa26.github.io/course-materials/data/elephants.csv",
+  show_col_types = FALSE
+) |> 
+  clean_names()
+
+glimpse(elephants)
+```
+
+## 2. Fit model (visually)
+
+```{r}
+#| fig-align: center
+#| fig-height: 3
+#| fig-width: 5
+#| echo: true
+ggplot(elephants, aes(x = height, y = mass)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs(x = "Height (cm)", y = "Mass (kg)")
+```
+
+## 3. Predict an elephant's mass from its height
+
+::::{.columns}
+
+:::{.column width="50%"}
+```{r}
+#| fig-align: center
+#| fig-height: 3
+#| fig-width: 5
+#| echo: false
+ggplot(elephants, aes(x = height, y = mass)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs(x = "Height (cm)", y = "Mass (kg)")
+```
+:::
+
+:::{.column width="50%"}
+For a new elephant with an unknown mass, if its height is 250 meters
+
+- What would you predict its mass is? 
+- If you were wagering money on your prediction, how much would you wager?
+
+:::
+::::
+
+# Fitting simple linear regression
+
+How can we fit our model to our data numerically?
+
+How can we assess if it is a good fit?
+
+> All models are wrong, some are useful - George Box.
+
+## Our model: $mx + b$
+
+For numeric/quantitative response variables $Y$, we can model a linear relationship between $Y$ and an explanatory variable $X$
+
+$$Y \approx \beta_0 + \beta_1 X$$
+
+. . .
+
+In our sample we know both $X$ and $Y$, but $\beta_0$ and $\beta_1$ are unknown *parameters/coefficients*.
+
+- $\beta_0$ is the intercept
+- $\beta_1$ is the slope
+
+## Simple linear regression
+
+**Data = Model + Error**
+
+. . .
+
+$$Y_i = (\beta_0 + \beta_1 X_i) + \epsilon_i$$
+
+. . .
+
+For linear regression we assume the **expected value** of our error is 0 ($E[\epsilon_i] = 0$)
+
+- This means sometimes our model will overestimate, sometimes it will underestimate, but in the long run we expect the errors to average out to zero
+
+## Theoretical versus fitted model
+
+**Theoretical Model**:
+$$Y_i = \beta_0 + \beta_1 X_i + \epsilon_i$$
+
+- In general, $\beta_0$ & $\beta_1$ are unknown parameters
+- We will use our sample to get estimates ($\hat{\beta}_0$ & $\hat{\beta}_1$) for the unknown parameters ($\beta_0$ & $\beta_1$)
+
+**Fitted model**:
+$$\hat{Y}_i = \hat{\beta_0} + \hat{\beta_1} X_i$$
+
+. . .
+
+**How should we calculate $\hat{\beta_0}$ & $\hat{\beta_1}$**?
+
+## Computing $\hat{\beta}_0$ and $\hat{\beta}_1$ in practice
+
+```{r}
+#| echo: true
+elephant_model <- lm(mass ~ height, data = elephants)
+summary(elephant_model)
+```
+
+
+## Fitted model
+
+```{r}
+#| echo: false
+b0_hat <- round(elephant_model$coefficients["(Intercept)"], 2)
+
+b1_hat <- round(elephant_model$coefficients["height"], 2)
+```
+
+General fitted model: 
+
+$\hat{y_i} = \hat{\beta}_0 +\hat{\beta}_1 x_i$
+
+Our fitted model in context: 
+
+$\hat{Mass_i} =$ `r b0_hat` +  `r b1_hat` $Height_i$
+
+::::{.columns}
+
+:::{.column width="50%"}
+```{r}
+#| fig-align: center
+#| fig-height: 3
+#| fig-width: 5
+#| echo: false
+ggplot(elephants, aes(x = height, y = mass)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "Height (cm)", y = "Mass (kg)")
+```
+:::
+:::{.column width="50%"}
+```{r}
+#| fig-align: center
+#| fig-height: 3
+#| fig-width: 5
+#| echo: false
+ggplot(elephants, aes(x = height, y = mass)) +
+  geom_point() +
+  geom_abline(slope = b1_hat, intercept = b0_hat, color = "blue") +
+  labs(x = "Height (cm)", y = "Mass (kg)") +
+  xlim(0, 300) +
+  ylim(-4000, 4000) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black")
+```
+:::
+::::
+
+## Interpreting y-intercept $\beta_0$
+
+- *General interpretation*: The expected value of $Y_i$ when $X_i$ is zero.
+- *Interpretation in context*: For an elephant 0 meters tall we *expect* the mass to be `r round(b0_hat, digits = 2)` kilograms.
+
+
+::::{.columns}
+
+:::{.column width="50%"}
+```{r}
+#| fig-align: center
+#| fig-height: 3
+#| fig-width: 5
+#| echo: false
+ggplot(elephants, aes(x = height, y = mass)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "Height (cm)", y = "Mass (kg)")
+```
+:::
+:::{.column width="50%"}
+```{r}
+#| fig-align: center
+#| fig-height: 3
+#| fig-width: 5
+#| echo: false
+ggplot(elephants, aes(x = height, y = mass)) +
+  geom_point() +
+  geom_abline(slope = b1_hat, intercept = b0_hat, color = "blue") +
+  labs(x = "Height (cm)", y = "Mass (kg)") +
+  xlim(0, 300) +
+  ylim(-4000, 4000) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black")
+```
+:::
+::::
+
+*The intercept doesn't always have practical meaning in context!*
+
+
+## Interpreting slope $\beta_1$
+
+- *General interpretation*: The expected difference in the response for a 1 unit increase in $X_i$.
+- *Interpretation in context*: For two elephants that differ in height by one meter we *expect* the difference in mass to be `r round(b1_hat, digits = 2)` kilograms.
+
+## Predicted / Expected mass
+
+$\hat{Mass_i} =$ `r b0_hat` +  `r b1_hat` $Height_i$
+
+::::{.columns}
+
+:::{.column width="50%"}
+```{r}
+y_hat <- b0_hat + b1_hat * 250
+as.numeric(y_hat)
+```
+
+```{r}
+#| fig-align: center
+#| fig-height: 3
+#| fig-width: 5
+#| echo: false
+ggplot(elephants, aes(x = height, y = mass)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  geom_hline(yintercept = y_hat, color = "red", linetype = "dashed") +
+  geom_vline(xintercept = 250, color = "red", linetype = "dashed") +
+  labs(x = "Height (cm)", y = "Mass (kg)")
+```
+
+:::
+
+:::{.column width="50%"}
+
+For an elephant 250 meters tall we *expect* the mass to be `r round(y_hat, digits = 2)` kilograms.
+
+OR
+
+We *predict* a 250 meter tall elephant to have a mass of `r round(y_hat, digits = 2)` kilograms, *on average*. 
+:::
+::::
+
+# Reasoning behind Least Squares Regression
+
+- Linear regression is often called **least squares regression**, but what does that mean?
+- How is the computer getting values for $\hat{\beta}_0$ and $\hat{\beta}_1$?
+
+## Residuals
+
+Let $e_i = y_i −\hat{y}_i$ represents the $i$th **residual**
+
+```{r}
+#| fig-align: center
+#| fig-height: 3
+#| fig-width: 5
+#| echo: false
+model_elephant <- lm(mass ~ height, data = elephants)
+
+x_val <- 256  
+y_actual <- 2023    
+y_pred <- 3398
+
+#elephants |> 
+#  modelr::add_predictions(model_elephant) |> 
+#  modelr::add_residuals(model_elephant) |> 
+#  arrange(height) 
+ggplot(elephants, aes(x = height, y = mass)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  geom_segment(aes(
+    x = x_val,
+    xend = x_val,
+    y = y_actual,
+    yend = y_pred
+  ), color = "red") +
+  labs(x = "Height (cm)", y = "Mass (kg)")
+```
+
+. . .
+
+*Ideally we want the line with the least collective error right?*
+
+## Minimizing the residual sum of squares
+
+We will use the estimators that minimize the residual sum of squares, aka the **least squares estimates**
+
+$$RSS = \sum_{i = 1}^{n} e_i^2 = \sum_{i = 1}^{n}(y_i - \hat{y_i})^2$$
+
+. . .
+
+- Why do you think we are choosing this as our function to optimize?
+- What could have been another option?
+
+## Minimizing the residual sum of squares
+$$RSS = \sum_{i = 1}^{n} e_i^2 = \sum_{i = 1}^{n}(y_i - \hat{y_i})^2.$$
+
+. . .
+
+Through some calculus we can show that the least squares estimators are
+
+::::{.columns}
+
+:::{.column width="70%"}
+$$\hat{\beta}_1 = \frac{\sum_{i = 1}^{n} (x_i - \bar{x})(y_i - \bar{y})}{\sum_{i = 1}^{n} (x_i - \bar{x})^2}$$
+:::
+:::{.column width="30%"}
+$$\hat{\beta}_0 = \bar{y} - \hat{\beta}_1 \bar{x}$$
+
+:::
+::::
+
+. . .
+
+*Do I expect you to have these formulas memorized?*
+
+No, but I do expect you to know the residual sum of squares formula and that $\hat{\beta_0}$ and $\hat{\beta_1}$ minimize it.
+
+# Now you try!
+
+```{r}
+#| fig-align: center
+#| fig-height: 3
+#| fig-width: 5
+#| echo: false
+ggplot(elephants, aes(x = age, y = mass)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs(x = "Age", y = "Mass (kg)")
+```
+
+##
+
+```{r}
+#| echo: true
+elephant_model <- lm(mass ~ age, data = elephants)
+summary(elephant_model)
+```
+
+**Q3:** Identify and interpret the estimated intercept in context.
+
+**Q4:** Identify and interpret the estimated slope in context.
+
+**Q5:** What mass would we predict, on average, for an elephant 30 years of age?.
+
+**Q6:** What mass would we predict, on average, for an elephant 6 years of age?.
+
+
+<!-- # Expectations -->
+
+<!-- I said $E[\epsilon_i] = 0$ means sometimes our model will overestimate, sometimes it will underestimate, but in the long run we expect the errors to average out to zero. -->
+
+<!-- **Expectation** is the long-run average. Properties of expectations: -->
+
+<!-- - $E[a \times Z] = a \times E[Z]$ -->
+<!-- - $E[Z + Y] = E[Z] + E[Y]$ -->
+
+<!-- **Q3:** If $E[Q] = 3$ and $E[W] = -2$, what is $E[2 + Q + 3 W]$? -->
+
+<!-- ## Expectation of $Y_i | X_i$ -->
+
+<!-- Our mathematical theoretical model for individual $i$ is  -->
+
+<!-- $$y_i = \beta_0 + \beta_1 x_i + \epsilon_i, \epsilon_i \overset{iid}{\sim} N(0, \sigma^2)$$ -->
+
+<!-- Therefore -->
+
+<!-- \begin{equation*} -->
+<!--   \begin{split} -->
+<!--     &E[Y_i | X_i = x_i]\\ -->
+<!--     & = E[\beta_0 + \beta_1 X_i + \epsilon_i | X_i = x_i]\\ -->
+<!--     & = E[\beta_0 | X_i = x_i] + E[\beta_1 X_i | X_i = x_i] + E[\epsilon_i | X_i = x_i]\\ -->
+<!--     & = \beta_0 + \beta_1 x_i -->
+<!--   \end{split} -->
+<!-- \end{equation*} -->
+
+
+<!-- ## Interpreting y-intercept $\beta_0$ -->
+
+<!-- $$\beta_0 = E[Y_i | X_i = 0]$$ -->
+
+<!-- . . . -->
+
+<!-- *Proof:* -->
+<!-- When $X_i = 0$  -->
+
+<!-- $$E[Y_i | X_i = 0] = E[\beta_0 +\beta_1 X_i + \epsilon_i | X_i = 0] = \beta_0.$$ -->
+
+<!-- . . . -->
+
+<!-- $\beta_0$ is the expected value of $Y_i$ when $X_i$ is zero. -->
+
+<!-- ## Interpreting slope $\beta_1$ -->
+
+<!-- $$\beta_1 = E[Y_i | X_i = x_i + 1] - E[Y_i | X_i = x_i]$$ -->
+
+<!-- . . . -->
+
+<!-- *Proof* -->
+<!-- \begin{equation*} -->
+<!--   \begin{split} -->
+<!--     &E[Y_i | X_i = x_i + 1] - E[Y_i | X_i = x_i]\\ -->
+<!--     &=E[\beta_0 + \beta_1 X_i + \epsilon_i | X_i = x_i + 1]\\ -->
+<!--     &- E[\beta_0 + \beta_1 X_i + \epsilon_i | X_i = x_i] \\ -->
+<!--     &=\beta_0 + \beta_1 E[X_i | X_i = x_i + 1] - (\beta_0 + \beta_1 E[X_i | X_i = x_i]) \\ -->
+<!--     &= \beta_0 + \beta_1 (x_i + 1) - (\beta_0 + \beta_1 x_i)\\ -->
+<!--     &= \beta_0 + \beta_1 x_i + \beta_1 - \beta_0 - \beta_1 x_i\\ -->
+<!--     &= \beta_1 -->
+<!--   \end{split} -->
+<!-- \end{equation*} -->
+
+<!-- ## Interpreting slope $\beta_1$ -->
+
+<!-- $$\beta_1 = E[Y_i | X_i = x_i + 1] - E[Y_i | X_i = x_i]$$ -->
+
+<!-- So $\beta_1$ is the expected difference in the response for a 1 unit difference in $X_i$. -->
+
+
+

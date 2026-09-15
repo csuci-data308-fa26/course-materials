@@ -476,6 +476,8 @@ elephant_model <- lm(mass ~ age, data = elephants)
 summary(elephant_model)
 ```
 
+## 
+
 **Q3:** Identify and interpret the estimated intercept in context.
 
 **Q4:** Identify and interpret the estimated slope in context.

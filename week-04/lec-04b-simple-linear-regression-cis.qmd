@@ -81,7 +81,7 @@ ggplot(pop_data, aes(x = x, y = y)) +
 
 1. randomly generate $x$'s (fake explanatory variable).
 2. randomly generate $\epsilon$'s (random noise with $E[\epsilon_i] = 0$ for all $i=1,...n$).
-3. calculate $y$'s with $y_i = 3 + 2 x_i + \epsilon_i$.
+3. calculate $y$'s with $y_i = 2 + 3 x_i + \epsilon_i$.
 
 :::
 
@@ -89,7 +89,7 @@ ggplot(pop_data, aes(x = x, y = y)) +
 
 ## Simulation: population data
 
-Truth: $y_i = 3 + 2 x_i + \epsilon_i$
+Truth: $y_i = 2 + 3 x_i + \epsilon_i$
 
 ::::{.columns}
 
@@ -528,10 +528,10 @@ margin_of_error <- (ci[2] - ci[1]) / 2
 ```
 
 Interpretation in context (as interval):
-*A 1 cm increase in height of elephants is associated with an higher mass of `r round(elephant_model$coefficients["Height"], 1)` between `r round(ci[1], 1)` kg to `r round(ci[1], 1)` kg, with 95% confidence.*
+*A 1 cm increase in height of elephants is associated with an higher mass of `r round(elephant_model$coefficients["height"], 1)` between `r round(ci[1], 1)` kg to `r round(ci[2], 1)` kg, with 95% confidence.*
 
 Interpretation in context (as margin of error):
-*A 1 cm increase in height of elephants is associated with an higher mass of `r round(elephant_model$coefficients["Height"], 1)` plus or minus `r round(margin_of_error, 1)` kg, with 95% confidence.*
+*A 1 cm increase in height of elephants is associated with an higher mass of `r round(elephant_model$coefficients["height"], 1)` plus or minus `r round(margin_of_error, 1)` kg, with 95% confidence.*
 
 # Takeaways
 

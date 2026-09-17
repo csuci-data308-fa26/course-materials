@@ -372,13 +372,21 @@ ggplot(elephants, aes(x = height, y = mass)) +
 
 :::{.column width="50%"}
 
-For elephants 250 meters tall we *expect* their mass to be `r round(y_hat, digits = 2)` kilograms.
+For elephants 250 meters tall we *expect* their mass to be around `r round(y_hat, digits = 2)` kilograms.
 
 OR
 
 We *predict* 250 meter tall elephants to have a mass of `r round(y_hat, digits = 2)` kilograms, *on average*. 
 :::
 ::::
+
+## Various interpretations
+
+There are many ways we can correctly interpret results. The three main aspects we want to be aware of is:
+
+- conveying uncertainty (our estimates are not for sure the population values!)
+- our estimates are about expectations, long-run averages
+- results can imply an association, not causation, unless it is a randomized experiment
 
 # Reasoning behind Least Squares Regression
 

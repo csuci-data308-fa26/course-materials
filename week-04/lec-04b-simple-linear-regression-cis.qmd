@@ -545,6 +545,10 @@ Interpretation in context (as margin of error):
   
 *Use [this applet](https://www.rossmanchance.com/applets/2021/confsim/ConfSim.html) to explore what happens to the width of the confidence interval as you change confidence level and sample size (separately).*
 
+## Lecture progress
+
+*This is where we stopped in class. We will finished this lecture next class!*
+
 # Prediction intervals
 
 People commonly confuse confidence and prediction intervals. When making a prediction, our uncertainty depends on who we are predicting for

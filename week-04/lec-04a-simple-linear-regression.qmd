@@ -301,7 +301,7 @@ ggplot(elephants, aes(x = height, y = mass)) +
 ## Interpreting y-intercept $\beta_0$
 
 - *General interpretation*: The expected value of $Y_i$ when $X_i$ is zero.
-- *Interpretation in context*: For an elephant 0 meters tall we *expect* the mass to be `r round(b0_hat, digits = 2)` kilograms.
+- *Interpretation in context*: For elephants 0 meters tall we *expect* their mass to be `r round(b0_hat, digits = 2)` kilograms.
 
 
 ::::{.columns}
@@ -341,7 +341,7 @@ ggplot(elephants, aes(x = height, y = mass)) +
 ## Interpreting slope $\beta_1$
 
 - *General interpretation*: The expected difference in the response for a 1 unit increase in $X_i$.
-- *Interpretation in context*: For two elephants that differ in height by one meter we *expect* the difference in mass to be `r round(b1_hat, digits = 2)` kilograms.
+- *Interpretation in context*: For elephants that differ in height by one meter we *expect* the taller elephants to have a mass`r round(b1_hat, digits = 2)` kilograms more, on average.
 
 ## Predicted / Expected mass
 
@@ -372,11 +372,11 @@ ggplot(elephants, aes(x = height, y = mass)) +
 
 :::{.column width="50%"}
 
-For an elephant 250 meters tall we *expect* the mass to be `r round(y_hat, digits = 2)` kilograms.
+For elephants 250 meters tall we *expect* their mass to be `r round(y_hat, digits = 2)` kilograms.
 
 OR
 
-We *predict* a 250 meter tall elephant to have a mass of `r round(y_hat, digits = 2)` kilograms, *on average*. 
+We *predict* 250 meter tall elephants to have a mass of `r round(y_hat, digits = 2)` kilograms, *on average*. 
 :::
 ::::
 

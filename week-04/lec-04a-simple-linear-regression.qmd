@@ -564,5 +564,3 @@ summary(elephant_model)
 
 <!-- So $\beta_1$ is the expected difference in the response for a 1 unit difference in $X_i$. -->
 
-
-

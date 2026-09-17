@@ -1,0 +1,198 @@
+---
+title: "DATA 308: Lab 4a Solutions"
+subtitle: "Simple linear regression"
+author: "Your name here"
+format: 
+  html:
+    echo: true
+    message: false
+    warning: false
+    toc: true
+    toc-depth: 4
+    embed-resources: true
+---
+
+Lab 4a was just 6 questions from lecture 4a slides that we did in class together.
+I added repeated them here for people that missed class.
+
+```{r}
+library(janitor)
+library(tidyverse)
+```
+
+# Prerequisite knowledge
+
+## Q1
+
+Suppose our response variable was GPA and we have 6 observations: 4.0, 3.5, 3.0, 3.0, 2.5, 2.0
+
+For this data identify:
+
+- $Y_3$ = ?
+- $\sum_{i = 1}^{n}Y_i$ = ?
+- $\bar{Y}$ = ?
+- $\sum_{i = 1}^{n} (Y_i - \bar{Y})^2$ = ?
+
+### Solution
+
+$$Y_3 = 3.$$
+
+\begin{equation*}
+  \begin{split}
+    \sum_{i = 1}^{n}Y_i &= Y_1 + Y_2 + Y_3 + Y_4 + Y_5 + Y_6\\
+    &= 4 + 3.5 + 3 + 3 + 2.5 + 2\\
+    &= 18.
+  \end{split}
+\end{equation*}
+
+\begin{equation*}
+  \begin{split}
+    \bar{Y} &= \frac{1}{n}\sum_{i=1}^{n} Y_i\\
+    &= \frac{1}{6} (Y_1 + Y_2 + Y_3 + Y_4 + Y_5 + Y_6)\\
+    &= (4 + 3.5 + 3 + 3 + 2.5 + 2) / 6\\
+    &= 3.
+  \end{split}
+\end{equation*}
+
+\begin{equation*}
+  \begin{split}
+    \sum_{i = 1}^{n} (Y_i - \bar{Y})^2 &= (Y_1 - \bar{Y})^2 + (Y_2 - \bar{Y})^2 + (Y_3 - \bar{Y})^2 + (Y_4 - \bar{Y})^2 + (Y_5 - \bar{Y})^2 + (Y_6 - \bar{Y})^2 \\
+    &= (4 - 3)^2 +(3.5 - 3)^2 + (3 -3)^2 + (3-3)^2 + (2.5 - 3)^2 + (3-2)^2 \\
+    &= 2.5.
+  \end{split}
+\end{equation*}
+
+
+## Q2 
+
+Identify slope and $y$-intercept for these lines:
+
+::::{.columns}
+
+:::{.column width="50%"}
+
+```{r}
+#| echo: false
+ggplot() +
+  geom_abline(
+    intercept = 0,
+    slope = 3, 
+    linewidth = 2, 
+    linetype = "dashed", 
+    color = "blue"
+  ) +
+  geom_vline(xintercept = 0) +
+  geom_hline(yintercept = 0) +
+  lims(x = c(-4, 4), y = c(-4, 4)) +
+  theme_minimal(base_size = 20) +
+  labs(title = "Line 1")
+```
+
+:::
+
+:::{.column width="50%"}
+
+```{r}
+#| echo: false
+ggplot() +
+  geom_abline(
+    intercept = 2,
+    slope = -1, 
+    linewidth = 2, 
+    linetype = "dashed", 
+    color = "blue"
+  ) +
+  geom_vline(xintercept = 0) +
+  geom_hline(yintercept = 0) +
+  lims(x = c(-4, 4), y = c(-4, 4)) +
+  theme_minimal(base_size = 20) +
+  labs(title = "Line B")
+```
+
+:::
+
+::::
+
+### Solution
+
+Line A has a y-intercept of y = 0 and a slope of 3 (rise / run = 3 / 1).
+
+Line B has a y-intercept of y = 2 and a slope of -1 (rise / run = -1 / 1).
+
+# Elephant mass modeling
+
+```{r}
+elephants <- read_csv(
+  "http://csuci-data308-fa26.github.io/course-materials/data/elephants.csv"
+) |> 
+  clean_names()
+
+glimpse(elephants)
+```
+
+```{r}
+ggplot(elephants, aes(x = age, y = mass)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs(x = "Age", y = "Mass (kg)")
+```
+
+```{r}
+elephant_model <- lm(mass ~ age, data = elephants)
+summary(elephant_model)
+```
+
+```{r}
+#| echo: false
+beta0_hat <- round(as.numeric(elephant_model$coefficients[1]), 1)
+beta1_hat <- round(as.numeric(elephant_model$coefficients[2]), 1)
+```
+
+
+## Q3
+
+Identify and interpret the estimated intercept in context.
+
+### Solution
+
+The following would all be valid interpretations:
+
+- We estimate the mass of 0 year old elephants to be `r beta0_hat` kilograms, on average.
+- 0 year old elephants are *expected* to have a mass of `r beta0_hat` kilograms.
+
+*Remember: expectation = long-run average!*
+
+The intercept does not have a meaningful interpretation in this context, since we don't care or know about mass for 0 year old elephants.
+
+## Q4
+
+Identify and interpret the estimated slope in context.
+
+### Solution
+
+The following would all be valid interpretations:
+
+- For elephants differing in age by 1 year, we estimate the older elephants to have a mass of `r beta1_hat` kilograms more, on average.
+- We estimate an higher mass of `r beta1_hat` kilograms to be associated with a 1 year increase in age, for elephants, on average.
+
+## Q5 
+
+What mass would we predict, on average, for an elephant 30 years of age?.
+
+### Solution
+
+```{r}
+2264.678 + 8.629 * 30
+```
+
+
+We would predict 30-year-old elephants to have a mass of 2523.6 kilograms, on average.
+
+## Q6
+
+What mass would we predict, on average, for an elephant 6 years of age?.
+
+### Solution
+
+This is **extrapolation**! The youngest elephants we have data for are around 18 years old, we do not know if the trend between mass and height continues for younger elephants. It would be irresponsible to use this model to predict mass for an elephant of this age.
+

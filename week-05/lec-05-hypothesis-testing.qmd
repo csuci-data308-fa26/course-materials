@@ -68,7 +68,7 @@ relationship_data <- bind_rows(
   tibble(
     relationship = "B",
     x = runif(40, -5, 5),
-    y = 2 + -2 * x + rnorm(40, 0, 3)
+    y = 2 + -2 * x + rnorm(40, 0, 5)
   ),
   tibble(
     relationship = "C",
@@ -173,6 +173,17 @@ ggplot(relationship_data, aes(x, y)) +
   facet_wrap(~ relationship, nrow = 2, scales = "free_x") +
   labs(x = "X", y = "Y")
 ```
+
+## Slopes (Solution)
+
+| Plot | strength of relationship | strength of linear relationship | slope |
+|:---|:------------|:------------|:---|
+| A | very strong | very strong | 2 |
+| B | strong | weak/moderate | -2 |
+| C | no relationship | no linear relationship | 0 |
+| D | very strong | no linear relationship | 0 |
+
+* I did slightly edit B to make it a weaker relationship than what we saw in class 5a
 
 # Hypotheses for a regression slope
 
@@ -413,6 +424,9 @@ C. If the null hypothesis were true, results at least as extreme as ours would o
 
 D. There is a 97% probability that the alternative hypothesis is true.
 
+. . .
+
+*Solution: C. The others are all similarly wrong.*
 
 ## What a p-value does not tell us
 
@@ -448,27 +462,33 @@ It does not establish that $H_0$ is true.
 
 ## Conclusion for the elephants
 
+**Statistical decision:**
+
 Because $p-value < 0.05$, we reject $H_0$.
 
-> The results provide evidence of a linear association between elephant height and mean mass in the population represented by these data (p-value $< 2\times 10^{-16}$).
+**Conclusion in context:**
 
-. . .
+> The results provide evidence of a linear association between elephant height and mean mass in the population (p-value $< 2\times 10^{-16}$).
 
-This conclusion describes the evidence. The estimated slope describes the direction and magnitude of the association.
 
 ## If the result were not statistically significant
 
+**Statistical decision:**
+
 If  $p-value \geq 0.05$, we would fail to reject $H_0$.
 
-> The results do not provide sufficient evidence of a linear association between elephant height and mean mass in the population represented by these data (p-value = ...).
+**Conclusion in context:**
+
+> The results do not provide sufficient evidence of a linear association between elephant height and mean mass in the population (p-value = ...).
 
 Avoid saying:
 
 - "We accept the null hypothesis."
-- "There is no association."
-- "We proved that the slope is zero."
+- "We proved that there is no association."
 
 # Statistical and practical significance
+
+*This is where we stopped for Lec 5a*
 
 ## Two different questions
 

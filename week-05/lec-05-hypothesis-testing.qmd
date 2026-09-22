@@ -1,0 +1,680 @@
+---
+title: "Data 308: Lecture 5 (5a & 5b)"
+subtitle: "Hypothesis testing for a regression slope"
+author: "CSUCI - Dr. Catalina Medina"
+format:
+  revealjs:
+    theme: [sky, ../slide-style.scss]
+    slide-number: true
+    auto-stretch: false
+echo: false
+---
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(broom)
+
+theme_set(theme_bw(base_size = 24))
+
+elephants <- read_csv(
+  "http://csuci-data308-fa26.github.io/course-materials/data/elephants.csv",
+  show_col_types = FALSE
+) |>
+  janitor::clean_names()
+
+elephant_model <- lm(mass ~ height, data = elephants)
+elephant_results <- tidy(elephant_model, conf.int = TRUE)
+elephant_slope <- elephant_results |> filter(term == "height")
+
+set.seed(308)
+null_n <- 50
+null_sigma <- 3
+null_samples <- map_dfr(1:1000, function(sample_id) {
+  sample_data <- tibble(
+    x = runif(null_n, -2, 2),
+    y = 2 + rnorm(null_n, 0, null_sigma)
+  )
+
+  tibble(
+    sample_id = sample_id,
+    slope = coef(lm(y ~ x, data = sample_data))["x"]
+  )
+})
+
+null_examples <- map_dfr(1:4, function(sample_id) {
+  set.seed(308 + sample_id)
+  tibble(
+    sample_id = paste("Sample", sample_id),
+    x = runif(null_n, -2, 2),
+    y = 2 + rnorm(null_n, 0, null_sigma)
+  )
+})
+
+null_example_slopes <- null_examples |>
+  group_by(sample_id) |>
+  group_modify(~ tidy(lm(y ~ x, data = .x))) |>
+  filter(term == "x")
+
+relationship_data <- bind_rows(
+  tibble(
+    relationship = "A",
+    x = runif(40, -5, 5),
+    y = 2 + 2 * x + rnorm(40, 0, 1.5)
+  ),
+  tibble(
+    relationship = "B",
+    x = runif(40, -5, 5),
+    y = 2 + -2 * x + rnorm(40, 0, 3)
+  ),
+  tibble(
+    relationship = "C",
+    x = runif(40, -5, 5),
+    y = rnorm(40, 0, 5.5)
+  ),
+  tibble(
+    relationship = "D",
+    x = runif(40, -5, 5),
+    y = x^2 + rnorm(40, 0, 1.5)
+  )
+) |>
+  mutate(relationship = factor(relationship, levels = c("A", "B", "C", "D")))
+
+observed_slope_example <- 0.75
+
+null_samples <- null_samples |>
+  mutate(
+    at_least_as_extreme =
+      abs(slope) >= abs(observed_slope_example)
+  )
+
+simulated_p_value <- mean(
+  null_samples$at_least_as_extreme
+)
+```
+
+# Goals for this week
+
+- theoretical understanding of the key aspects of a hypothesis test
+- ability to conduct a hypothesis test and make a conclusion in context
+
+## Theory-based goals
+
+By the end of this week students should be able to:
+
+- explain what a p-value is
+- distinguish between statistical significance and practical significance
+- explain Type I and Type II errors conceptually
+- identify factors that affect statistical power
+- connect a two-sided hypothesis test with a confidence interval.
+
+## Application-based goals
+
+By the end of this week students should be able to:
+
+- conduct a hypothesis test for the slope of simple linear regression:
+  - state null and alternative hypotheses (in symbols and in context)
+  - fit the model and obtain the p-value in R
+  - make a conclusion in context based on the results
+
+
+# From estimation to testing
+
+## What did we do last week?
+
+- We used a sample to estimate an unknown population slope, $\beta_1$.
+- Different random samples produced different estimates, $\hat{\beta}_1$.
+- A confidence interval described a range of plausible values for $\beta_1$.
+
+. . .
+
+> What if our research question is specifically whether there is any linear association in the population?
+
+## Two inferential questions
+
+::::{.columns}
+
+:::{.column width="48%"}
+
+### Estimation
+
+> What values of $\beta_1$ are plausible?
+
+Use a confidence interval.
+
+:::
+
+:::{.column width="48%"}
+
+### Hypothesis testing
+
+> Are the data compatible with a particular proposed value of $\beta_1$?
+
+Use a hypothesis test.
+
+:::
+
+::::
+
+## Slopes
+
+For each plot, describe (1) the strength of the relationship, (2) the strength of the linear relationship, (3) visually approximate the slope
+
+```{r}
+#| echo: false
+#| fig-align: center
+
+ggplot(relationship_data, aes(x, y)) +
+  geom_point(size = 2.2, alpha = 0.8) +
+  #lims(y = c(-10, 10)) +
+  facet_wrap(~ relationship, nrow = 2, scales = "free_x") +
+  labs(x = "X", y = "Y")
+```
+
+# Hypotheses for a regression slope
+
+## Research question
+
+> Is elephant height linearly associated with elephant mass in the population represented by these data?
+
+Our population model is
+
+$$\text{Mass}_i = \beta_0 + \beta_1 \text{Height}_i + \epsilon_i.$$
+
+. . .
+
+Our question is whether $\beta_1$ differs from zero.
+
+## Null hypothesis
+
+In symbols:
+
+$$H_0: \beta_1 = 0$$
+
+In context:
+
+> In the population, there is no linear association between elephant height and mean mass.
+
+. . .
+
+If $\beta_1=0$, the mean of $Y$ does not change linearly with $X$.
+
+## Idea of a hypothesis test
+
+$$H_0: \beta_1 = 0$$
+
+For a hypothesis test, we operate by assuming the null hypothesis is true, then we see if there is evidence against it.
+
+- Is it unlikely to get this data if $H_0$ is true?
+
+
+## Alternative hypothesis
+
+$$H_A: \beta_1 \neq 0$$
+
+In context:
+
+> In the population, elephant height is linearly associated with mean mass.
+
+. . .
+
+If we find evidence against $H_0$,
+
+- meaning evidence that it is unlikely to get this data if $H_0$ is true,
+- then we found evidence in support of $H_A$
+
+## What does our sample show?
+
+```{r}
+#| echo: false
+#| fig-align: center
+#| fig-height: 4.5
+
+ggplot(elephants, aes(x = height, y = mass)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "#B22222") +
+  labs(x = "Height (cm)", y = "Mass (kg)")
+```
+
+## The sample slope is not zero
+
+```{r}
+#| echo: true
+
+coef(elephant_model)
+```
+
+> Is a nonzero sample slope enough to reject $H_0$?
+
+. . .
+
+No. Random samples can produce nonzero estimates even when the population slope is zero.
+
+- Recall the sampling distribution of $\hat{\beta}_1$ from lecture 4b
+
+. . .
+
+Then how do we know if we have evidence against $H_0: \beta_1 = 0$?
+
+# Imagine the null hypothesis is true
+
+## A population with no linear association
+
+Suppose the true population model is
+
+$$Y_i = 2 + 0X_i + \epsilon_i.$$
+
+- The population slope is zero.
+- $X$ provides no information about the mean of $Y$.
+- A random sample can still show an apparent positive or negative slope.
+
+## Four samples from the "null world"
+
+```{r}
+#| echo: false
+#| fig-align: center
+#| fig-height: 5
+
+ggplot(null_examples, aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "#B22222") +
+  facet_wrap(~ sample_id, nrow = 2) +
+  labs(x = "X", y = "Y") +
+  geom_label(
+    data = null_example_slopes,
+    aes(
+      x = Inf,
+      y = Inf,
+      label = paste0(
+        "Estimated slope = ",
+        round(estimate, 2)
+      )
+    ),
+    inherit.aes = FALSE,
+    hjust = 1.05,
+    vjust = 1.15,
+    size = 4
+  )
+```
+
+## Many samples from the null world
+
+```{r}
+#| echo: false
+#| fig-align: center
+#| fig-height: 4.5
+
+ggplot(null_samples, aes(x = slope)) +
+  geom_histogram(binwidth = 0.1, color = "black", fill = "grey80") +
+  geom_vline(xintercept = 0, color = "#294957", linewidth = 1.5) +
+  labs(
+    x = expression("Estimated slope " * hat(beta)[1]),
+    y = "Number of samples"
+  )
+```
+
+## The central question
+
+> If the population slope were zero, how often would random sampling produce a result at least as extreme as ours?
+
+. . .
+
+This question leads to the **p-value**.
+
+# The p-value
+
+## Test statistic
+
+A slope of 5 could be surprising in one study but unsurprising in another.
+
+We compare the estimate with its sampling variability:
+
+$$t = \frac{\hat{\beta}_1 - 0}{SE(\hat{\beta}_1)}.$$
+
+. . .
+
+> The test statistic tells us how many standard errors the estimated slope is from the null value.
+
+## Two estimates of 5
+
+::::{.columns}
+
+:::{.column width="48%"}
+
+$$\hat\beta_1=5,\qquad SE(\hat\beta_1)=1$$
+
+$$t=5$$
+
+The estimate is five standard errors from zero.
+
+:::
+
+:::{.column width="48%"}
+
+$$\hat\beta_1=5,\qquad SE(\hat\beta_1)=10$$
+
+$$t=0.5$$
+
+The estimate is half a standard error from zero.
+
+:::
+
+::::
+
+. . .
+
+If $H_0$ is true, which test statistic is more surprising?
+
+## Concept of a p-value
+
+Suppose a research team collects one of these samples and estimates $\hat{\beta}_1$. The software also determines how many standard errors the estimate is from zero.
+
+If the population slope were actually zero, what is the probability of obtaining an estimated slope at least this many standard errors from zero?
+
+## Definition of a p-value
+
+> A p-value is the probability, assuming the null hypothesis is true, of obtaining a test statistic at least as extreme as the one observed.
+
+. . .
+
+1. Assume $H_0$ is true.
+2. Consider the results that could arise through random sampling.
+3. Find how often results at least as extreme as ours occur.
+
+## How do we get a p-value?
+
+```{r}
+#| echo: true
+
+summary(elephant_model)
+```
+
+. . .
+
+Note `<2e-16` means $< 2\times 10^{-16}$, which is the smallest p-value R will report
+
+
+## Interpreting the elephant p-value
+
+> If there were no linear association between elephant height and mean mass in the population, the probability of obtaining a test statistic at least as far from zero as the one observed, in either direction, would be less than $< 2\times 10^{-16}$.
+
+## Check your understanding
+
+Which is a correct interpretation of $p=0.03$?
+
+A. There is a 3% probability that the null hypothesis is true.
+
+B. There is a 3% probability that the results occurred by chance.
+
+C. If the null hypothesis were true, results at least as extreme as ours would occur in about 3% of comparable studies.
+
+D. There is a 97% probability that the alternative hypothesis is true.
+
+
+## What a p-value does not tell us
+
+The p-value is **not**:
+
+- the probability that $H_0$ is true;
+- the probability that the results occurred "by chance";
+- the probability that the finding will replicate;
+- the size or importance of the association.
+
+# Decision and conclusion
+
+## Significance level
+
+Before examining the result, researchers select a significance level, $\alpha$ (a cutoff).
+
+A common choice is $\alpha=0.05.$
+
+Decision rule:
+
+- If $p-value < \alpha$, reject $H_0$.
+- If $p-value \geq \alpha$, fail to reject $H_0$.
+
+## Why "fail to reject"?
+
+A large p-value says that the data do not provide strong evidence against $H_0$.
+
+It does not establish that $H_0$ is true.
+
+. . .
+
+> Absence of evidence is not evidence of absence.
+
+## Conclusion for the elephants
+
+Because $p-value < 0.05$, we reject $H_0$.
+
+> The results provide evidence of a linear association between elephant height and mean mass in the population represented by these data (p-value $< 2\times 10^{-16}$).
+
+. . .
+
+This conclusion describes the evidence. The estimated slope describes the direction and magnitude of the association.
+
+## If the result were not statistically significant
+
+If  $p-value \geq 0.05$, we would fail to reject $H_0$.
+
+> The results do not provide sufficient evidence of a linear association between elephant height and mean mass in the population represented by these data (p-value = ...).
+
+Avoid saying:
+
+- "We accept the null hypothesis."
+- "There is no association."
+- "We proved that the slope is zero."
+
+# Statistical and practical significance
+
+## Two different questions
+
+::::{.columns}
+
+:::{.column width="48%"}
+
+### Statistical significance
+
+Is the observed association difficult to explain if $H_0$ is true?
+
+Use the p-value.
+
+:::
+
+:::{.column width="48%"}
+
+### Practical significance
+
+Is the estimated association large enough to matter in context?
+
+Use the estimate, confidence interval, and subject knowledge.
+
+:::
+
+::::
+
+## A statistically significant result
+
+In a very large study, each additional hour of weekly study time is associated with an estimated increase of **0.08 percentage points** in exam score.
+
+$$\hat\beta_1=0.08,\qquad p<0.001$$
+
+Discuss with a partner:
+
+1. Is the result statistically significant?
+2. Is it practically significant?
+3. What other information would you want?
+
+## Sample size matters
+
+With a very large sample, even a tiny association can produce a small p-value.
+
+With a small sample, an important association might not produce a small p-value.
+
+. . .
+
+> A small p-value does not imply a large or important association.
+
+# Errors and power
+
+## Two possible errors
+
+| Population reality | Reject $H_0$ | Fail to reject $H_0$ |
+|---|---|---|
+| $H_0$ is true | **Type I error** | Correct decision |
+| $H_A$ is true | Correct decision | **Type II error** |
+
+## Type I error
+
+A Type I error occurs when we reject $H_0$ even though $H_0$ is true.
+
+In context:
+
+> We conclude that elephant height and mean mass are linearly associated when the population slope is actually zero.
+
+. . .
+
+When $H_0$ is true, $\alpha$ is the long-run probability of a Type I error.
+
+## Type II error
+
+A Type II error occurs when we fail to reject $H_0$ even though $H_A$ is true.
+
+In context:
+
+> We do not find sufficient evidence of a linear association even though the population slope is not zero.
+
+. . .
+
+This is one reason that failing to reject $H_0$ does not establish that $\beta_1=0$.
+
+## Statistical power
+
+> Power is the probability of rejecting $H_0$ when a particular alternative is true.
+
+Equivalently, power is the probability that a study detects an association of a specified size when that association exists.
+
+$$\text{Power}=1-P(\text{Type II error})$$
+
+## What affects power?
+
+Power generally increases when:
+
+- sample size increases;
+- the true slope is farther from zero;
+- residual variability decreases;
+- the explanatory variable has a wider spread.
+
+. . .
+
+Increasing $\alpha$ also increases power, but it increases the probability of a Type I error.
+
+## Reasoning about power
+
+For each change, would it become easier or harder to detect a nonzero slope?
+
+1. We collect observations from more individuals.
+2. The points lie more tightly around the population regression line.
+3. We observe $X$ only within a very narrow range.
+4. The true population slope moves closer to zero.
+
+# Connection to confidence intervals
+
+## Two views of the same question
+
+A 95% confidence interval gives a range of plausible values for $\beta_1$.
+
+A two-sided hypothesis test asks whether one proposed value is compatible with the data.
+
+For $H_0:\beta_1=0$ and $\alpha=0.05$:
+
+- If the 95% confidence interval excludes zero, reject $H_0$.
+- If the 95% confidence interval includes zero, fail to reject $H_0$.
+
+## What would the test conclude?
+
+Assume a two-sided test with $\alpha=0.05$.
+
+::::{.columns}
+
+:::{.column width="33%"}
+
+$$95\%\ CI=(1.2,4.7)$$
+
+:::
+
+:::{.column width="33%"}
+
+$$95\%\ CI=(-2.1,1.3)$$
+
+:::
+
+:::{.column width="33%"}
+
+$$95\%\ CI=(-5.4,-0.8)$$
+
+:::
+
+::::
+
+For each interval:
+
+1. Does it include zero?
+2. Would you reject $H_0$?
+3. What does it tell you about the direction of the association?
+
+## Why report a confidence interval too?
+
+The p-value helps assess evidence against $H_0$.
+
+The confidence interval communicates:
+
+- the estimated direction;
+- plausible effect sizes;
+- the precision of the estimate;
+- information relevant to practical significance.
+
+# Conducting a hypothesis test
+
+## Complete workflow
+
+1. Identify the population parameter.
+2. State $H_0$ and $H_A$ in symbols and context.
+3. Fit the regression model.
+4. Obtain the estimated slope, confidence interval, and p-value.
+5. Compare the p-value with $\alpha$.
+6. Make a statistical decision.
+7. State the conclusion in context.
+8. Consider the magnitude and practical importance of the estimate.
+
+## R workflow
+
+```{r}
+#| echo: true
+
+elephant_model <- lm(mass ~ height, data = elephants)
+
+confint(elephant_model)
+
+summary(elephant_model)
+```
+
+## A complete report
+
+We tested $H_0:\beta_1=0$ against $H_A:\beta_1\ne0$, where $\beta_1$ represents the population slope relating elephant height to mean mass.
+
+The estimated slope was `r round(elephant_slope$estimate, 1)` kg per cm, with a 95% confidence interval from `r round(elephant_slope$conf.low, 1)` to `r round(elephant_slope$conf.high, 1)` kg per cm.
+
+Because $p<0.05$, we reject $H_0$. The results provide evidence of a linear association between elephant height and mean mass in the population represented by these data.
+
+## Takeaways
+
+- A p-value measures how surprising the observed evidence would be if $H_0$ were true.
+- Statistical significance and practical significance answer different questions.
+- Type I and Type II errors describe the two ways a testing decision can be wrong.
+- Power depends on effect size, sampling variability, and study design.
+- A two-sided test at $\alpha=0.05$ agrees with whether the 95% confidence interval includes the null value.
+- A complete conclusion describes the population, variables, evidence, and estimated effect.

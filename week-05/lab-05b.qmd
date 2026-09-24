@@ -2,14 +2,10 @@
 title: "DATA 308: Lab 5b"
 subtitle: "Hypothesis Testing with SLR"
 author: "Your name here"
-format: 
-  html:
-    echo: true
-    message: false
-    warning: false
-    toc: true
-    toc-depth: 4
-    embed-resources: true
+format: pdf
+execute: 
+  message: false
+  warning: false
 ---
 
 Our research question that we will investigate in this lab is:

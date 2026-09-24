@@ -558,7 +558,7 @@ F-statistic:  3090 on 1 and 1468 DF,  p-value: &lt; 2.2e-16</code></pre>
 </section>
 <section id="check-your-understanding" class="slide level2">
 <h2>Check your understanding</h2>
-<p>Which is a correct interpretation of <span class="math inline">\(p=0.03\)</span>?</p>
+<p>Which is a correct interpretation of <span class="math inline">\(p-value=0.03\)</span>?</p>
 <p>A. There is a 3% probability that the null hypothesis is true.</p>
 <p>B. There is a 3% probability that the results occurred by chance.</p>
 <p>C. If the null hypothesis were true, results at least as extreme as ours would occur in about 3% of comparable studies.</p>
@@ -610,6 +610,9 @@ F-statistic:  3090 on 1 and 1468 DF,  p-value: &lt; 2.2e-16</code></pre>
 <blockquote>
 <p>The results provide evidence of a linear association between elephant height and mean mass in the population (p-value <span class="math inline">\(&lt; 2\times 10^{-16}\)</span>).</p>
 </blockquote>
+<div class="fragment">
+<p>… But what is that linear relationship? This analysis is incompelte.</p>
+</div>
 </section>
 <section id="if-the-result-were-not-statistically-significant" class="slide level2">
 <h2>If the result were not statistically significant</h2>
@@ -630,6 +633,17 @@ F-statistic:  3090 on 1 and 1468 DF,  p-value: &lt; 2.2e-16</code></pre>
 <h1>Statistical and practical significance</h1>
 <p><em>This is where we stopped for Lec 5a</em></p>
 </section>
+<section id="a-statistically-significant-result" class="slide level2">
+<h2>A statistically significant result</h2>
+<p>Suppose in a very large study, each additional hour of weekly study time is associated with an estimated increase of <strong>0.08 percentage points</strong> in exam score.</p>
+<p><span class="math display">\[\hat\beta_1=0.08,\qquad p&lt;0.001\]</span></p>
+<p>Discuss with a partner:</p>
+<ol type="1">
+<li>Is the result statistically significant?</li>
+<li>Is it practically significant?</li>
+<li>What other information would you want?</li>
+</ol>
+</section>
 <section id="two-different-questions" class="slide level2">
 <h2>Two different questions</h2>
 <div class="columns">
@@ -643,17 +657,6 @@ F-statistic:  3090 on 1 and 1468 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>Use the estimate, confidence interval, and subject knowledge.</p>
 </div></div>
 </section>
-<section id="a-statistically-significant-result" class="slide level2">
-<h2>A statistically significant result</h2>
-<p>In a very large study, each additional hour of weekly study time is associated with an estimated increase of <strong>0.08 percentage points</strong> in exam score.</p>
-<p><span class="math display">\[\hat\beta_1=0.08,\qquad p&lt;0.001\]</span></p>
-<p>Discuss with a partner:</p>
-<ol type="1">
-<li>Is the result statistically significant?</li>
-<li>Is it practically significant?</li>
-<li>What other information would you want?</li>
-</ol>
-</section>
 <section id="sample-size-matters" class="slide level2">
 <h2>Sample size matters</h2>
 <p>With a very large sample, even a tiny association can produce a small p-value.</p>
@@ -663,121 +666,6 @@ F-statistic:  3090 on 1 and 1468 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>A small p-value does not imply a large or important association.</p>
 </blockquote>
 </div>
-</section></section>
-<section>
-<section id="errors-and-power" class="title-slide slide level1 center">
-<h1>Errors and power</h1>
-
-</section>
-<section id="two-possible-errors" class="slide level2">
-<h2>Two possible errors</h2>
-<table class="caption-top">
-<thead>
-<tr class="header">
-<th>Population reality</th>
-<th>Reject <span class="math inline">\(H_0\)</span></th>
-<th>Fail to reject <span class="math inline">\(H_0\)</span></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><span class="math inline">\(H_0\)</span> is true</td>
-<td><strong>Type I error</strong></td>
-<td>Correct decision</td>
-</tr>
-<tr class="even">
-<td><span class="math inline">\(H_A\)</span> is true</td>
-<td>Correct decision</td>
-<td><strong>Type II error</strong></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="type-i-error" class="slide level2">
-<h2>Type I error</h2>
-<p>A Type I error occurs when we reject <span class="math inline">\(H_0\)</span> even though <span class="math inline">\(H_0\)</span> is true.</p>
-<p>In context:</p>
-<blockquote>
-<p>We conclude that elephant height and mean mass are linearly associated when the population slope is actually zero.</p>
-</blockquote>
-<div class="fragment">
-<p>When <span class="math inline">\(H_0\)</span> is true, <span class="math inline">\(\alpha\)</span> is the long-run probability of a Type I error.</p>
-</div>
-</section>
-<section id="type-ii-error" class="slide level2">
-<h2>Type II error</h2>
-<p>A Type II error occurs when we fail to reject <span class="math inline">\(H_0\)</span> even though <span class="math inline">\(H_A\)</span> is true.</p>
-<p>In context:</p>
-<blockquote>
-<p>We do not find sufficient evidence of a linear association even though the population slope is not zero.</p>
-</blockquote>
-<div class="fragment">
-<p>This is one reason that failing to reject <span class="math inline">\(H_0\)</span> does not establish that <span class="math inline">\(\beta_1=0\)</span>.</p>
-</div>
-</section>
-<section id="statistical-power" class="slide level2">
-<h2>Statistical power</h2>
-<blockquote>
-<p>Power is the probability of rejecting <span class="math inline">\(H_0\)</span> when a particular alternative is true.</p>
-</blockquote>
-<p>Equivalently, power is the probability that a study detects an association of a specified size when that association exists.</p>
-<p><span class="math display">\[\text{Power}=1-P(\text{Type II error})\]</span></p>
-</section>
-<section id="what-affects-power" class="slide level2">
-<h2>What affects power?</h2>
-<p>Power generally increases when:</p>
-<ul>
-<li>sample size increases;</li>
-<li>the true slope is farther from zero;</li>
-<li>residual variability decreases;</li>
-<li>the explanatory variable has a wider spread.</li>
-</ul>
-<div class="fragment">
-<p>Increasing <span class="math inline">\(\alpha\)</span> also increases power, but it increases the probability of a Type I error.</p>
-</div>
-</section>
-<section id="reasoning-about-power" class="slide level2">
-<h2>Reasoning about power</h2>
-<p>For each change, would it become easier or harder to detect a nonzero slope?</p>
-<ol type="1">
-<li>We collect observations from more individuals.</li>
-<li>The points lie more tightly around the population regression line.</li>
-<li>We observe <span class="math inline">\(X\)</span> only within a very narrow range.</li>
-<li>The true population slope moves closer to zero.</li>
-</ol>
-</section></section>
-<section>
-<section id="connection-to-confidence-intervals" class="title-slide slide level1 center">
-<h1>Connection to confidence intervals</h1>
-
-</section>
-<section id="two-views-of-the-same-question" class="slide level2">
-<h2>Two views of the same question</h2>
-<p>A 95% confidence interval gives a range of plausible values for <span class="math inline">\(\beta_1\)</span>.</p>
-<p>A two-sided hypothesis test asks whether one proposed value is compatible with the data.</p>
-<p>For <span class="math inline">\(H_0:\beta_1=0\)</span> and <span class="math inline">\(\alpha=0.05\)</span>:</p>
-<ul>
-<li>If the 95% confidence interval excludes zero, reject <span class="math inline">\(H_0\)</span>.</li>
-<li>If the 95% confidence interval includes zero, fail to reject <span class="math inline">\(H_0\)</span>.</li>
-</ul>
-</section>
-<section id="what-would-the-test-conclude" class="slide level2">
-<h2>What would the test conclude?</h2>
-<p>Assume a two-sided test with <span class="math inline">\(\alpha=0.05\)</span>.</p>
-<div class="columns">
-<div class="column" style="width:33%;">
-<p><span class="math display">\[95\%\ CI=(1.2,4.7)\]</span></p>
-</div><div class="column" style="width:33%;">
-<p><span class="math display">\[95\%\ CI=(-2.1,1.3)\]</span></p>
-</div><div class="column" style="width:33%;">
-<p><span class="math display">\[95\%\ CI=(-5.4,-0.8)\]</span></p>
-</div></div>
-<p>For each interval:</p>
-<ol type="1">
-<li>Does it include zero?</li>
-<li>Would you reject <span class="math inline">\(H_0\)</span>?</li>
-<li>What does it tell you about the direction of the association?</li>
-</ol>
 </section>
 <section id="why-report-a-confidence-interval-too" class="slide level2">
 <h2>Why report a confidence interval too?</h2>
@@ -800,10 +688,8 @@ F-statistic:  3090 on 1 and 1468 DF,  p-value: &lt; 2.2e-16</code></pre>
 <ol type="1">
 <li>Identify the population parameter.</li>
 <li>State <span class="math inline">\(H_0\)</span> and <span class="math inline">\(H_A\)</span> in symbols and context.</li>
-<li>Fit the regression model.</li>
-<li>Obtain the estimated slope, confidence interval, and p-value.</li>
-<li>Compare the p-value with <span class="math inline">\(\alpha\)</span>.</li>
-<li>Make a statistical decision.</li>
+<li>Fit the regression model. Obtain the estimated slope, confidence interval, and p-value.</li>
+<li>Compare the p-value with <span class="math inline">\(\alpha\)</span>. Make a statistical decision.</li>
 <li>State the conclusion in context.</li>
 <li>Consider the magnitude and practical importance of the estimate.</li>
 </ol>
@@ -844,18 +730,17 @@ F-statistic:  3090 on 1 and 1468 DF,  p-value: &lt; 2.2e-16</code></pre>
 </section>
 <section id="a-complete-report" class="slide level2">
 <h2>A complete report</h2>
-<p>We tested <span class="math inline">\(H_0:\beta_1=0\)</span> against <span class="math inline">\(H_A:\beta_1\ne0\)</span>, where <span class="math inline">\(\beta_1\)</span> represents the population slope relating elephant height to mean mass.</p>
-<p>The estimated slope was 27.2 kg per cm, with a 95% confidence interval from 26.2 to 28.1 kg per cm.</p>
-<p>Because <span class="math inline">\(p&lt;0.05\)</span>, we reject <span class="math inline">\(H_0\)</span>. The results provide evidence of a linear association between elephant height and mean mass in the population represented by these data.</p>
+<p>We tested <span class="math inline">\(H_0:\beta_1=0\)</span> against <span class="math inline">\(H_A:\beta_1\ne0\)</span>, where <span class="math inline">\(\beta_1\)</span> represents the population slope relating elephant height to mean mass. Assuming the conditions for inference with simple linear regression have been met:</p>
+<blockquote>
+<p>We found evidence of a linear association between elephant height and average mass in the population of adult Asian elephants (p-value = <span class="math inline">\(&lt;2 \times 10^{-16}\)</span>). We estimate an increase of one cm in height to be associated with an increase in average mass of 27.2kg, between 26.2 to 28.1 with 95% confidence.</p>
+</blockquote>
 </section>
 <section id="takeaways" class="slide level2">
 <h2>Takeaways</h2>
 <ul>
+<li>Hypothesis test for <span class="math inline">\(H_0: \beta_1 = 0\)</span> versus <span class="math inline">\(H_A: \beta_1 \neq 0\)</span> tests for evidence of a linear relationship.</li>
 <li>A p-value measures how surprising the observed evidence would be if <span class="math inline">\(H_0\)</span> were true.</li>
 <li>Statistical significance and practical significance answer different questions.</li>
-<li>Type I and Type II errors describe the two ways a testing decision can be wrong.</li>
-<li>Power depends on effect size, sampling variability, and study design.</li>
-<li>A two-sided test at <span class="math inline">\(\alpha=0.05\)</span> agrees with whether the 95% confidence interval includes the null value.</li>
 <li>A complete conclusion describes the population, variables, evidence, and estimated effect.</li>
 </ul>
 

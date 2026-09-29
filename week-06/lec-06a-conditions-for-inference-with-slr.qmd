@@ -1,0 +1,398 @@
+---
+title: "Data 308: Lecture 6a"
+subtitle: "Conditions for inference with regression (ISL 3.3.3 )"
+author: "CSUCI - Dr. Catalina Medina"
+format:
+  revealjs:
+    theme: [sky, ../slide-style.scss]
+    slide-number: true
+    auto-stretch: false
+echo: false
+---
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(broom)
+
+theme_set(theme_bw(base_size = 24))
+
+elephants <- read_csv(
+  "http://csuci-data308-fa26.github.io/course-materials/data/elephants.csv",
+  show_col_types = FALSE
+) |>
+  janitor::clean_names()
+```
+
+## Learning goals
+
+By the end of this lecture, you should be able to:
+
+State the conditions needed for inference with linear regression.
+
+Use study design and diagnostic plots to assess whether those conditions are reasonable.
+
+Explain how violations of each condition can affect coefficient estimates, standard errors, confidence intervals, and hypothesis tests.
+
+Recommend possible responses when model conditions are not satisfied.
+
+##
+
+We discussed how simple linear regression can be used to solve different goals
+
+**Prediction** 
+
+- We want the fitted line so we can use it on future data
+
+**Inference**
+
+- Estimate the association between $Y$ and $X$ (confidence interval)
+- Test if there is a linear association between $Y$ and $X$ (hypothesis test)
+
+
+## 
+
+Recall our linear regression from last week
+```{r}
+ggplot(elephants, aes(x = height, y = mass)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "Height (cm)", y = "Mass (kg)")
+```
+
+. . .
+
+*Was this model appropriate?*
+
+## Why would we care if the model is "appropriate"?
+
+::::{.columns}
+:::{.column width="50%"}
+```{r}
+#| echo: false
+ggplot(elephants, aes(x = height, y = mass)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "Height (cm)", y = "Mass (kg)")
+```
+
+:::
+
+:::{.column width="50%"}
+
+- it may be chance that we got a good fit for our sample, but the model might be a bad fit for the population
+- our estimates relied on our conditions, so we need to understand the implications of unsatisfied conditions
+
+:::
+::::
+
+## Conditions for SLR
+
+$$Y_i = \beta_0 + \beta_1 X_i + \epsilon_i$$
+
+1. Linearity: Linear relationship between $X$ and $Y$ ($E(\epsilon_i|X_i) = 0)$.
+3. Independence: Independence of $\epsilon_i$.
+2. Homoskedasticity: Constant variance of $\epsilon_i$ ($Var(\epsilon_i|X_i) = \sigma^2)$.
+4. Normality: Normally distributed $\epsilon_i|X_i$.
+
+:::{.callout-note}
+These are conditions on the population errors, which we cannot observe. We use the sample residuals to look for evidence that the conditions may be unreasonable.
+:::
+
+# Checking model conditions
+
+## Visual checks versus statistical tests
+
+Formal tests of model conditions exist, but they do not replace
+diagnostic plots.
+
+- With small samples, tests may fail to detect important problems.
+- With large samples, tests may detect minor, inconsequential deviations.
+- A p-value does not show the form or severity of a violation.
+
+We will use diagnostic plots together with knowledge of how the
+data were collected.
+
+- Visual assessment involves judgment.
+- We should show our diagnostic plots and explain the evidence
+  behind our decisions.
+
+## Visual checks
+
+The `autoplot()` function from the `ggfortify` R package can produce the plots we want for assessing model fit.
+Recall residuals: $e_i = y_i - \hat{y}_i$
+
+
+| Plot | Primary purpose |
+|:--------|:------------------------|
+| Residuals vs. fitted | Nonlinearity and nonconstant variance |
+| Normal Q-Q | Distribution of errors |
+| Scale-location | Nonconstant variance |
+| Residuals vs. leverage | Potentially influential observations |
+
+## Assessing conditions for our model
+
+```{r}
+#| fig-align: center
+#| output-location: slide
+model_elephant <- lm(mass ~ height, data = elephants)
+
+library(ggfortify)
+
+autoplot(model_elephant)
+```
+
+
+## Diagnosing linearity
+
+- Examine plot of residuals vs fitted
+- The residuals should be scattered around zero without systematic curvature or another discernible pattern.
+
+:::{.pull-left}
+
+**Linear**
+```{r  echo = FALSE, message = FALSE}
+set.seed(84735)
+x <- seq(-2, 2, by = 0.01)
+y <- 4*x + 5 + rnorm(length(x), 0 , 1.5)
+
+data_good <- data.frame(x = x, y = y) |>   
+  sample_n(50)
+model_good <- lm(y ~ x, data = data_good)
+
+diagnostics_good <- data_good |>
+  mutate(
+    fitted = fitted(model_good),
+    residual = resid(model_good)
+  )
+
+ggplot(diagnostics_good, aes(x = fitted, y = residual)) +
+  geom_hline(
+    yintercept = 0,
+    color = "gray50",
+    linetype = "dashed"
+  ) +
+  geom_point() +
+  geom_smooth(
+    method = "loess",
+    formula = y ~ x,
+    se = FALSE,
+    color = "#D55E00"
+  ) +
+  labs(
+    x = "Fitted value",
+    y = "Residual"
+  )
+```
+
+:::
+
+:::{.pull-right}
+
+**Non-linear**
+
+```{r  echo = FALSE, message = FALSE}
+set.seed(84735)
+x <- seq(-2, 2, by = 0.01)
+y <- 3*x^2 + x + 5 + rnorm(length(x), 0 , 2)
+
+data_bad <- data.frame(x = x, y = y) |> sample_n(50)
+
+model_bad <- lm(y ~ x, data = data_bad)
+
+diagnostics_bad <- data_bad |>
+  mutate(
+    fitted = fitted(model_bad),
+    residual = resid(model_bad)
+  )
+
+ggplot(diagnostics_bad, aes(x = fitted, y = residual)) +
+  geom_hline(
+    yintercept = 0,
+    color = "gray50",
+    linetype = "dashed"
+  ) +
+  geom_point() +
+  geom_smooth(
+    method = "loess",
+    formula = y ~ x,
+    se = FALSE,
+    color = "#D55E00"
+  ) +
+  labs(
+    x = "Fitted value",
+    y = "Residual"
+  )
+```
+
+:::
+
+## When linearity is violated
+
+Implications: 
+
+- poor fit
+- possibly biased inference
+
+Remedy:
+
+- consider transformations of $X$ or other relationships
+
+## Diagnosing Independence
+
+- Independence generally cannot be established from the standard residual plots.
+- Consider how the data were collected (random sample? no repeat sampling?) and on whom the data were collected (would you expect independence?)
+- Dependence could be revealed by plotting residuals versus unmodeled variables (time, class, etc)
+
+## When independence is violated
+
+Implications:
+
+- Does not inherently bias our estimators $\hat{\beta}_0$ and $\hat{\beta}_1$
+- Our standard errors are likely incorrect (typically underestimate)
+- Increased type one error rates (false positive)
+
+Remedy:
+
+- Consider a different model that accounts for correlation (e.g. if you have longitudinal data then a linear mixed effects model may be appropriate)
+
+## Diagnosing homoskedasticity
+
+- Examine plot of residuals vs fitted and check there is not a "funnel-shape"
+- Specifically, for each fitted value does the spread of the residuals look similar?
+
+:::{.pull-left}
+
+**Constant variance**
+
+```{r echo = FALSE, message = FALSE}
+model_good <- lm(y ~ x, data = data_good)
+
+data_good <- 
+  data_good |>
+  sample_n(50) |> 
+  modelr::add_residuals(model_good) 
+
+data_good |> 
+  ggplot(aes(x = x, y = resid)) +
+  geom_point() +
+  geom_hline(yintercept = 0)
+
+```
+
+:::
+
+:::{.pull-right}
+
+**Non-constant variance**
+
+
+```{r echo = FALSE, message = FALSE}
+bad_data <- data.frame(
+  x = seq(0, 10, length.out = 100)
+) |> 
+  mutate(y_perfect = 2 * x + 5) |> 
+  mutate(residuals = rnorm(100, mean = 0, sd = abs(x) / 2)) |> 
+  mutate(y = y_perfect + residuals)
+
+model_bad <- lm(y ~ x, data = bad_data)
+
+bad_data <- 
+  bad_data |> 
+  modelr::add_residuals(model_bad) 
+
+bad_data |> 
+  ggplot(aes(x = x, y = resid)) +
+  geom_point() +
+  geom_hline(yintercept = 0)
+```
+
+:::
+
+## When homoskedasticity is violated
+
+Implications:
+
+- Does not inherently bias our estimators $\hat{\beta}_0$ and $\hat{\beta}_1$
+- Our standard errors are likely incorrect
+
+Remedies:
+
+- Use heteroskedasticity-robust standard errors when the mean
+  model is still appropriate.
+- Consider a scientifically meaningful transformation of $Y$.
+- Use weighted least squares if the variance pattern can be modeled.
+
+## Diagnosing normality
+
+- Assess visually with Q-Q plot
+- Outliers (point with extreme residual) can result in violation of normality
+
+:::{.pull-left}
+
+**Normal residuals**
+
+
+```{r echo = FALSE, message = FALSE}
+normal_data <- data.frame(resid = rnorm(100))
+
+ggplot(normal_data, aes(sample = resid)) + 
+  stat_qq() + 
+  stat_qq_line()
+```
+
+:::
+
+:::{.pull-right}
+
+
+**Non-normal residuals**
+
+```{r echo = FALSE, message = FALSE}
+bad_data <- data.frame(
+  x = seq(0, 10, length.out = 100)
+) |> 
+  mutate(y_perfect = 2 * x + 5) |> 
+  mutate(residuals = rgamma(100, shape = 2, rate = 3)) |> 
+  mutate(y = y_perfect + residuals)
+
+model_bad <- lm(y ~ x, data = bad_data)
+
+bad_data <- 
+  bad_data |> 
+  modelr::add_residuals(model_bad) 
+
+ggplot(bad_data, aes(sample = resid)) + 
+  stat_qq() + 
+  stat_qq_line()
+```
+
+:::
+
+
+
+## When normality is violated
+
+Implications:
+
+- With no outliers and a large enough sample the sampling distribution of the coefficient estimator becomes approximately normal
+- Can have biased predictions for $Y$
+
+Remedies:
+
+- Consider a scientifically meaningful transformation of $Y$.
+
+
+## Unusual and influential observations
+
+The four conditions describe the behavior of the errors across the population. Influence instead asks whether our fitted results depend too heavily on one or a few observations.
+
+- An **outlier** has an unusually large residual.
+- A **high-leverage observation** has an unusual value of $X$.
+- An **influential observation** substantially changes the fitted
+  model when included or removed.
+
+An observation can have high leverage without being influential, and an outlier does not necessarily have high leverage.

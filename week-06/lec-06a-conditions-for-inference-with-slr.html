@@ -34,6 +34,72 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="lec-06a-conditions-for-inference-with-slr_files/libs/revealjs/dist/theme/quarto-c99231f18bc440273635742d2c598c24.css">
   <link href="lec-06a-conditions-for-inference-with-slr_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
@@ -211,6 +277,10 @@ CSUCI - Dr.&nbsp;Catalina Medina
 <li>Homoskedasticity: Constant variance of <span class="math inline">\(\epsilon_i\)</span> (<span class="math inline">\(Var(\epsilon_i|X_i) = \sigma^2)\)</span>.</li>
 <li>Normality: Normally distributed <span class="math inline">\(\epsilon_i|X_i\)</span>.</li>
 </ol>
+</section>
+<section>
+<section id="checking-model-conditions" class="title-slide slide level1 center">
+<h1>Checking model conditions</h1>
 <div class="callout callout-note callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -220,99 +290,32 @@ CSUCI - Dr.&nbsp;Catalina Medina
 <p><strong>Note</strong></p>
 </div>
 <div class="callout-content">
-<p>These are conditions on the population errors, which we cannot observe. We use the sample residuals to look for evidence that the conditions may be unreasonable.</p>
+<p>Our four conditions are conditions on the population errors, which we cannot observe. We use the <strong>sample residuals</strong> to look for evidence that the conditions are / are not satisfied.</p>
 </div>
 </div>
 </div>
-</section>
-<section>
-<section id="checking-model-conditions" class="title-slide slide level1 center">
-<h1>Checking model conditions</h1>
-
 </section>
 <section id="visual-checks-versus-statistical-tests" class="slide level2">
 <h2>Visual checks versus statistical tests</h2>
-<p>Formal tests of model conditions exist, but they do not replace diagnostic plots.</p>
-<ul>
-<li>With small samples, tests may fail to detect important problems.</li>
-<li>With large samples, tests may detect minor, inconsequential deviations.</li>
-<li>A p-value does not show the form or severity of a violation.</li>
-</ul>
+<p>Formal tests of model conditions exist, their performance can depend on sample size and do not indicate the severity of a condition violation.</p>
 <p>We will use diagnostic plots together with knowledge of how the data were collected.</p>
 <ul>
 <li>Visual assessment involves judgment.</li>
 <li>We should show our diagnostic plots and explain the evidence behind our decisions.</li>
 </ul>
 </section>
-<section id="visual-checks" class="slide level2">
-<h2>Visual checks</h2>
-<p>The <code>autoplot()</code> function from the <code>ggfortify</code> R package can produce the plots we want for assessing model fit. Recall residuals: <span class="math inline">\(e_i = y_i - \hat{y}_i\)</span></p>
-<table class="caption-top">
-<thead>
-<tr class="header">
-<th style="text-align: left;">Plot</th>
-<th style="text-align: left;">Primary purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Residuals vs.&nbsp;fitted</td>
-<td style="text-align: left;">Nonlinearity and nonconstant variance</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Normal Q-Q</td>
-<td style="text-align: left;">Distribution of errors</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Scale-location</td>
-<td style="text-align: left;">Nonconstant variance</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Residuals vs.&nbsp;leverage</td>
-<td style="text-align: left;">Potentially influential observations</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="assessing-conditions-for-our-model" class="slide level2">
-<h2>Assessing conditions for our model</h2>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="lec-06a-conditions-for-inference-with-slr_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
 <section id="diagnosing-linearity" class="slide level2">
 <h2>Diagnosing linearity</h2>
+<p>Examine plot of residuals vs fitted:</p>
 <ul>
-<li>Examine plot of residuals vs fitted</li>
-<li>The residuals should be scattered around zero without systematic curvature or another discernible pattern.</li>
+<li>Residuals should be scattered around zero without a discernible pattern.</li>
 </ul>
-<div class="pull-left">
-<p><strong>Linear</strong></p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure>
 <p><img data-src="lec-06a-conditions-for-inference-with-slr_files/figure-revealjs/unnamed-chunk-5-1.png" width="960"></p>
 </figure>
-</div>
-</div>
-</div>
-</div>
-<div class="pull-right">
-<p><strong>Non-linear</strong></p>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="lec-06a-conditions-for-inference-with-slr_files/figure-revealjs/unnamed-chunk-6-1.png" width="960"></p>
-</figure>
-</div>
 </div>
 </div>
 </div>
@@ -352,31 +355,16 @@ CSUCI - Dr.&nbsp;Catalina Medina
 </section>
 <section id="diagnosing-homoskedasticity" class="slide level2">
 <h2>Diagnosing homoskedasticity</h2>
+<p>Examine plot of residuals vs fitted:</p>
 <ul>
-<li>Examine plot of residuals vs fitted and check there is not a “funnel-shape”</li>
-<li>Specifically, for each fitted value does the spread of the residuals look similar?</li>
+<li>The spread of the residuals should be roughly constant (no fanning or funnel shape)</li>
 </ul>
-<div class="pull-left">
-<p><strong>Constant variance</strong></p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure>
 <p><img data-src="lec-06a-conditions-for-inference-with-slr_files/figure-revealjs/unnamed-chunk-7-1.png" width="960"></p>
 </figure>
-</div>
-</div>
-</div>
-</div>
-<div class="pull-right">
-<p><strong>Non-constant variance</strong></p>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="lec-06a-conditions-for-inference-with-slr_files/figure-revealjs/unnamed-chunk-8-1.png" width="960"></p>
-</figure>
-</div>
 </div>
 </div>
 </div>
@@ -397,31 +385,21 @@ CSUCI - Dr.&nbsp;Catalina Medina
 </section>
 <section id="diagnosing-normality" class="slide level2">
 <h2>Diagnosing normality</h2>
+<p>Examine a Q-Q plot or histogram of standardized residuals (<span class="math inline">\(r_i\)</span>)</p>
+<p><span class="math display">\[r_i = \frac{e_i - 0}{\text{estimated SD of }e_i}\]</span></p>
 <ul>
-<li>Assess visually with Q-Q plot</li>
-<li>Outliers (point with extreme residual) can result in violation of normality</li>
+<li>The standardized residuals should <em>roughly</em> follow the reference line, without systematic curvature or substantial departures</li>
+<li>Most <span class="math inline">\(r_i\)</span> values should be near zero with only a small proportion <span class="math inline">\(|r_i| &gt; 3\)</span>.</li>
 </ul>
-<div class="pull-left">
-<p><strong>Normal residuals</strong></p>
+</section>
+<section id="diagnosing-normality-1" class="slide level2">
+<h2>Diagnosing normality</h2>
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure>
 <p><img data-src="lec-06a-conditions-for-inference-with-slr_files/figure-revealjs/unnamed-chunk-9-1.png" width="960"></p>
 </figure>
-</div>
-</div>
-</div>
-</div>
-<div class="pull-right">
-<p><strong>Non-normal residuals</strong></p>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="lec-06a-conditions-for-inference-with-slr_files/figure-revealjs/unnamed-chunk-10-1.png" width="960"></p>
-</figure>
-</div>
 </div>
 </div>
 </div>
@@ -438,17 +416,63 @@ CSUCI - Dr.&nbsp;Catalina Medina
 <li>Consider a scientifically meaningful transformation of <span class="math inline">\(Y\)</span>.</li>
 </ul>
 </section>
-<section id="unusual-and-influential-observations" class="slide level2">
-<h2>Unusual and influential observations</h2>
-<p>The four conditions describe the behavior of the errors across the population. Influence instead asks whether our fitted results depend too heavily on one or a few observations.</p>
-<ul>
-<li>An <strong>outlier</strong> has an unusually large residual.</li>
-<li>A <strong>high-leverage observation</strong> has an unusual value of <span class="math inline">\(X\)</span>.</li>
-<li>An <strong>influential observation</strong> substantially changes the fitted model when included or removed.</li>
-</ul>
-<p>An observation can have high leverage without being influential, and an outlier does not necessarily have high leverage.</p>
+<section id="visual-checks-in-practice" class="slide level2">
+<h2>Visual checks in practice</h2>
+<p>The <code>autoplot()</code> function from the <code>ggfortify</code> R package can produce the plots we want for assessing model fit. Recall residuals: <span class="math inline">\(e_i = y_i - \hat{y}_i\)</span></p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Plot</th>
+<th style="text-align: left;">Primary purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Residuals vs.&nbsp;fitted</td>
+<td style="text-align: left;">Nonlinearity and nonconstant variance</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Normal Q-Q</td>
+<td style="text-align: left;">Distribution of errors</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Scale-location</td>
+<td style="text-align: left;">Nonconstant variance</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Residuals vs.&nbsp;leverage</td>
+<td style="text-align: left;">Potentially influential observations</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="assessing-conditions-for-our-model" class="slide level2">
+<h2>Assessing conditions for our model</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="" aria-label="1"></a>model_elephant <span class="ot">&lt;-</span> <span class="fu">lm</span>(mass <span class="sc">~</span> height, <span class="at">data =</span> elephants)</span>
+<span id="cb1-2"><a href="" aria-label="2"></a></span>
+<span id="cb1-3"><a href="" aria-label="3"></a><span class="fu">library</span>(ggfortify)</span>
+<span id="cb1-4"><a href="" aria-label="4"></a></span>
+<span id="cb1-5"><a href="" aria-label="5"></a><span class="fu">autoplot</span>(model_elephant)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 
-</section></section>
+<!-- ## Unusual and influential observations -->
+<!-- The four conditions describe the behavior of the errors across the population. Influence instead asks whether our fitted results depend too heavily on one or a few observations. -->
+<!-- - An **outlier** has an unusually large residual. -->
+<!-- - A **high-leverage observation** has an unusual value of $X$. -->
+<!-- - An **influential observation** substantially changes the fitted -->
+<!--   model when included or removed. -->
+<!-- An observation can have high leverage without being influential, and an outlier does not necessarily have high leverage. -->
+
+</section><section id="assessing-conditions-for-our-model-output" class="slide level2 output-location-slide"><h2>Assessing conditions for our model</h2><div class="cell output-location-slide" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lec-06a-conditions-for-inference-with-slr_files/figure-revealjs/unnamed-chunk-10-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+</div></section></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">

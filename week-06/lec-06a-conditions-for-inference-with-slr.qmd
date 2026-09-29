@@ -98,137 +98,85 @@ $$Y_i = \beta_0 + \beta_1 X_i + \epsilon_i$$
 2. Homoskedasticity: Constant variance of $\epsilon_i$ ($Var(\epsilon_i|X_i) = \sigma^2)$.
 4. Normality: Normally distributed $\epsilon_i|X_i$.
 
-:::{.callout-note}
-These are conditions on the population errors, which we cannot observe. We use the sample residuals to look for evidence that the conditions may be unreasonable.
-:::
+
 
 # Checking model conditions
 
+:::{.callout-note}
+Our four conditions are conditions on the population errors, which we cannot observe. We use the **sample residuals** to look for evidence that the conditions are / are not satisfied.
+:::
+
 ## Visual checks versus statistical tests
 
-Formal tests of model conditions exist, but they do not replace
-diagnostic plots.
+Formal tests of model conditions exist, their performance can depend on sample size and do not indicate the severity of a condition violation.
 
-- With small samples, tests may fail to detect important problems.
-- With large samples, tests may detect minor, inconsequential deviations.
-- A p-value does not show the form or severity of a violation.
-
-We will use diagnostic plots together with knowledge of how the
-data were collected.
+We will use diagnostic plots together with knowledge of how the data were collected.
 
 - Visual assessment involves judgment.
-- We should show our diagnostic plots and explain the evidence
-  behind our decisions.
-
-## Visual checks
-
-The `autoplot()` function from the `ggfortify` R package can produce the plots we want for assessing model fit.
-Recall residuals: $e_i = y_i - \hat{y}_i$
-
-
-| Plot | Primary purpose |
-|:--------|:------------------------|
-| Residuals vs. fitted | Nonlinearity and nonconstant variance |
-| Normal Q-Q | Distribution of errors |
-| Scale-location | Nonconstant variance |
-| Residuals vs. leverage | Potentially influential observations |
-
-## Assessing conditions for our model
-
-```{r}
-#| fig-align: center
-#| output-location: slide
-model_elephant <- lm(mass ~ height, data = elephants)
-
-library(ggfortify)
-
-autoplot(model_elephant)
-```
+- We should show our diagnostic plots and explain the evidence behind our decisions.
 
 
 ## Diagnosing linearity
 
-- Examine plot of residuals vs fitted
-- The residuals should be scattered around zero without systematic curvature or another discernible pattern.
+Examine plot of residuals vs fitted:
 
-:::{.pull-left}
+- Residuals should be scattered around zero without a discernible pattern.
 
-**Linear**
+```{r}
+set.seed(20250929)
+
+num_samples <- 75
+
+sim_data_linearity_good <- data.frame(x = seq(-2, 2, by = 0.01)) |> 
+    mutate(
+      y = 5 + 4*x + rnorm(length(x), 0 , 1.5),
+      fit = "Linear"
+    ) |> 
+    sample_n(num_samples)
+
+sim_data_linearity_bad <- data.frame(x = seq(-2, 2, by = 0.01)) |> 
+    mutate(
+      y = 5 + x + 3*x^2 + rnorm(length(x), 0 , 2),
+      fit = "Nonlinear"
+    ) |> 
+    sample_n(num_samples)
+
+
+model_linearity_good <- lm(y ~ x, data = sim_data_linearity_good)
+model_linearity_bad <- lm(y ~ x, data = sim_data_linearity_bad)
+
+sim_data_linearity <- bind_rows(
+  sim_data_linearity_good |>
+    modelr::add_predictions(model_linearity_good) |> 
+    modelr::add_residuals(model_linearity_good),
+  sim_data_linearity_bad |>
+    modelr::add_predictions(model_linearity_bad) |> 
+    modelr::add_residuals(model_linearity_bad)
+)
+
+```
+
+
 ```{r  echo = FALSE, message = FALSE}
-set.seed(84735)
-x <- seq(-2, 2, by = 0.01)
-y <- 4*x + 5 + rnorm(length(x), 0 , 1.5)
-
-data_good <- data.frame(x = x, y = y) |>   
-  sample_n(50)
-model_good <- lm(y ~ x, data = data_good)
-
-diagnostics_good <- data_good |>
-  mutate(
-    fitted = fitted(model_good),
-    residual = resid(model_good)
-  )
-
-ggplot(diagnostics_good, aes(x = fitted, y = residual)) +
-  geom_hline(
-    yintercept = 0,
-    color = "gray50",
-    linetype = "dashed"
-  ) +
+ggplot(sim_data_linearity, aes(x = pred, y = resid)) +
   geom_point() +
   geom_smooth(
     method = "loess",
     formula = y ~ x,
     se = FALSE,
-    color = "#D55E00"
+    color = "blue"
   ) +
-  labs(
-    x = "Fitted value",
-    y = "Residual"
-  )
-```
-
-:::
-
-:::{.pull-right}
-
-**Non-linear**
-
-```{r  echo = FALSE, message = FALSE}
-set.seed(84735)
-x <- seq(-2, 2, by = 0.01)
-y <- 3*x^2 + x + 5 + rnorm(length(x), 0 , 2)
-
-data_bad <- data.frame(x = x, y = y) |> sample_n(50)
-
-model_bad <- lm(y ~ x, data = data_bad)
-
-diagnostics_bad <- data_bad |>
-  mutate(
-    fitted = fitted(model_bad),
-    residual = resid(model_bad)
-  )
-
-ggplot(diagnostics_bad, aes(x = fitted, y = residual)) +
   geom_hline(
     yintercept = 0,
     color = "gray50",
     linetype = "dashed"
   ) +
-  geom_point() +
-  geom_smooth(
-    method = "loess",
-    formula = y ~ x,
-    se = FALSE,
-    color = "#D55E00"
-  ) +
+  facet_grid(cols = vars(fit), scales = "free_x") +
   labs(
     x = "Fitted value",
     y = "Residual"
   )
 ```
-
-:::
 
 ## When linearity is violated
 
@@ -261,56 +209,62 @@ Remedy:
 
 ## Diagnosing homoskedasticity
 
-- Examine plot of residuals vs fitted and check there is not a "funnel-shape"
-- Specifically, for each fitted value does the spread of the residuals look similar?
+Examine plot of residuals vs fitted:
 
-:::{.pull-left}
+- The spread of the residuals should be roughly constant (no fanning or funnel shape)
 
-**Constant variance**
+```{r}
+sim_data_variance_good <- data.frame(x = seq(-2, 2, by = 0.01)) |> 
+    mutate(
+      y = 5 + 2 * x + rnorm(length(x), 0 , 1.5),
+      fit = "Constant variance"
+    ) |> 
+    sample_n(num_samples)
 
-```{r echo = FALSE, message = FALSE}
-model_good <- lm(y ~ x, data = data_good)
+sim_data_variance_bad <- data.frame(x = seq(-2, 2, by = 0.01)) |> 
+    mutate(
+      y = 5 + 2 * x + rnorm(length(x), mean = 0, sd = abs(x) / 0.5),
+      fit = "Nonconstant variance"
+    ) |> 
+    sample_n(num_samples)
 
-data_good <- 
-  data_good |>
-  sample_n(50) |> 
-  modelr::add_residuals(model_good) 
 
-data_good |> 
-  ggplot(aes(x = x, y = resid)) +
-  geom_point() +
-  geom_hline(yintercept = 0)
+model_variance_good <- lm(y ~ x, data = sim_data_variance_good)
+model_variance_bad <- lm(y ~ x, data = sim_data_variance_bad)
+
+sim_data_variance <- bind_rows(
+  sim_data_variance_good |>
+    modelr::add_predictions(model_variance_good) |> 
+    modelr::add_residuals(model_variance_good),
+  sim_data_variance_bad |>
+    modelr::add_predictions(model_variance_bad) |> 
+    modelr::add_residuals(model_variance_bad)
+)
 
 ```
 
-:::
 
-:::{.pull-right}
-
-**Non-constant variance**
-
-
-```{r echo = FALSE, message = FALSE}
-bad_data <- data.frame(
-  x = seq(0, 10, length.out = 100)
-) |> 
-  mutate(y_perfect = 2 * x + 5) |> 
-  mutate(residuals = rnorm(100, mean = 0, sd = abs(x) / 2)) |> 
-  mutate(y = y_perfect + residuals)
-
-model_bad <- lm(y ~ x, data = bad_data)
-
-bad_data <- 
-  bad_data |> 
-  modelr::add_residuals(model_bad) 
-
-bad_data |> 
-  ggplot(aes(x = x, y = resid)) +
+```{r  echo = FALSE, message = FALSE}
+ggplot(sim_data_variance, aes(x = pred, y = resid)) +
   geom_point() +
-  geom_hline(yintercept = 0)
+  geom_smooth(
+    method = "loess",
+    formula = y ~ x,
+    se = FALSE,
+    color = "blue"
+  ) +
+  geom_hline(
+    yintercept = 0,
+    color = "gray50",
+    linetype = "dashed"
+  ) +
+  facet_grid(cols = vars(fit), scales = "free_x") +
+  labs(
+    x = "Fitted value",
+    y = "Residual"
+  )
 ```
 
-:::
 
 ## When homoskedasticity is violated
 
@@ -326,53 +280,42 @@ Remedies:
 - Consider a scientifically meaningful transformation of $Y$.
 - Use weighted least squares if the variance pattern can be modeled.
 
+## Diagnosing normality: standardized residuals
+
+Examine a Q-Q plot or histogram of standardized residuals ($r_i$)
+
+$$r_i = \frac{e_i - 0}{\text{estimated SD of }e_i}$$
+
+- The standardized residuals should *roughly* follow the reference line, without systematic curvature or substantial departures
+- Most $r_i$ values should be near zero with only a small proportion $|r_i| > 3$.
+
 ## Diagnosing normality
 
-- Assess visually with Q-Q plot
-- Outliers (point with extreme residual) can result in violation of normality
+```{r}
+sim_data_norm_good <- data.frame(
+  resid = rnorm(100, mean = 0, sd = 1.5),
+  fit = "Normal"
+)
+sim_data_norm_bad <- data.frame(
+  resid = rexp(100) - 1,
+  fit = "Nonnormal"
+)
 
-:::{.pull-left}
-
-**Normal residuals**
-
-
-```{r echo = FALSE, message = FALSE}
-normal_data <- data.frame(resid = rnorm(100))
-
-ggplot(normal_data, aes(sample = resid)) + 
-  stat_qq() + 
-  stat_qq_line()
+sim_data_norm <- bind_rows(sim_data_norm_good, sim_data_norm_bad) |> 
+  mutate(fit = factor(fit, levels = c("Normal", "Nonnormal")))
 ```
 
-:::
 
-:::{.pull-right}
-
-
-**Non-normal residuals**
-
-```{r echo = FALSE, message = FALSE}
-bad_data <- data.frame(
-  x = seq(0, 10, length.out = 100)
-) |> 
-  mutate(y_perfect = 2 * x + 5) |> 
-  mutate(residuals = rgamma(100, shape = 2, rate = 3)) |> 
-  mutate(y = y_perfect + residuals)
-
-model_bad <- lm(y ~ x, data = bad_data)
-
-bad_data <- 
-  bad_data |> 
-  modelr::add_residuals(model_bad) 
-
-ggplot(bad_data, aes(sample = resid)) + 
+```{r }
+ggplot(sim_data_norm, aes(sample = resid)) + 
   stat_qq() + 
-  stat_qq_line()
+  stat_qq_line(color = "blue") +
+  facet_grid(cols = vars(fit)) +
+  labs(
+    x = "Theoretical quantiles",
+    y = "Residual"
+  )
 ```
-
-:::
-
-
 
 ## When normality is violated
 
@@ -385,14 +328,39 @@ Remedies:
 
 - Consider a scientifically meaningful transformation of $Y$.
 
+## Visual checks in practice
 
-## Unusual and influential observations
+The `autoplot()` function from the `ggfortify` R package can produce the plots we want for assessing model fit.
+Recall residuals: $e_i = y_i - \hat{y}_i$
 
-The four conditions describe the behavior of the errors across the population. Influence instead asks whether our fitted results depend too heavily on one or a few observations.
 
-- An **outlier** has an unusually large residual.
-- A **high-leverage observation** has an unusual value of $X$.
-- An **influential observation** substantially changes the fitted
-  model when included or removed.
+| Plot | Primary purpose |
+|:--------|:------------------------|
+| Residuals vs. fitted | Nonlinearity and nonconstant variance |
+| Normal Q-Q | Distribution of errors |
+| Scale-location | Nonconstant variance |
+| Residuals vs. leverage | Potentially influential observations |
 
-An observation can have high leverage without being influential, and an outlier does not necessarily have high leverage.
+## Assessing conditions for our model
+
+```{r}
+#| fig-align: center
+#| output-location: slide
+#| echo: true
+model_elephant <- lm(mass ~ height, data = elephants)
+
+library(ggfortify)
+
+autoplot(model_elephant)
+```
+
+<!-- ## Unusual and influential observations -->
+
+<!-- The four conditions describe the behavior of the errors across the population. Influence instead asks whether our fitted results depend too heavily on one or a few observations. -->
+
+<!-- - An **outlier** has an unusually large residual. -->
+<!-- - A **high-leverage observation** has an unusual value of $X$. -->
+<!-- - An **influential observation** substantially changes the fitted -->
+<!--   model when included or removed. -->
+
+<!-- An observation can have high leverage without being influential, and an outlier does not necessarily have high leverage. -->

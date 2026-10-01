@@ -337,7 +337,6 @@ CSUCI - Dr.&nbsp;Catalina Medina
 <ul>
 <li>Independence generally cannot be established from the standard residual plots.</li>
 <li>Consider how the data were collected (random sample? no repeat sampling?) and on whom the data were collected (would you expect independence?)</li>
-<li>Dependence could be revealed by plotting residuals versus unmodeled variables (time, class, etc)</li>
 </ul>
 </section>
 <section id="when-independence-is-violated" class="slide level2">
@@ -345,7 +344,7 @@ CSUCI - Dr.&nbsp;Catalina Medina
 <p>Implications:</p>
 <ul>
 <li>Does not inherently bias our estimators <span class="math inline">\(\hat{\beta}_0\)</span> and <span class="math inline">\(\hat{\beta}_1\)</span></li>
-<li>Our standard errors are likely incorrect (typically underestimate)</li>
+<li>Our estimates of <span class="math inline">\(SE(\hat{\beta}_p)\)</span> is unsupported (typically underestimate) (<span class="math inline">\(p=0,1\)</span>)</li>
 <li>Increased type one error rates (false positive)</li>
 </ul>
 <p>Remedy:</p>
@@ -374,7 +373,7 @@ CSUCI - Dr.&nbsp;Catalina Medina
 <p>Implications:</p>
 <ul>
 <li>Does not inherently bias our estimators <span class="math inline">\(\hat{\beta}_0\)</span> and <span class="math inline">\(\hat{\beta}_1\)</span></li>
-<li>Our standard errors are likely incorrect</li>
+<li>Our estimates of <span class="math inline">\(SE(\hat{\beta}_p)\)</span> are unsupported (<span class="math inline">\(p=0, 1\)</span>)</li>
 </ul>
 <p>Remedies:</p>
 <ul>
@@ -383,16 +382,12 @@ CSUCI - Dr.&nbsp;Catalina Medina
 <li>Use weighted least squares if the variance pattern can be modeled.</li>
 </ul>
 </section>
-<section id="diagnosing-normality" class="slide level2">
-<h2>Diagnosing normality</h2>
+<section id="diagnosing-normality-standardized-residuals" class="slide level2">
+<h2>Diagnosing normality: standardized residuals</h2>
 <p>Examine a Q-Q plot or histogram of standardized residuals (<span class="math inline">\(r_i\)</span>)</p>
-<p><span class="math display">\[r_i = \frac{e_i - 0}{\text{estimated SD of }e_i}\]</span></p>
-<ul>
-<li>The standardized residuals should <em>roughly</em> follow the reference line, without systematic curvature or substantial departures</li>
-<li>Most <span class="math inline">\(r_i\)</span> values should be near zero with only a small proportion <span class="math inline">\(|r_i| &gt; 3\)</span>.</li>
-</ul>
+<p><span class="math display">\[r_i = \frac{e_i - 0}{\text{estimated SD of }e_i}\]</span> - Standardizing (subtract mean &amp; divide by sd) tells you magnitude of a difference - The standardized residuals should <em>roughly</em> follow the reference line, without systematic curvature or substantial departures - Most <span class="math inline">\(r_i\)</span> values should be near zero with only a small proportion <span class="math inline">\(|r_i| &gt; 3\)</span>.</p>
 </section>
-<section id="diagnosing-normality-1" class="slide level2">
+<section id="diagnosing-normality" class="slide level2">
 <h2>Diagnosing normality</h2>
 <div class="cell">
 <div class="cell-output-display">
@@ -408,17 +403,21 @@ CSUCI - Dr.&nbsp;Catalina Medina
 <h2>When normality is violated</h2>
 <p>Implications:</p>
 <ul>
-<li>With no outliers and a large enough sample the sampling distribution of the coefficient estimator becomes approximately normal</li>
-<li>Can have biased predictions for <span class="math inline">\(Y\)</span></li>
+<li>With a large sample the sampling distributions of <span class="math inline">\(\hat{\beta}_p\)</span> (<span class="math inline">\(p=0,1\)</span>) are approximately normally distributed
+<ul>
+<li>Prediction intervals may have incorrect coverage because their calculation relies on the assumed error distribution</li>
+</ul></li>
+<li>With a small sample, our estimates of <span class="math inline">\(SE(\hat{\beta}_p)\)</span> are unsupported</li>
 </ul>
 <p>Remedies:</p>
 <ul>
-<li>Consider a scientifically meaningful transformation of <span class="math inline">\(Y\)</span>.</li>
+<li>Consider a meaningful transformation of <span class="math inline">\(Y\)</span></li>
+<li>Consider bootstrap confidence intervals</li>
 </ul>
 </section>
 <section id="visual-checks-in-practice" class="slide level2">
 <h2>Visual checks in practice</h2>
-<p>The <code>autoplot()</code> function from the <code>ggfortify</code> R package can produce the plots we want for assessing model fit. Recall residuals: <span class="math inline">\(e_i = y_i - \hat{y}_i\)</span></p>
+<p>The <code>autoplot()</code> function from the <code>ggfortify</code> R package can produce the plots we want for assessing model fit.</p>
 <table class="caption-top">
 <thead>
 <tr class="header">
@@ -456,23 +455,99 @@ CSUCI - Dr.&nbsp;Catalina Medina
 <span id="cb1-5"><a href="" aria-label="5"></a><span class="fu">autoplot</span>(model_elephant)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 
-<!-- ## Unusual and influential observations -->
-<!-- The four conditions describe the behavior of the errors across the population. Influence instead asks whether our fitted results depend too heavily on one or a few observations. -->
-<!-- - An **outlier** has an unusually large residual. -->
-<!-- - A **high-leverage observation** has an unusual value of $X$. -->
-<!-- - An **influential observation** substantially changes the fitted -->
-<!--   model when included or removed. -->
-<!-- An observation can have high leverage without being influential, and an outlier does not necessarily have high leverage. -->
-
 </section><section id="assessing-conditions-for-our-model-output" class="slide level2 output-location-slide"><h2>Assessing conditions for our model</h2><div class="cell output-location-slide" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="lec-06a-conditions-for-inference-with-slr_files/figure-revealjs/unnamed-chunk-10-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+<p><img data-src="lec-06a-conditions-for-inference-with-slr_files/figure-revealjs/unnamed-chunk-10-1.png" class="quarto-figure quarto-figure-center" style="width:100.0%;height:100.0%"></p>
 </figure>
 </div>
 </div>
 </div></section></section>
+<section id="conditions-vs-model-fitting-issues" class="title-slide slide level1 center">
+<h1>Conditions vs model fitting issues</h1>
+<p>The two lists differ because they answer different questions:</p>
+<ul>
+<li>Model conditions describe the population data-generating process under which particular regression procedures have their advertised properties (e.g., bias and standard errors).</li>
+<li>Extreme observations are features of an observed dataset that can make the fitted model inaccurate, unstable, or difficult to interpret.</li>
+</ul>
+</section>
+
+<section>
+<section id="extreme-observations" class="title-slide slide level1 center">
+<h1>Extreme observations</h1>
+<blockquote>
+<p>How dependent is the fitted model (and therefore conclusions) on the particular observations in our sample?</p>
+</blockquote>
+<p>Extreme observations can have large residuals and/or unusual x-values</p>
+</section>
+<section id="identifying-influential-points" class="slide level2">
+<h2>Identifying influential points</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lec-06a-conditions-for-inference-with-slr_files/figure-revealjs/unnamed-chunk-11-1.png" class="quarto-figure quarto-figure-center" style="width:100.0%;height:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="extreme-observations-in-the-diagnostic-plot" class="slide level2">
+<h2>Extreme observations in the diagnostic plot</h2>
+<p><strong>What about in higher dimensions?</strong> The residuals-versus-leverage plot helps us identify observations that may strongly influence the fitted model.</p>
+<ul>
+<li>Large leverage indicates high potential to pull the line.</li>
+<li>Large standardized residuals indicate large errors.</li>
+<li>Look into these extreme observations: Does the fitted model appear sensitive to this observation?</li>
+</ul>
+</section>
+<section id="section-2" class="slide level2">
+<h2></h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lec-06a-conditions-for-inference-with-slr_files/figure-revealjs/unnamed-chunk-12-1.png" class="quarto-figure quarto-figure-center" style="width:100.0%;height:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="a-workflow-for-assessing-your-model" class="slide level2">
+<h2>A workflow for assessing your model</h2>
+<p>Before examining diagnostic plots:</p>
+<ol type="1">
+<li>Use the study design to assess whether observations are independent. (<strong>independence check</strong>)</li>
+</ol>
+<p>After fitting the model:</p>
+<ol start="2" type="1">
+<li>Examine residuals versus fitted values plot:
+<ul>
+<li>Is there systematic curvature? (<strong>linearity check</strong>)</li>
+<li>Does the residual spread change? (<strong>constant variance check</strong>)</li>
+</ul></li>
+</ol>
+</section>
+<section id="a-workflow-for-assessing-your-model-1" class="slide level2">
+<h2>A workflow for assessing your model</h2>
+<ol start="3" type="1">
+<li>Examine the normal Q-Q plot:
+<ul>
+<li>Are there strong departures from normality? (<strong>normality check</strong>)</li>
+</ul></li>
+<li>Examine residuals versus leverage:
+<ul>
+<li>Might one or a few observations strongly affect the results? (<strong>model sensitivity</strong>)</li>
+</ul></li>
+</ol>
+</section>
+<section id="if-you-identify-a-concern" class="slide level2">
+<h2>If you identify a concern</h2>
+<p>Investigate its cause, consider an appropriate remedy, and report how it affects your conclusions.</p>
+<p><strong>Do not</strong> automatically remove observations or reject a model because a diagnostic plot is imperfect.</p>
+
+</section></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">

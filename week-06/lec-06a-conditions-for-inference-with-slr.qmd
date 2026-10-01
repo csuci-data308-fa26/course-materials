@@ -17,6 +17,7 @@ echo: false
 
 library(tidyverse)
 library(broom)
+library(patchwork)
 
 theme_set(theme_bw(base_size = 24))
 
@@ -130,14 +131,14 @@ num_samples <- 75
 sim_data_linearity_good <- data.frame(x = seq(-2, 2, by = 0.01)) |> 
     mutate(
       y = 5 + 4*x + rnorm(length(x), 0 , 1.5),
-      fit = "Linear"
+      fit = "Good"
     ) |> 
     sample_n(num_samples)
 
 sim_data_linearity_bad <- data.frame(x = seq(-2, 2, by = 0.01)) |> 
     mutate(
       y = 5 + x + 3*x^2 + rnorm(length(x), 0 , 2),
-      fit = "Nonlinear"
+      fit = "Concerning"
     ) |> 
     sample_n(num_samples)
 
@@ -193,14 +194,13 @@ Remedy:
 
 - Independence generally cannot be established from the standard residual plots.
 - Consider how the data were collected (random sample? no repeat sampling?) and on whom the data were collected (would you expect independence?)
-- Dependence could be revealed by plotting residuals versus unmodeled variables (time, class, etc)
 
 ## When independence is violated
 
 Implications:
 
 - Does not inherently bias our estimators $\hat{\beta}_0$ and $\hat{\beta}_1$
-- Our standard errors are likely incorrect (typically underestimate)
+- Our estimates of $SE(\hat{\beta}_p)$ is unsupported (typically underestimate) ($p=0,1$)
 - Increased type one error rates (false positive)
 
 Remedy:
@@ -217,14 +217,14 @@ Examine plot of residuals vs fitted:
 sim_data_variance_good <- data.frame(x = seq(-2, 2, by = 0.01)) |> 
     mutate(
       y = 5 + 2 * x + rnorm(length(x), 0 , 1.5),
-      fit = "Constant variance"
+      fit = "Good"
     ) |> 
     sample_n(num_samples)
 
 sim_data_variance_bad <- data.frame(x = seq(-2, 2, by = 0.01)) |> 
     mutate(
       y = 5 + 2 * x + rnorm(length(x), mean = 0, sd = abs(x) / 0.5),
-      fit = "Nonconstant variance"
+      fit = "Concerning"
     ) |> 
     sample_n(num_samples)
 
@@ -271,7 +271,7 @@ ggplot(sim_data_variance, aes(x = pred, y = resid)) +
 Implications:
 
 - Does not inherently bias our estimators $\hat{\beta}_0$ and $\hat{\beta}_1$
-- Our standard errors are likely incorrect
+- Our estimates of $SE(\hat{\beta}_p)$ are unsupported ($p=0, 1$)
 
 Remedies:
 
@@ -285,24 +285,40 @@ Remedies:
 Examine a Q-Q plot or histogram of standardized residuals ($r_i$)
 
 $$r_i = \frac{e_i - 0}{\text{estimated SD of }e_i}$$
-
+- Standardizing (subtract mean & divide by sd) tells you magnitude of a difference
 - The standardized residuals should *roughly* follow the reference line, without systematic curvature or substantial departures
 - Most $r_i$ values should be near zero with only a small proportion $|r_i| > 3$.
 
 ## Diagnosing normality
 
 ```{r}
-sim_data_norm_good <- data.frame(
-  resid = rnorm(100, mean = 0, sd = 1.5),
-  fit = "Normal"
-)
-sim_data_norm_bad <- data.frame(
-  resid = rexp(100) - 1,
-  fit = "Nonnormal"
-)
+sim_data_norm_good <- data.frame(x = seq(-2, 2, by = 0.01)) |> 
+    mutate(
+      y = 5 + 2 * x + rnorm(length(x), mean = 0, sd = 1.5),
+      fit = "Good"
+    ) |> 
+    sample_n(num_samples)
 
-sim_data_norm <- bind_rows(sim_data_norm_good, sim_data_norm_bad) |> 
-  mutate(fit = factor(fit, levels = c("Normal", "Nonnormal")))
+sim_data_norm_bad <- data.frame(x = seq(-2, 2, by = 0.01)) |> 
+    mutate(
+      y = 5 + 2 * x + rexp(length(x)) - 1,
+      fit = "Concerning"
+    ) |> 
+    sample_n(num_samples)
+
+
+model_norm_good <- lm(y ~ x, data = sim_data_norm_good)
+model_norm_bad <- lm(y ~ x, data = sim_data_norm_bad)
+
+sim_data_norm <- bind_rows(
+  sim_data_norm_good |>
+    modelr::add_predictions(model_norm_good) |> 
+    modelr::add_residuals(model_norm_good),
+  sim_data_norm_bad |>
+    modelr::add_predictions(model_norm_bad) |> 
+    modelr::add_residuals(model_norm_bad)
+) |> 
+  mutate(fit = factor(fit, levels = c("Good", "Concerning")))
 ```
 
 
@@ -321,18 +337,18 @@ ggplot(sim_data_norm, aes(sample = resid)) +
 
 Implications:
 
-- With no outliers and a large enough sample the sampling distribution of the coefficient estimator becomes approximately normal
-- Can have biased predictions for $Y$
+- With a large sample the sampling distributions of $\hat{\beta}_p$ ($p=0,1$) are approximately normally distributed
+  - Prediction intervals may have incorrect coverage because their calculation relies on the assumed error distribution
+- With a small sample, our estimates of $SE(\hat{\beta}_p)$ are unsupported
 
 Remedies:
 
-- Consider a scientifically meaningful transformation of $Y$.
+- Consider a meaningful transformation of $Y$
+- Consider bootstrap confidence intervals
 
 ## Visual checks in practice
 
 The `autoplot()` function from the `ggfortify` R package can produce the plots we want for assessing model fit.
-Recall residuals: $e_i = y_i - \hat{y}_i$
-
 
 | Plot | Primary purpose |
 |:--------|:------------------------|
@@ -341,12 +357,18 @@ Recall residuals: $e_i = y_i - \hat{y}_i$
 | Scale-location | Nonconstant variance |
 | Residuals vs. leverage | Potentially influential observations |
 
+
+
 ## Assessing conditions for our model
 
 ```{r}
 #| fig-align: center
 #| output-location: slide
 #| echo: true
+#| out-width: 100%
+#| out-height: 100%
+#| fig-width: 14
+#| fig-height: 9
 model_elephant <- lm(mass ~ height, data = elephants)
 
 library(ggfortify)
@@ -354,13 +376,239 @@ library(ggfortify)
 autoplot(model_elephant)
 ```
 
-<!-- ## Unusual and influential observations -->
+# Conditions  vs model fitting issues
 
-<!-- The four conditions describe the behavior of the errors across the population. Influence instead asks whether our fitted results depend too heavily on one or a few observations. -->
+The two lists differ because they answer different questions:
 
-<!-- - An **outlier** has an unusually large residual. -->
-<!-- - A **high-leverage observation** has an unusual value of $X$. -->
-<!-- - An **influential observation** substantially changes the fitted -->
-<!--   model when included or removed. -->
+- Model conditions describe the population data-generating process under which particular regression procedures have their advertised properties (e.g., bias and standard errors). 
+- Extreme observations are features of an observed dataset that can make the fitted model inaccurate, unstable, or difficult to interpret.
 
-<!-- An observation can have high leverage without being influential, and an outlier does not necessarily have high leverage. -->
+# Extreme observations
+
+> How dependent is the fitted model (and therefore conclusions) on the particular observations in our sample?
+
+Extreme observations can have large residuals and/or unusual x-values
+
+## Identifying influential points
+
+```{r}
+#| out-width: 100%
+#| out-height: 100%
+#| fig-width: 14
+#| fig-height: 9
+#| fig-align: center
+set.seed(20250929)
+
+baseline_data <- tibble(
+  x = seq(0, 10, length.out = 40),
+  y = 5 + 0.75 * x + rnorm(40, sd = 1.25),
+  observation = "Original observation"
+)
+
+baseline_model <- lm(y ~ x, data = baseline_data)
+
+comparison_data <- bind_rows(
+  baseline_data |>
+    mutate(panel = "Baseline"),
+
+  # A: influential, high leverage, and an outlier
+  bind_rows(
+    baseline_data,
+    tibble(
+      x = 16,
+      y = as.numeric(
+        predict(baseline_model, newdata = tibble(x = 16)) - 12
+      ),
+      observation = "Added observation"
+    )
+  ) |>
+    mutate(panel = "A"),
+
+  # B: outlier, but neither high leverage nor very influential
+  bind_rows(
+    baseline_data,
+    tibble(
+      x = 5,
+      y = as.numeric(
+        predict(baseline_model, newdata = tibble(x = 5)) + 3.5
+      ),
+      observation = "Added observation"
+    )
+  ) |>
+    mutate(panel = "B"),
+
+  # C: high leverage, but not an outlier or influential
+  bind_rows(
+    baseline_data,
+    tibble(
+      x = 16,
+      y = as.numeric(
+        predict(baseline_model, newdata = tibble(x = 16))
+      ),
+      observation = "Added observation"
+    )
+  ) |>
+    mutate(panel = "C"),
+
+  # D: influential and high leverage, but not an outlier
+  bind_rows(
+    baseline_data,
+    tibble(
+      x = 20,
+      y = as.numeric(
+        predict(baseline_model, newdata = tibble(x = 20)) - 3
+      ),
+      observation = "Added observation"
+    )
+  ) |>
+    mutate(panel = "D"),
+
+  # E: influential and an outlier, but not high leverage
+  bind_rows(
+    baseline_data,
+    tibble(
+      x = 0,
+      y = as.numeric(
+        predict(baseline_model, newdata = tibble(x = 0)) + 15
+      ),
+      observation = "Added observation"
+    )
+  ) |>
+    mutate(panel = "E")
+) |>
+  mutate(
+    panel = factor(
+      panel,
+      levels = c("Baseline", "A", "B", "C", "D", "E")
+    )
+  )
+
+model_a <- lm(y ~ x, data = filter(comparison_data, panel == "A"))
+model_b <- lm(y ~ x, data = filter(comparison_data, panel == "B"))
+model_c <- lm(y ~ x, data = filter(comparison_data, panel == "C"))
+model_d <- lm(y ~ x, data = filter(comparison_data, panel == "D"))
+model_e <- lm(y ~ x, data = filter(comparison_data, panel == "E"))
+
+model_coeffs <- data.frame(
+  panel = c("Baseline", "A", "B", "C", "D", "E"),
+  beta0_hat = c(NA, coef(model_a)[1], coef(model_b)[1], coef(model_c)[1], coef(model_d)[1], coef(model_e)[1]),
+  beta1_hat = c(NA, coef(model_a)[2], coef(model_b)[2], coef(model_c)[2], coef(model_d)[2], coef(model_e)[2])
+) |>
+  mutate(
+    panel = factor(
+      panel,
+      levels = c("Baseline", "A", "B", "C", "D", "E")
+    )
+  )
+
+ggplot(comparison_data, aes(x = x, y = y)) +
+  # Model fitted to the baseline observations
+  geom_abline(
+    intercept = coef(baseline_model)[1],
+    slope = coef(baseline_model)[2],
+    color = "gray50",
+    linetype = "dashed",
+    linewidth = 1
+  ) +
+  # Model fitted to all observations within each panel
+  geom_abline(
+    data = model_coeffs,
+    mapping = aes(intercept = beta0_hat, slope = beta1_hat),
+    color = "blue",
+    linewidth = 1
+  ) +
+  geom_point(
+    aes(
+      color = observation,
+      shape = observation
+    ),
+    size = 2.5
+  ) +
+  facet_wrap(vars(panel), ncol = 2) +
+  scale_color_manual(
+    values = c(
+      "Original observation" = "gray40",
+      "Added observation" = "#D55E00"
+    )
+  ) +
+  scale_shape_manual(
+    values = c(
+      "Original observation" = 16,
+      "Added observation" = 17
+    )
+  ) +
+  labs(
+    x = "X",
+    y = "Y",
+    color = NULL,
+    shape = NULL
+  ) +
+  theme(
+    legend.position = "none"
+  )
+```
+
+## Extreme observations in the diagnostic plot
+
+**What about in higher dimensions?** The residuals-versus-leverage plot helps us identify observations that may strongly influence the fitted model.
+
+- Large leverage indicates high potential to pull the line.
+- Large standardized residuals indicate large errors.
+- Look into these extreme observations: Does the fitted model appear sensitive to this observation?
+
+## 
+
+```{r}
+#| out-width: 100%
+#| out-height: 100%
+#| fig-width: 14
+#| fig-height: 9
+#| fig-align: center
+plot_baseline <- autoplot(baseline_model, 5)@plots[[1]]
+plot_a <- autoplot(model_a, 5)@plots[[1]] + labs(title = "A")
+plot_b <- autoplot(model_b, 5)@plots[[1]] + labs(title = "B")
+plot_c <- autoplot(model_c, 5)@plots[[1]] + labs(title = "C")
+plot_d <- autoplot(model_d, 5)@plots[[1]] + labs(title = "D")
+plot_e <- autoplot(model_e, 5)@plots[[1]] + labs(title = "E")
+
+plot_baseline +
+  plot_a +
+  plot_b +
+  plot_c +
+  plot_d +
+  plot_e +
+  plot_layout(
+    ncol = 2,
+    axis_titles = "collect"
+  )
+```
+
+
+
+
+## A workflow for assessing your model
+
+Before examining diagnostic plots:
+
+1. Use the study design to assess whether observations are independent. (**independence check**)
+
+After fitting the model:
+
+2. Examine residuals versus fitted values plot:
+   - Is there systematic curvature? (**linearity check**)
+   - Does the residual spread change? (**constant variance check**)
+
+## A workflow for assessing your model
+
+3. Examine the normal Q-Q plot:
+   - Are there strong departures from normality? (**normality check**)
+
+4. Examine residuals versus leverage:
+   - Might one or a few observations strongly affect the results? (**model sensitivity**)
+
+## If you identify a concern
+
+Investigate its cause, consider an appropriate remedy, and report
+how it affects your conclusions.
+
+**Do not** automatically remove observations or reject a model because a diagnostic plot is imperfect.

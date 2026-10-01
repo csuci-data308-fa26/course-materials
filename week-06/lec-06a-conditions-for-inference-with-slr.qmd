@@ -1,5 +1,5 @@
 ---
-title: "Data 308: Lecture 6a"
+title: "Data 308: Lecture 6"
 subtitle: "Conditions for inference with regression (ISL 3.3.3 )"
 author: "CSUCI - Dr. Catalina Medina"
 format:
@@ -193,7 +193,7 @@ Remedy:
 ## Diagnosing Independence
 
 - Independence generally cannot be established from the standard residual plots.
-- Consider how the data were collected (random sample? no repeat sampling?) and on whom the data were collected (would you expect independence?)
+- Consider how the data were collected (simple random sample? no repeat sampling?)
 
 ## When independence is violated
 

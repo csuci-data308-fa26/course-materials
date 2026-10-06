@@ -1,5 +1,10 @@
 # Data for DATA 308 lectures, labs, and homework assignments
 
+## `CASchools.csv`
+
+The `CASchools` dataset was from the `AER` R package. I loaded it then wrote it to a csv file. The dataset contains data on test performance, school characteristics and student demographic backgrounds for school districts in California in 1999.
+
+
 ## `elephants.csv`
 
 The elephants data was obtained from the SRM textbook. Peter K. Dunn (2024). Scientific Research and Methodology: An introduction to quantitative research in science and health. <https://peterkdunn.github.io/SRM-Textbook/>

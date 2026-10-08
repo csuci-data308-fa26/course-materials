@@ -1,0 +1,67 @@
+---
+title: "DATA 308: Lab 7b" 
+subtitle: "Mutiple linear regression"
+format: 
+  pdf:
+    echo: true
+    message: false
+    warning: false
+    geometry:
+      - top=0.75in
+      - left=1in
+      - right=1in
+header-includes:
+  - \usepackage{lastpage}
+  - \usepackage{fancyhdr}
+  - \fancyfoot[C]{\thepage\ of \pageref{LastPage}}
+  - \renewcommand{\headrulewidth}{0.4pt}
+---
+
+\vspace*{-1in}
+
+Suppose we are fitting the following regression model: 
+\begin{equation*}
+  \begin{split}
+  \text{Midterm Grade}_i =& \beta_0 + \beta_1 \text{Time Spent Studying}_i\\
+  &+ \beta_2 \text{Homework Grade}_i + \beta_3 I(\text{First Time Learning Regression}_i = \text{Yes}) + \epsilon_i
+  \end{split}
+\end{equation*}
+
+For each task (numbered 1 - 5) specify the letter corresponding to the appropriate method:
+
+a. Partial F Hypothesis Test: $H_0: \beta_2 = \beta_3 = 0$ vs $H_A:$ at least one is nonzero
+
+b. Confidence interval for $\beta_1$
+
+c. Confidence interval for average outcome
+
+d. Prediction interval for a single outcome
+  
+e. Individual Hypothesis Test: $H_0: \beta_2 = 0$ vs $H_A: \beta_2 \neq 0$
+  
+f. F Hypothesis Test: $H_0: \beta_1 = \beta_2 = \beta_3 = 0$ vs $H_A:$ at least one is nonzero 
+
+g. Residual Standard Error ($RSE$)
+
+h. Individual Hypothesis Tests: $H_0: \beta_1 = 0$ vs $H_A: \beta_1 \neq 0$, $H_0: \beta_2 = 0$ vs $H_A: \beta_2 \neq 0$, and $H_0: \beta_3 = 0$ vs $H_A: \beta_3 \neq 0$
+
+\vspace*{0.5cm}
+
+\begin{enumerate}
+  \item \rule{2cm}{0.4pt} I want to assess how closely my model's predicted Midterm Grades match the observed Midterm Grades in my sample.\newline
+
+  \item \rule{2cm}{0.4pt} I want to formally decide if Homework Grade is linearly associated with Midterm Grade.\newline
+  
+  \item \rule{2cm}{0.4pt} I want to formally decide if the Homework Grade and First Time Learning Regression variables are linearly associated with Midterm Grade given Time Spent Studying is in the model.\newline
+  
+  \item \rule{2cm}{0.4pt} I want to formally decide if at least one of Homework Grade, First Time Learning Regression, and Time Spent Studying are linearly associated to Midterm Grade.\newline
+  
+  \item \rule{2cm}{0.4pt} I want to estimate the linear association between Midterm Grade and Time Spent Studying.
+  
+\end{enumerate}
+
+Identify when we may want to use each of the remaining methods:
+
+\newpage
+
+

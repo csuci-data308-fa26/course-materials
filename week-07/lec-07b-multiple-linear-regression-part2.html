@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="lec-07b-multiple-linear-regression-part2_files/libs/clipboard/clipboard.min.js"></script>
+<script src="lec-07b-multiple-linear-regression-part2_files/libs/quarto-html/tabby.min.js"></script>
+<script src="lec-07b-multiple-linear-regression-part2_files/libs/quarto-html/popper.min.js"></script>
+<script src="lec-07b-multiple-linear-regression-part2_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="lec-07b-multiple-linear-regression-part2_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="lec-07b-multiple-linear-regression-part2_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="lec-07b-multiple-linear-regression-part2_files/libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.10.18">
+
+  <meta name="author" content="CSUCI - Dr.&nbsp;Catalina Medina">
+  <title>Data 308: Lecture 7b</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="lec-07b-multiple-linear-regression-part2_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="lec-07b-multiple-linear-regression-part2_files/libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="lec-07b-multiple-linear-regression-part2_files/libs/revealjs/dist/theme/quarto-c99231f18bc440273635742d2c598c24.css">
+  <link href="lec-07b-multiple-linear-regression-part2_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="lec-07b-multiple-linear-regression-part2_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="lec-07b-multiple-linear-regression-part2_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="lec-07b-multiple-linear-regression-part2_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Data 308: Lecture 7b</h1>
+  <p class="subtitle">Multiple linear regression continued</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+CSUCI - Dr.&nbsp;Catalina Medina
+</div>
+</div>
+</div>
+
+</section>
+<section id="after-learning-multiple-linear-regression" class="title-slide slide level1 center">
+<h1>After learning multiple linear regression…</h1>
+<p>The next natural questions are:</p>
+<ol type="1">
+<li>Does that change or add any assumptions to our model?</li>
+<li>What variables should I add as <span class="math inline">\(X's\)</span> in addition to my primary explanatory variable of interest? (Lec 8a)</li>
+</ol>
+</section>
+
+<section>
+<section id="conditions" class="title-slide slide level1 center">
+<h1>1. Conditions</h1>
+<p>Multiple linear regression has 5 conditions:</p>
+<ol type="1">
+<li>Linearity (appropriate functional form)</li>
+<li>Independence of observations</li>
+<li>Constant variance of errors</li>
+<li>Normality of errors</li>
+<li><strong>No perfect collinearity</strong></li>
+</ol>
+</section>
+<section id="perfect-collinearity" class="slide level2">
+<h2>Perfect collinearity</h2>
+<p>Perfect collinearity = An <span class="math inline">\(X_j\)</span> is a perfect linear combination of another</p>
+<ul>
+<li>e.g., Using SAT Math, SAT Reading, &amp; SAT total (total = math + reading) as 3 <span class="math inline">\(X\)</span>’s</li>
+</ul>
+<p>Cannot fit model mathematically so statistical software will drop at least one <span class="math inline">\(X\)</span></p>
+</section>
+<section id="high-collinearity" class="slide level2">
+<h2>High Collinearity</h2>
+<p>High collinearity = highly correlated <span class="math inline">\(X\)</span>’s</p>
+<ul>
+<li>e.g., Suppose we wanted to include SAT Math &amp; SAT Reading as 2 <span class="math inline">\(X\)</span>’s</li>
+</ul>
+<p>Results in:</p>
+<ul>
+<li>larger standard errors of <span class="math inline">\(\hat{\beta}\)</span>’s for highly correlated <span class="math inline">\(X\)</span>’s</li>
+<li>difficulty separating the association between <span class="math inline">\(Y\)</span> and <span class="math inline">\(X_j\)</span> from <span class="math inline">\(Y\)</span> and <span class="math inline">\(X_k\)</span></li>
+<li>mathematical instability resulting in high sensitivity of results to sample</li>
+</ul>
+</section>
+<section id="high-collinearity-1" class="slide level2">
+<h2>High Collinearity</h2>
+<p>Remedy:</p>
+<ul>
+<li>Determine whether both variables are scientifically necessary</li>
+<li>Do not remove an important confounding variable solely because it is highly correlated with another predictor
+<ul>
+<li>Note: VIF is discussed in the ISL textbook, but we should not remove a variable only because it has a high VIF</li>
+</ul></li>
+</ul>
+</section></section>
+<section id="linear-regression-as-a-tool" class="title-slide slide level1 center">
+<h1>Linear regression as a tool</h1>
+<p>When we perform multiple linear regression, we usually are interested in answering a few important questions.</p>
+<ol type="1">
+<li>Is at least one of the predictors <span class="math inline">\(X_1, X_2,...,X_p\)</span> useful in predicting the response?</li>
+<li>Do all the predictors help to explain <span class="math inline">\(Y\)</span> , or is only a subset of the predictors useful?</li>
+<li>How well does the model fit the data?</li>
+<li>Given a set of predictor values, what response value should we predict, and how accurate is our prediction?</li>
+</ol>
+</section>
+
+<section>
+<section id="q1-is-there-a-linear-relationship-between-the-response-and-predictors" class="title-slide slide level1 center">
+<h1>Q1: Is There a Linear Relationship Between the Response and Predictors?</h1>
+
+</section>
+<section id="q1-with-simple-linear-regression" class="slide level2">
+<h2>Q1 with simple linear regression</h2>
+<p><span class="math display">\[Y_i = \beta_0 + \beta_1 X_i + \epsilon_i\]</span></p>
+<div class="fragment">
+<p>Hypothesis test for <span class="math inline">\(\beta_1\)</span>!</p>
+<ul>
+<li><span class="math inline">\(H_0: \beta_1 = 0\)</span> &amp; <span class="math inline">\(H_A: \beta_1 \neq 0\)</span></li>
+<li>Results for an F-test are shown when you use <code>summary()</code> or <code>tidy()</code> on your model</li>
+<li>Make your statistical decision and conclusion in context. Report confidence interval!</li>
+</ul>
+</div>
+</section>
+<section id="q1-with-multiple-linear-regression" class="slide level2">
+<h2>Q1 with multiple linear regression</h2>
+<p><span class="math display">\[Y_i = \beta_0 + \beta_1 X_{1i}  + \beta_2 X_{2i} + ... + \beta_p X_{p,i} + \epsilon_i\]</span></p>
+<div class="fragment">
+<p>Hypothesis test for all <span class="math inline">\(\beta_j\)</span>’s!</p>
+</div>
+<div class="fragment">
+<ul>
+<li><span class="math inline">\(H_0:\)</span> All <span class="math inline">\(\beta_j\)</span>’s equal 0 &amp; <span class="math inline">\(H_A\)</span>: At least one <span class="math inline">\(\beta_j\)</span> is non-zero</li>
+<li>Results for an F-test are shown when you use <code>summary()</code> or <code>glance()</code> on your model</li>
+<li>Make your statistical decision and conclusion in context. Report confidence interval!</li>
+</ul>
+</div>
+</section>
+<section id="f-test-in-practice" class="slide level2">
+<h2>F-test (in practice)</h2>
+<p>The dataset contains data on test performance, school characteristics and student demographic backgrounds for school districts in California in 1999.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="" aria-label="1"></a><span class="fu">data</span>(<span class="st">"CASchools"</span>, <span class="at">package =</span> <span class="st">"AER"</span>)</span>
+<span id="cb1-2"><a href="" aria-label="2"></a></span>
+<span id="cb1-3"><a href="" aria-label="3"></a>ca_schools <span class="ot">&lt;-</span> CASchools <span class="sc">|&gt;</span></span>
+<span id="cb1-4"><a href="" aria-label="4"></a>  <span class="fu">mutate</span>(<span class="at">student_teacher_ratio =</span> students <span class="sc">/</span> teachers) <span class="sc">|&gt;</span></span>
+<span id="cb1-5"><a href="" aria-label="5"></a>  <span class="fu">mutate</span>(<span class="at">student_computer_ratio =</span> <span class="fu">case_when</span>(</span>
+<span id="cb1-6"><a href="" aria-label="6"></a>    computer <span class="sc">!=</span> <span class="dv">0</span> <span class="sc">~</span> students <span class="sc">/</span> computer,</span>
+<span id="cb1-7"><a href="" aria-label="7"></a>    computer <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="dv">0</span></span>
+<span id="cb1-8"><a href="" aria-label="8"></a>  )) <span class="sc">|&gt;</span></span>
+<span id="cb1-9"><a href="" aria-label="9"></a>  <span class="fu">mutate</span>(<span class="at">ave_score =</span> (read <span class="sc">+</span> math) <span class="sc">/</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="california-schools-data" class="slide level2">
+<h2>California Schools data</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="lec-07b-multiple-linear-regression-part2_files/figure-revealjs/unnamed-chunk-3-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="lec-07b-multiple-linear-regression-part2_files/figure-revealjs/unnamed-chunk-4-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="lec-07b-multiple-linear-regression-part2_files/figure-revealjs/unnamed-chunk-5-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="lec-07b-multiple-linear-regression-part2_files/figure-revealjs/unnamed-chunk-6-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="california-schools-data-1" class="slide level2">
+<h2>California Schools data</h2>
+<p>We are going to regress average test score on student-to-teacher ratio, student-to-computer ratio, and percent qualifying for reduced-price lunch.</p>
+<p><span class="math display">\[\begin{equation*}
+  \begin{split}
+    &amp;\text{Score}_i = \beta_0 \\
+    &amp;+ \beta_1 \text{Student-Teacher Ratio}_i\\
+    &amp;+ \beta_2 \text{Student-Computer Ratio}_i \\
+    &amp;+ \beta_3 \text{\% Reduced Price Lunch}_i\\
+    &amp;+ \epsilon_i
+  \end{split}
+\end{equation*}\]</span></p>
+</section>
+<section id="f-test-in-practice-1" class="slide level2">
+<h2>F-test (in practice)</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="" aria-label="1"></a>score_model1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
+<span id="cb2-2"><a href="" aria-label="2"></a>  ave_score <span class="sc">~</span> student_teacher_ratio <span class="sc">+</span> student_computer_ratio <span class="sc">+</span> lunch,</span>
+<span id="cb2-3"><a href="" aria-label="3"></a>  <span class="at">data =</span> ca_schools</span>
+<span id="cb2-4"><a href="" aria-label="4"></a>)</span>
+<span id="cb2-5"><a href="" aria-label="5"></a></span>
+<span id="cb2-6"><a href="" aria-label="6"></a><span class="fu">summary</span>(score_model1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = ave_score ~ student_teacher_ratio + student_computer_ratio + 
+    lunch, data = ca_schools)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-34.117  -5.323  -0.262   5.674  33.241 
+
+Coefficients:
+                        Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)            703.03249    4.66790 150.610  &lt; 2e-16 ***
+student_teacher_ratio   -1.04075    0.24047  -4.328 1.89e-05 ***
+student_computer_ratio  -0.21938    0.08388  -2.615  0.00924 ** 
+lunch                   -0.59305    0.01684 -35.208  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 9.158 on 416 degrees of freedom
+Multiple R-squared:  0.7706,    Adjusted R-squared:  0.769 
+F-statistic: 465.9 on 3 and 416 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+</section>
+<section id="f-test-in-practice-2" class="slide level2">
+<h2>F-test (in practice)</h2>
+<p>What if you want to extract the F-statistic or its p-value?</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="" aria-label="1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb4-2"><a href="" aria-label="2"></a></span>
+<span id="cb4-3"><a href="" aria-label="3"></a><span class="fu">glance</span>(score_model1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 12
+  r.squared adj.r.squared sigma statistic   p.value    df logLik   AIC   BIC
+      &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1     0.771         0.769  9.16      466. 1.42e-132     3 -1524. 3058. 3078.
+# ℹ 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;</code></pre>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="" aria-label="1"></a><span class="fu">glance</span>(score_model1) <span class="sc">|&gt;</span></span>
+<span id="cb6-2"><a href="" aria-label="2"></a>  <span class="fu">pull</span>(statistic)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   value 
+465.8531 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="" aria-label="1"></a><span class="fu">glance</span>(score_model1) <span class="sc">|&gt;</span></span>
+<span id="cb8-2"><a href="" aria-label="2"></a>  <span class="fu">pull</span>(p.value)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        value 
+1.421696e-132 </code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="f-test-in-practice-3" class="slide level2">
+<h2>F-test (in practice)</h2>
+<p><span class="math inline">\(H_0:\)</span> All <span class="math inline">\(\beta_j\)</span>’s equal 0 &amp; <span class="math inline">\(H_A\)</span>: At least one <span class="math inline">\(\beta_j\)</span> is non-zero</p>
+<div class="fragment">
+<p><strong>Statistical Decision</strong>: Our p-value is 1.421696e-132, which is tiny, for sure less than 0.05, so reject <span class="math inline">\(H_0\)</span></p>
+</div>
+<div class="fragment">
+<p><strong>Conclusion in context</strong>: We found very strong evidence (p-value = 1.421696e-132) that at least one of student-teacher ratio, student-computer ratio, or % reduced lunch is linearly related to score.</p>
+</div>
+</section>
+<section id="partial-f-test-for-nested-models" class="slide level2">
+<h2>Partial F-test for nested models</h2>
+<p>From the plots it was pretty clear lunch is linearly related to score. What if we only wanted to do a test to see if student-teacher ratio and or student-computer ratio is linearly related to score?</p>
+<div class="fragment">
+<p>We can do a partial F-test for nested models!</p>
+<ul>
+<li><span class="math inline">\(H_0: \beta_1 = \beta_2 = 0\)</span></li>
+<li><span class="math inline">\(H_A:\)</span> At least one of <span class="math inline">\(\beta_1\)</span> or <span class="math inline">\(\beta_2\)</span> are nonzero.</li>
+</ul>
+</div>
+</section>
+<section id="f-test-with-subset-of-coefficients" class="slide level2">
+<h2>F-test with subset of coefficients</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="" aria-label="1"></a>score_model1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
+<span id="cb10-2"><a href="" aria-label="2"></a>  ave_score <span class="sc">~</span> student_teacher_ratio <span class="sc">+</span> student_computer_ratio <span class="sc">+</span> lunch,</span>
+<span id="cb10-3"><a href="" aria-label="3"></a>  <span class="at">data =</span> ca_schools</span>
+<span id="cb10-4"><a href="" aria-label="4"></a>)</span>
+<span id="cb10-5"><a href="" aria-label="5"></a></span>
+<span id="cb10-6"><a href="" aria-label="6"></a>score_model2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
+<span id="cb10-7"><a href="" aria-label="7"></a>  ave_score <span class="sc">~</span> lunch,</span>
+<span id="cb10-8"><a href="" aria-label="8"></a>  <span class="at">data =</span> ca_schools</span>
+<span id="cb10-9"><a href="" aria-label="9"></a>)</span>
+<span id="cb10-10"><a href="" aria-label="10"></a></span>
+<span id="cb10-11"><a href="" aria-label="11"></a><span class="fu">anova</span>(score_model2, score_model1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Model 1: ave_score ~ lunch
+Model 2: ave_score ~ student_teacher_ratio + student_computer_ratio + 
+    lunch
+  Res.Df   RSS Df Sum of Sq      F    Pr(&gt;F)    
+1    418 37303                                  
+2    416 34891  2    2411.2 14.374 9.196e-07 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</section>
+<section id="f-test-with-subset-of-coefficients-1" class="slide level2">
+<h2>F-test with subset of coefficients</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="" aria-label="1"></a>partial_f_test <span class="ot">&lt;-</span> <span class="fu">anova</span>(score_model2, score_model1)</span>
+<span id="cb12-2"><a href="" aria-label="2"></a>partial_f_test_p_value <span class="ot">&lt;-</span> partial_f_test<span class="sc">$</span><span class="st">`</span><span class="at">Pr(&gt;F)</span><span class="st">`</span>[<span class="dv">2</span>] <span class="sc">|&gt;</span> </span>
+<span id="cb12-3"><a href="" aria-label="3"></a>  <span class="fu">format</span>(<span class="at">scientific =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><strong>Statistical Decision</strong>: Our p-value is 9.19552e-07, much smaller than 0.05, so reject <span class="math inline">\(H_0\)</span>.</p>
+<div class="fragment">
+<p><strong>Conclusion in context</strong>: We found very strong evidence (p-value = 9.19552e-07) that at least one of student-teacher ratio or student-computer ratio is linearly related to score, when accounting for lunch.</p>
+</div>
+</section>
+<section id="why-an-f-test-instead-of-individual-tests" class="slide level2">
+<h2>Why an F-test instead of individual tests?</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="" aria-label="1"></a><span class="fu">tidy</span>(score_model1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 5
+  term                   estimate std.error statistic   p.value
+  &lt;chr&gt;                     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+1 (Intercept)             703.       4.67      151.   0        
+2 student_teacher_ratio    -1.04     0.240      -4.33 1.89e-  5
+3 student_computer_ratio   -0.219    0.0839     -2.62 9.24e-  3
+4 lunch                    -0.593    0.0168    -35.2  7.65e-127</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="" aria-label="1"></a><span class="fu">tidy</span>(score_model2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 5
+  term        estimate std.error statistic   p.value
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+1 (Intercept)  681.       0.889      766.  0        
+2 lunch         -0.610    0.0170     -35.9 1.19e-129</code></pre>
+</div>
+</div>
+</section>
+<section id="inflated-type-i-error-rate" class="slide level2">
+<h2>Inflated Type I Error rate</h2>
+<p>Consider fitting a multiple linear regression model where all of the slopes are actually zero. In other words, none of the predictors are truly associated with the response.</p>
+<ul>
+<li>Imagine we collect many independent samples from this population and fit the same model to each sample.</li>
+<li>For each predictor, we perform an individual test using <span class="math inline">\(\alpha=0.05\)</span>.</li>
+<li>For each test, there is a 5% probability of Type I error.</li>
+</ul>
+</section>
+<section id="inflated-type-i-error-rate-1" class="slide level2">
+<h2>Inflated Type I Error rate</h2>
+<ul>
+<li>cont…</li>
+<li>For each test, there is a 5% probability of Type I error.</li>
+<li>Even though all <span class="math inline">\(H_0\)</span>’s are true, approximately 5% of the tests for each predictor will produce a p-value below 0.05 by chance.
+<ul>
+<li>This means that even when none of the predictors are associated with the response, we may incorrectly conclude that some are!</li>
+<li>As we test more predictors, the probability of at least one false positive increases.</li>
+</ul></li>
+</ul>
+</section></section>
+<section>
+<section id="q2-do-all-the-predictors-help-to-explain-y-or-is-only-a-subset-of-the-predictors-useful" class="title-slide slide level1 center">
+<h1>Q2: Do all the predictors help to explain <span class="math inline">\(Y\)</span>, or is only a subset of the predictors useful?</h1>
+
+</section>
+<section id="statistical-inference" class="slide level2">
+<h2>Statistical Inference</h2>
+<p>If you are doing statistical inference you need to be conscious not to increase your type I error rate needlessly.</p>
+<ul>
+<li>You should not fit a bunch of models, see what “fits best”, then do a hypothesis test (“p-hacking”)</li>
+<li>Therefore you should consider ahead of time what predictors should be included based on context knowledge (lec 8a)</li>
+</ul>
+</section>
+<section id="model-selection-for-prediction" class="slide level2">
+<h2>Model selection for prediction</h2>
+<p>Selecting a model for prediction requires evaluating how well candidate models perform on new observations.</p>
+<ul>
+<li><em>Techniques such as cross-validation, model selection, and regularization are beyond the scope of this course and are covered in Chapters 5 and 6 of ISL textbook and in MATH 398 and MATH 408.</em></li>
+</ul>
+</section></section>
+<section>
+<section id="q3-how-well-does-the-model-fit-the-data" class="title-slide slide level1 center">
+<h1>Q3 How well does the model fit the data?</h1>
+
+</section>
+<section id="residual-standard-error-rse" class="slide level2">
+<h2>Residual Standard Error (RSE)</h2>
+<p><span class="math display">\[RSE = \hat{\sigma} = \sqrt{\frac{RSS}{n - 2}} = \sqrt{\frac{1}{n - 2} \sum_{i = 1}^{n} (y_i - \hat{y}_i)^2}\]</span></p>
+<ul>
+<li>Measured in units of <span class="math inline">\(y\)</span></li>
+</ul>
+<div class="fragment">
+<p><span class="math inline">\(n - 2\)</span> is required to for key statistical properties, but it is often replaced by just <span class="math inline">\(n\)</span></p>
+<ul>
+<li>Using <span class="math inline">\(n\)</span> instead of <span class="math inline">\(n - 2\)</span> is called <strong>Root Mean Squared Error</strong> (RMSE)</li>
+<li>Used to assess predictive error</li>
+</ul>
+</div>
+</section>
+<section id="understanding-rse" class="slide level2">
+<h2>Understanding RSE</h2>
+<p>What would you say is a “good” RSE/RMSE value? What would be a “bad” one?</p>
+<div class="fragment">
+<ul>
+<li>You can evaluate it relative to RSE/RMSE of another model (a model with different <span class="math inline">\(X\)</span> for the same <span class="math inline">\(Y\)</span>)</li>
+<li>RMSE is “roughly” the average error, so you can think in context if the average error is acceptable or unacceptable</li>
+</ul>
+</div>
+</section>
+<section id="r2-statistic" class="slide level2">
+<h2><span class="math inline">\(R^2\)</span> statistic</h2>
+<p><span class="math display">\[R^2 = (TSS - RSS) / (TSS)\]</span></p>
+<p><span class="math inline">\(R^2\)</span> measures percent of variability in <span class="math inline">\(Y\)</span> explained by model</p>
+<ul>
+<li><span class="math inline">\(TSS = \sum_{i = 1}^{n} (y_i - \bar{y})^2\)</span> measures amount of variability in <span class="math inline">\(Y\)</span></li>
+<li><span class="math inline">\(RSS\)</span> measures amount of variability in <span class="math inline">\(Y\)</span> unexplained by model</li>
+<li><span class="math inline">\(TSS - RSS\)</span> measures amount of variability explained by the model</li>
+</ul>
+</section>
+<section id="r2-statistic-1" class="slide level2">
+<h2><span class="math inline">\(R^2\)</span> statistic</h2>
+<p><em>What</em> <span class="math inline">\(R^2\)</span> <em>be for perfectly linear data?</em></p>
+<p><em>What would</em> <span class="math inline">\(R^2\)</span> <em>be for completely unlinear data?</em></p>
+<div class="fragment">
+<p>In practice it is context specific for what constitutes a “reasonably good” <span class="math inline">\(R^2\)</span></p>
+<ul>
+<li>consider physics versus marketing</li>
+</ul>
+</div>
+</section>
+<section id="cautions-with-r2statistic" class="slide level2">
+<h2>Cautions with <span class="math inline">\(R^2\)</span>statistic</h2>
+<p>Low <span class="math inline">\(R^2\)</span> does not mean no/(or weak) relationship, simply not a linear relationship</p>
+<div class="columns">
+<div class="column" style="width:80%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="lec-07b-multiple-linear-regression-part2_files/figure-revealjs/unnamed-chunk-14-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:20%;">
+<p><span class="math inline">\(R^2\)</span> = 0.11</p>
+</div></div>
+</section>
+<section id="cautions-with-r2statistic-1" class="slide level2">
+<h2>Cautions with <span class="math inline">\(R^2\)</span>statistic</h2>
+<p>High <span class="math inline">\(R^2\)</span> does not mean a regression line fits the data well. Another function may describe it better</p>
+<div class="columns">
+<div class="column" style="width:80%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="lec-07b-multiple-linear-regression-part2_files/figure-revealjs/unnamed-chunk-15-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:20%;">
+<p><span class="math inline">\(R^2\)</span> = 0.74</p>
+</div></div>
+</section>
+<section id="cautions-with-r2" class="slide level2">
+<h2>Cautions with <span class="math inline">\(R^2\)</span></h2>
+<p><span class="math inline">\(R^2\)</span> will always increase as <span class="math inline">\(p\)</span> increases</p>
+<p>People developed Adjusted <span class="math inline">\(R^2\)</span>, which penalizes for number of predictors BUT</p>
+<ul>
+<li>it no longer has the nice interpretation of <span class="math inline">\(R^2\)</span></li>
+<li>still prefers larger models</li>
+</ul>
+</section></section>
+<section>
+<section id="q4-given-a-set-of-predictor-values-what-response-value-should-we-predict-and-how-accurate-is-our-prediction" class="title-slide slide level1 center">
+<h1>Q4 Given a set of predictor values, what response value should we predict, and how accurate is our prediction?</h1>
+
+</section>
+<section id="section" class="slide level2">
+<h2></h2>
+<p>Same as with simple linear regression!</p>
+<ul>
+<li>We can compute a prediction by plugging in values for all of our <span class="math inline">\(X_j\)</span>’s into our fitted model</li>
+<li>We can compute a prediction interval</li>
+</ul>
+</section>
+<section id="section-1" class="slide level2">
+<h2></h2>
+<p>What do we predict the average test score will be for a school with a student-teacher ratio of 22, student-computer ratio of 10, and 50% qualifying for reduced-price lunch?</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="" aria-label="1"></a>my_new_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb17-2"><a href="" aria-label="2"></a>  <span class="at">student_teacher_ratio =</span> <span class="dv">22</span>,</span>
+<span id="cb17-3"><a href="" aria-label="3"></a>  <span class="at">student_computer_ratio =</span> <span class="dv">10</span>,</span>
+<span id="cb17-4"><a href="" aria-label="4"></a>  <span class="at">lunch =</span> <span class="dv">50</span></span>
+<span id="cb17-5"><a href="" aria-label="5"></a>)</span>
+<span id="cb17-6"><a href="" aria-label="6"></a></span>
+<span id="cb17-7"><a href="" aria-label="7"></a><span class="fu">predict</span>(score_model1, <span class="at">newdata =</span> my_new_data, <span class="at">interval =</span> <span class="st">"prediction"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       fit      lwr      upr
+1 648.2898 630.2328 666.3468</code></pre>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="" aria-label="1"></a>my_pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(score_model1, <span class="at">newdata =</span> my_new_data, <span class="at">interval =</span> <span class="st">"prediction"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>We predict their average test score to be 648.29, between 630.23 and 666.35 with 95% confidence.</p>
+
+</div>
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="lec-07b-multiple-linear-regression-part2_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="lec-07b-multiple-linear-regression-part2_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="lec-07b-multiple-linear-regression-part2_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="lec-07b-multiple-linear-regression-part2_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="lec-07b-multiple-linear-regression-part2_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="lec-07b-multiple-linear-regression-part2_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="lec-07b-multiple-linear-regression-part2_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="lec-07b-multiple-linear-regression-part2_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="lec-07b-multiple-linear-regression-part2_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="lec-07b-multiple-linear-regression-part2_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+
+    <script>
+
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+
+      // slide changes (different for each slide format).
+
+      (function () {
+
+        // dispatch for htmlwidgets
+
+        function fireSlideEnter() {
+
+          const event = window.document.createEvent("Event");
+
+          event.initEvent("slideenter", true, true);
+
+          window.document.dispatchEvent(event);
+
+        }
+
+    
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+
+          fireSlideEnter();
+
+    
+
+          // dispatch for shiny
+
+          if (window.jQuery) {
+
+            if (previousSlide) {
+
+              window.jQuery(previousSlide).trigger("hidden");
+
+            }
+
+            if (currentSlide) {
+
+              window.jQuery(currentSlide).trigger("shown");
+
+            }
+
+          }
+
+        }
+
+    
+
+        // hookup for slidy
+
+        if (window.w3c_slidy) {
+
+          window.w3c_slidy.add_observer(function (slide_num) {
+
+            // slide_num starts at position 1
+
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+
+          });
+
+        }
+
+    
+
+      })();
+
+    </script>
+
+    
+
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>

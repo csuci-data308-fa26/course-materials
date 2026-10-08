@@ -1,6 +1,6 @@
 ---
-title: "Data 308: Lecture 7b"
-subtitle: "Multiple Linear Regression: Choosing your variables"
+title: "Data 308: Lecture 8a"
+subtitle: "Choosing your variables"
 author: "CSUCI - Dr. Catalina Medina"
 format:
   revealjs:

@@ -215,7 +215,7 @@ CSUCI - Dr.&nbsp;Catalina Medina
 <h1>After learning multiple linear regression…</h1>
 <p>The next natural questions are:</p>
 <ol type="1">
-<li>Does that change or add any assumptions to our model?</li>
+<li>Are the model conditions the same?</li>
 <li>What variables should I add as <span class="math inline">\(X's\)</span> in addition to my primary explanatory variable of interest? (Lec 8a)</li>
 </ol>
 </section>
@@ -287,7 +287,7 @@ CSUCI - Dr.&nbsp;Catalina Medina
 <p>Hypothesis test for <span class="math inline">\(\beta_1\)</span>!</p>
 <ul>
 <li><span class="math inline">\(H_0: \beta_1 = 0\)</span> &amp; <span class="math inline">\(H_A: \beta_1 \neq 0\)</span></li>
-<li>Results for an F-test are shown when you use <code>summary()</code> or <code>tidy()</code> on your model</li>
+<li>Results for this test are shown when you use <code>summary()</code> or <code>tidy()</code> on your model</li>
 <li>Make your statistical decision and conclusion in context. Report confidence interval!</li>
 </ul>
 </div>
@@ -296,7 +296,7 @@ CSUCI - Dr.&nbsp;Catalina Medina
 <h2>Q1 with multiple linear regression</h2>
 <p><span class="math display">\[Y_i = \beta_0 + \beta_1 X_{1i}  + \beta_2 X_{2i} + ... + \beta_p X_{p,i} + \epsilon_i\]</span></p>
 <div class="fragment">
-<p>Hypothesis test for all <span class="math inline">\(\beta_j\)</span>’s!</p>
+<p>F-test: Hypothesis test for all <span class="math inline">\(\beta_j\)</span>’s</p>
 </div>
 <div class="fragment">
 <ul>
@@ -430,22 +430,6 @@ F-statistic: 465.9 on 3 and 416 DF,  p-value: &lt; 2.2e-16</code></pre>
 # ℹ 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;</code></pre>
 </div>
 </div>
-<div class="fragment">
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="" aria-label="1"></a><span class="fu">glance</span>(score_model1) <span class="sc">|&gt;</span></span>
-<span id="cb6-2"><a href="" aria-label="2"></a>  <span class="fu">pull</span>(statistic)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>   value 
-465.8531 </code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="" aria-label="1"></a><span class="fu">glance</span>(score_model1) <span class="sc">|&gt;</span></span>
-<span id="cb8-2"><a href="" aria-label="2"></a>  <span class="fu">pull</span>(p.value)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>        value 
-1.421696e-132 </code></pre>
-</div>
-</div>
-</div>
 </section>
 <section id="f-test-in-practice-3" class="slide level2">
 <h2>F-test (in practice)</h2>
@@ -471,17 +455,17 @@ F-statistic: 465.9 on 3 and 416 DF,  p-value: &lt; 2.2e-16</code></pre>
 <section id="f-test-with-subset-of-coefficients" class="slide level2">
 <h2>F-test with subset of coefficients</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="" aria-label="1"></a>score_model1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
-<span id="cb10-2"><a href="" aria-label="2"></a>  ave_score <span class="sc">~</span> student_teacher_ratio <span class="sc">+</span> student_computer_ratio <span class="sc">+</span> lunch,</span>
-<span id="cb10-3"><a href="" aria-label="3"></a>  <span class="at">data =</span> ca_schools</span>
-<span id="cb10-4"><a href="" aria-label="4"></a>)</span>
-<span id="cb10-5"><a href="" aria-label="5"></a></span>
-<span id="cb10-6"><a href="" aria-label="6"></a>score_model2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
-<span id="cb10-7"><a href="" aria-label="7"></a>  ave_score <span class="sc">~</span> lunch,</span>
-<span id="cb10-8"><a href="" aria-label="8"></a>  <span class="at">data =</span> ca_schools</span>
-<span id="cb10-9"><a href="" aria-label="9"></a>)</span>
-<span id="cb10-10"><a href="" aria-label="10"></a></span>
-<span id="cb10-11"><a href="" aria-label="11"></a><span class="fu">anova</span>(score_model2, score_model1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="" aria-label="1"></a>score_model1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
+<span id="cb6-2"><a href="" aria-label="2"></a>  ave_score <span class="sc">~</span> student_teacher_ratio <span class="sc">+</span> student_computer_ratio <span class="sc">+</span> lunch,</span>
+<span id="cb6-3"><a href="" aria-label="3"></a>  <span class="at">data =</span> ca_schools</span>
+<span id="cb6-4"><a href="" aria-label="4"></a>)</span>
+<span id="cb6-5"><a href="" aria-label="5"></a></span>
+<span id="cb6-6"><a href="" aria-label="6"></a>score_model2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
+<span id="cb6-7"><a href="" aria-label="7"></a>  ave_score <span class="sc">~</span> lunch,</span>
+<span id="cb6-8"><a href="" aria-label="8"></a>  <span class="at">data =</span> ca_schools</span>
+<span id="cb6-9"><a href="" aria-label="9"></a>)</span>
+<span id="cb6-10"><a href="" aria-label="10"></a></span>
+<span id="cb6-11"><a href="" aria-label="11"></a><span class="fu">anova</span>(score_model2, score_model1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Analysis of Variance Table
 
@@ -498,11 +482,6 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </section>
 <section id="f-test-with-subset-of-coefficients-1" class="slide level2">
 <h2>F-test with subset of coefficients</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="" aria-label="1"></a>partial_f_test <span class="ot">&lt;-</span> <span class="fu">anova</span>(score_model2, score_model1)</span>
-<span id="cb12-2"><a href="" aria-label="2"></a>partial_f_test_p_value <span class="ot">&lt;-</span> partial_f_test<span class="sc">$</span><span class="st">`</span><span class="at">Pr(&gt;F)</span><span class="st">`</span>[<span class="dv">2</span>] <span class="sc">|&gt;</span> </span>
-<span id="cb12-3"><a href="" aria-label="3"></a>  <span class="fu">format</span>(<span class="at">scientific =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
 <p><strong>Statistical Decision</strong>: Our p-value is 9.19552e-07, much smaller than 0.05, so reject <span class="math inline">\(H_0\)</span>.</p>
 <div class="fragment">
 <p><strong>Conclusion in context</strong>: We found very strong evidence (p-value = 9.19552e-07) that at least one of student-teacher ratio or student-computer ratio is linearly related to score, when accounting for lunch.</p>
@@ -511,7 +490,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <section id="why-an-f-test-instead-of-individual-tests" class="slide level2">
 <h2>Why an F-test instead of individual tests?</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="" aria-label="1"></a><span class="fu">tidy</span>(score_model1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="" aria-label="1"></a><span class="fu">tidy</span>(score_model1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 4 × 5
   term                   estimate std.error statistic   p.value
@@ -521,7 +500,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 3 student_computer_ratio   -0.219    0.0839     -2.62 9.24e-  3
 4 lunch                    -0.593    0.0168    -35.2  7.65e-127</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="" aria-label="1"></a><span class="fu">tidy</span>(score_model2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="" aria-label="1"></a><span class="fu">tidy</span>(score_model2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 5
   term        estimate std.error statistic   p.value
@@ -631,7 +610,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="lec-07b-multiple-linear-regression-part2_files/figure-revealjs/unnamed-chunk-14-1.png" width="960"></p>
+<p><img data-src="lec-07b-multiple-linear-regression-part2_files/figure-revealjs/unnamed-chunk-13-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -649,7 +628,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="lec-07b-multiple-linear-regression-part2_files/figure-revealjs/unnamed-chunk-15-1.png" width="960"></p>
+<p><img data-src="lec-07b-multiple-linear-regression-part2_files/figure-revealjs/unnamed-chunk-14-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -684,22 +663,19 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <h2></h2>
 <p>What do we predict the average test score will be for a school with a student-teacher ratio of 22, student-computer ratio of 10, and 50% qualifying for reduced-price lunch?</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="" aria-label="1"></a>my_new_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb17-2"><a href="" aria-label="2"></a>  <span class="at">student_teacher_ratio =</span> <span class="dv">22</span>,</span>
-<span id="cb17-3"><a href="" aria-label="3"></a>  <span class="at">student_computer_ratio =</span> <span class="dv">10</span>,</span>
-<span id="cb17-4"><a href="" aria-label="4"></a>  <span class="at">lunch =</span> <span class="dv">50</span></span>
-<span id="cb17-5"><a href="" aria-label="5"></a>)</span>
-<span id="cb17-6"><a href="" aria-label="6"></a></span>
-<span id="cb17-7"><a href="" aria-label="7"></a><span class="fu">predict</span>(score_model1, <span class="at">newdata =</span> my_new_data, <span class="at">interval =</span> <span class="st">"prediction"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="" aria-label="1"></a>my_new_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb12-2"><a href="" aria-label="2"></a>  <span class="at">student_teacher_ratio =</span> <span class="dv">22</span>,</span>
+<span id="cb12-3"><a href="" aria-label="3"></a>  <span class="at">student_computer_ratio =</span> <span class="dv">10</span>,</span>
+<span id="cb12-4"><a href="" aria-label="4"></a>  <span class="at">lunch =</span> <span class="dv">50</span></span>
+<span id="cb12-5"><a href="" aria-label="5"></a>)</span>
+<span id="cb12-6"><a href="" aria-label="6"></a></span>
+<span id="cb12-7"><a href="" aria-label="7"></a><span class="fu">predict</span>(score_model1, <span class="at">newdata =</span> my_new_data, <span class="at">interval =</span> <span class="st">"prediction"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       fit      lwr      upr
 1 648.2898 630.2328 666.3468</code></pre>
 </div>
 </div>
 <div class="fragment">
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="" aria-label="1"></a>my_pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(score_model1, <span class="at">newdata =</span> my_new_data, <span class="at">interval =</span> <span class="st">"prediction"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
 <p>We predict their average test score to be 648.29, between 630.23 and 666.35 with 95% confidence.</p>
 
 </div>

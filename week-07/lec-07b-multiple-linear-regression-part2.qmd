@@ -20,7 +20,7 @@ theme_set(theme_bw(base_size = 24))
 
 The next natural questions are:
 
-1. Does that change or add any assumptions to our model?
+1. Are the model conditions the same?
 2. What variables should I add as $X's$ in addition to my primary explanatory variable of interest? (Lec 8a)
 
 
@@ -83,7 +83,7 @@ $$Y_i = \beta_0 + \beta_1 X_i + \epsilon_i$$
 Hypothesis test for $\beta_1$! 
 
 - $H_0: \beta_1 = 0$ & $H_A: \beta_1 \neq 0$
-- Results for an F-test are shown when you use `summary()` or `tidy()` on your model
+- Results for this test are shown when you use `summary()` or `tidy()` on your model
 - Make your statistical decision and conclusion in context. Report confidence interval!
 
 
@@ -93,8 +93,8 @@ $$Y_i = \beta_0 + \beta_1 X_{1i}  + \beta_2 X_{2i} + ... + \beta_p X_{p,i} + \ep
 
 . . .
 
-Hypothesis test for all $\beta_j$'s!
-
+F-test: Hypothesis test for all $\beta_j$'s
+ 
 . . .
 
 - $H_0:$ All $\beta_j$'s equal 0 & $H_A$: At least one $\beta_j$ is non-zero
@@ -229,16 +229,6 @@ library(broom)
 glance(score_model1)
 ```
 
-. . .
-
-```{r}
-glance(score_model1) |>
-  pull(statistic)
-
-glance(score_model1) |>
-  pull(p.value)
-```
-
 
 ## F-test (in practice)
 
@@ -292,6 +282,7 @@ anova(score_model2, score_model1)
 ## F-test with subset of coefficients
 
 ```{r}
+#| echo: false
 partial_f_test <- anova(score_model2, score_model1)
 partial_f_test_p_value <- partial_f_test$`Pr(>F)`[2] |> 
   format(scientific = TRUE)
@@ -490,6 +481,7 @@ predict(score_model1, newdata = my_new_data, interval = "prediction")
 . . .
 
 ```{r}
+#| echo: false
 my_pred <- predict(score_model1, newdata = my_new_data, interval = "prediction")
 ```
 

@@ -558,17 +558,16 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </section>
 <section id="residual-standard-error-rse" class="slide level2">
 <h2>Residual Standard Error (RSE)</h2>
-<p><span class="math display">\[RSE = \hat{\sigma} = \sqrt{\frac{RSS}{n - 2}} = \sqrt{\frac{1}{n - 2} \sum_{i = 1}^{n} (y_i - \hat{y}_i)^2}\]</span></p>
+<p><span class="math display">\[RSE = \hat{\sigma} = \sqrt{\frac{RSS}{n - p - 1}} = \sqrt{\frac{\sum_{i = 1}^{n} (y_i - \hat{y}_i)^2}{n - p - 1}}\]</span></p>
 <ul>
+<li><span class="math inline">\(p\)</span> = number of predictors (exclude <span class="math inline">\(\beta_0\)</span> from count)</li>
 <li>Measured in units of <span class="math inline">\(y\)</span></li>
-</ul>
-<div class="fragment">
-<p><span class="math inline">\(n - 2\)</span> is required to for key statistical properties, but it is often replaced by just <span class="math inline">\(n\)</span></p>
+<li><span class="math inline">\(n - p - 1\)</span> is required to for key statistical properties, but it is often replaced by just <span class="math inline">\(n\)</span>
 <ul>
-<li>Using <span class="math inline">\(n\)</span> instead of <span class="math inline">\(n - 2\)</span> is called <strong>Root Mean Squared Error</strong> (RMSE)</li>
+<li>Using <span class="math inline">\(n\)</span> instead of <span class="math inline">\(n - p - 1\)</span> is called <strong>Root Mean Squared Error</strong> (RMSE)</li>
+</ul></li>
 <li>Used to assess predictive error</li>
 </ul>
-</div>
 </section>
 <section id="understanding-rse" class="slide level2">
 <h2>Understanding RSE</h2>

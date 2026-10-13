@@ -341,15 +341,12 @@ Selecting a model for prediction requires evaluating how well candidate models p
 
 ## Residual Standard Error (RSE)
 
-$$RSE = \hat{\sigma} = \sqrt{\frac{RSS}{n - 2}} = \sqrt{\frac{1}{n - 2} \sum_{i = 1}^{n} (y_i - \hat{y}_i)^2}$$
+$$RSE = \hat{\sigma} = \sqrt{\frac{RSS}{n - p - 1}} = \sqrt{\frac{\sum_{i = 1}^{n} (y_i - \hat{y}_i)^2}{n - p - 1}}$$
 
+- $p$ = number of predictors (exclude $\beta_0$ from count)
 - Measured in units of $y$
-
-. . .
-
-$n - 2$ is required to for key statistical properties, but it is often replaced by just $n$
-
-- Using $n$ instead of $n - 2$ is called **Root Mean Squared Error** (RMSE)
+- $n - p - 1$ is required to for key statistical properties, but it is often replaced by just $n$
+  - Using $n$ instead of $n - p - 1$ is called **Root Mean Squared Error** (RMSE)
 - Used to assess predictive error
 
 ## Understanding RSE

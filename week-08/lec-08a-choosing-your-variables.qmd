@@ -287,4 +287,8 @@ ggplot(penguins, aes(x = bill_dep, y = bill_len, color = species)) +
 - For every 1 mm increase in bill depth, a Chinstrap penguin's bill length is expected to change by an additional `r beta3_4_hat` millimeters compared to an Adelie penguin.
 - For every 1 mm increase in bill depth, a Gentoo penguin's bill length is expected to change by an additional `r beta3_5_hat` millimeters compared to an Adelie penguin.
 
-*What type of test could I do to test if there should be an interaction between bill depth and species?*
+*What type of test could I do to test if there should be an interaction between bill depth and species?* \
+
+. . .
+
+**Partial f-test**

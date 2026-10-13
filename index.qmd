@@ -1,0 +1,17 @@
+---
+title: "DATA 308 Fall 2026 Schedule"
+format: html
+---
+
+| Week | Topics  | Lecture Slides | 
+|:--|:--------------------------|:-------|
+| 1 | Introductions and coding refresher | [Lec 1a slides](https://csuci-data308-fa26.github.io/course-materials/week-01/lec-01a-introduction-to-class.html) and [Lec 1b slides](https://csuci-data308-fa26.github.io/course-materials/week-01/lec-01b-r-basics.html) | 
+| 2 | Study design | [Lec 2a slides](https://csuci-data308-fa26.github.io/course-materials/week-02/lec-02a-variables-and-study-design.html) |
+| 3 | Sampling | [Lec 3a slides](https://csuci-data308-fa26.github.io/course-materials/week-03/lec-03-sampling.html) | 
+| 4 | Intro to simple linear regression | [Lec 4a](https://csuci-data308-fa26.github.io/course-materials/week-04/lec-04a-simple-linear-regression.html)  & [Lec 4b](https://csuci-data308-fa26.github.io/course-materials/week-04/lec-04b-simple-linear-regression-cis.html) | 
+| 5 | Hypothesis testing | [Lec 5](https://csuci-data308-fa26.github.io/course-materials/week-05/lec-05-hypothesis-testing.html) | 
+| 6 | Model conditions & diagnostics | [Lec 6](https://csuci-data308-fa26.github.io/course-materials/week-06/lec-06a-conditions-for-inference-with-slr.html) | 
+| 7 | Multiple linear regression | [Lec 7a](https://csuci-data308-fa26.github.io/course-materials/week-07/lec-07a-multiple-linear-regression.html) & [Lec 7b](https://csuci-data308-fa26.github.io/course-materials/week-07/lec-07b-multiple-linear-regression-part2.html) | 
+| 8 | Choosing your variables & interactions  | [Lec 8](https://csuci-data308-fa26.github.io/course-materials/week-08/lec-08a-choosing-your-variables.html) | 
+
+

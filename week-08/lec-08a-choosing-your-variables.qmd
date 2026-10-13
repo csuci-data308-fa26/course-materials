@@ -12,6 +12,7 @@ echo: true
 ```{r}
 #| echo: false
 
+library(broom)
 library(tidyverse)
 theme_set(theme_bw(base_size = 24))
 ```
@@ -20,48 +21,9 @@ theme_set(theme_bw(base_size = 24))
 
 The next natural questions are:
 
-1. Does that change or add any assumptions to our model?
+1. Does that change or add any assumptions to our model? (lec 7b)
 2. What variables should I add as $X's$ in addition to my primary explanatory variable of interest?
 
-
-# 1. Conditions
-
-Multiple linear regression has 5 conditions:
-
-1. Linearity (appropriate functional form)
-2. Independence of observations
-3. Constant variance of errors
-4. Normality of errors
-5. **No perfect collinearity**
-
-## Perfect collinearity
-
-Perfect collinearity =  An $X_j$ is a perfect linear combination of another
-
-- e.g., Using SAT Math, SAT Reading, & SAT total (total = math + reading) as 3 $X$'s
-
-Cannot fit model mathematically so statistical software will drop at least one $X$
-
-## High Collinearity
-
-High collinearity = highly correlated $X$'s
-
-- e.g., Suppose we wanted to include SAT Math & SAT Reading as 2 $X$'s
-
-
-Results in: 
-
-- larger standard errors of $\hat{\beta}$'s for highly correlated $X$'s
-- difficulty separating the association between $Y$ and $X_j$ from $Y$ and $X_k$
-- mathematical instability resulting in high sensitivity of results to sample
-
-## High Collinearity
-
-Remedy:
-
-- Determine whether both variables are scientifically necessary
-- Do not remove an important confounding variable solely because it is highly correlated with another predictor
-  - Note: VIF is discussed in the ISL textbook, but we should not remove a variable only because it has a high VIF
 
 # 2. Choosing $X$'s
 
@@ -89,7 +51,7 @@ Prespecification of your model = deciding on your model before looking at the da
 
 There are more types of relationships than just explanatory, response, and confounders
 
-- The way that a variable is related the the explanatory and response dictates whether and how the additional variable should be included in our model
+- The way that a variable is related the the explanatory and response variables dictates whether and how the additional variable should be included in our model, if at all
 
 ## Variables of primary interest
 
@@ -157,32 +119,172 @@ Example: Sleep quality affects academic achievement through the mediator of aler
 ![](img/moderator.drawio.png)
 
 - Affects the strength or direction of the relationship between the explanatory and response variable
+  - i.e., the slope relating $X_1$ to $Y$ differs depending on $X_2$
+- Confounders can be moderating variables
 
-Example: The relationship between sleep quality and academic achievement probably differs for children versus adults.
+Example: Would we expect an additional hour of sleep to have the same association with academic achievement for elementary school students and college students?
 
 
 ## Moderating variables: what to do
 
 ![](img/moderator.drawio.png)
 
-- Account for with an interaction between the moderating and explanatory variable (*will cover on 10/13*)
+- Account for with an interaction between the moderating and explanatory variable
+  - e.g. $Y_i = \beta_0 + \beta_1 X_{1i} + \beta_2 X_{2i} + \beta_3 X_{1i} X_{2i} +\epsilon_i$
+  
+## Example
 
-# An approach to prespecifying your model
+Suppose we want to infer the relationship between bill length and bill depth 
+```{r}
+ggplot(penguins, aes(x = bill_dep, y = bill_len)) +
+  geom_point() 
+```
 
-When it comes time for you to decide on a model on your own, there are many considerations.
-**Your decisions should be informed by contextual knowledge**, which would be available in real practice, but can often be difficult for classroom examples.
+  
+## Example Model 1
 
-- Next I will provide you with a general approach to building your model.
+```{r}
+penguin_model1 <- lm(bill_len ~ bill_dep, data = penguins)
+tidy(penguin_model1)
+```
 
-## Prespecification approach
+```{r}
+#| echo: false
+penguin_model1_df <- tidy(penguin_model1)
+beta1_0_hat <- filter(penguin_model1_df, term == "(Intercept)") |> 
+  pull(estimate) |> 
+  round(1)
+beta1_1_hat <- filter(penguin_model1_df, term == "bill_dep") |> 
+  pull(estimate) |> 
+  round(1)
+```
 
-1. Identify your response variable & its type. Choose an appropriate model for its type (*So far we only know linear regression for continuous variables*).
-2. Identify your primary explanatory variable of interest. Specify it as $X_1$.
-3. Identify variables potentially causally related to $Y$. Among these variables, decide if they are related to $X_1$.
-4. For variables only related to $Y$, if they are strongly related, consider adding them as precision variables.
+My fitted model 1 is:
+$$\widehat{\text{Bill Length}}_i = `r beta1_0_hat` `r beta1_1_hat` \times \text{Bill Depth}_i$$
 
-## Prespecification approach
+## Example model 1
 
-5. For observational studies: Among the remaining variables, decide if they are potentially causally related to both $X_1$ and $Y$. Include potential confounders as additional $X_j$'s.
-6. Omit variables that are likely mediators
-7. 
+```{r}
+ggplot(penguins, aes(x = bill_dep, y = bill_len)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+## Example Model 2
+
+This data is not from an experiment, so we have to consider confounding.
+
+```{r}
+ggplot(penguins, aes(x = bill_dep, y = bill_len, color = species)) +
+  geom_point()
+```
+
+
+## Example Model 2
+
+```{r}
+penguin_model2 <- lm(bill_len ~ bill_dep + species, data = penguins)
+tidy(penguin_model2)
+```
+
+
+
+```{r}
+#| echo: false
+penguin_model2_df <- tidy(penguin_model2) |> 
+  mutate(estimate = round(estimate, 1))
+beta2_0_hat <- filter(penguin_model2_df, term == "(Intercept)") |> 
+  pull(estimate) 
+beta2_1_hat <- filter(penguin_model2_df, term == "bill_dep") |> 
+  pull(estimate) 
+beta2_2_hat <- filter(penguin_model2_df, term == "speciesChinstrap") |> 
+  pull(estimate) 
+beta2_3_hat <- filter(penguin_model2_df, term == "speciesGentoo") |> 
+  pull(estimate) 
+```
+
+
+My fitted model 2 is:
+\begin{equation*}
+  \begin{split}
+    &\widehat{BillLength}_i\\
+    &= `r beta2_0_hat` `r beta2_1_hat` \times BillDepth_i\\
+    & + `r beta2_2_hat` \times I(Species = Chinstrap)\\
+    &+ `r beta2_3_hat` \times I(Species = Gentoo)
+  \end{split}
+\end{equation*}
+
+## Example Model 2
+
+```{r}
+penguins |> 
+  modelr::add_predictions(penguin_model2) |> 
+ggplot(aes(x = bill_dep, y = bill_len, color = species)) +
+  geom_point() +
+  geom_line(aes(y = pred))
+```
+
+## Example Model 3
+
+Maybe the relationship between bill length and bill depth differs by species (i.e. maybe species is a moderating variable)
+
+```{r}
+ggplot(penguins, aes(x = bill_dep, y = bill_len, color = species)) +
+  geom_point()
+```
+
+## Example Model 3
+
+
+```{r}
+penguin_model3 <- lm(bill_len ~ bill_dep * species, data = penguins)
+tidy(penguin_model3)
+```
+
+## Example Model 3
+
+```{r}
+#| echo: false
+penguin_model3_df <- tidy(penguin_model3) |> 
+  mutate(estimate = round(estimate, 1))
+beta3_0_hat <- filter(penguin_model3_df, term == "(Intercept)") |> 
+  pull(estimate) 
+beta3_1_hat <- filter(penguin_model3_df, term == "bill_dep") |> 
+  pull(estimate) 
+beta3_2_hat <- filter(penguin_model3_df, term == "speciesChinstrap") |> 
+  pull(estimate) 
+beta3_3_hat <- filter(penguin_model3_df, term == "speciesGentoo") |> 
+  pull(estimate) 
+beta3_4_hat <- filter(penguin_model3_df, term == "bill_dep:speciesChinstrap") |> 
+  pull(estimate) 
+beta3_5_hat <- filter(penguin_model3_df, term == "bill_dep:speciesGentoo") |> 
+  pull(estimate) 
+```
+
+
+My fitted model 2 is:
+\begin{equation*}
+  \begin{split}
+    &\widehat{BillLength}_i\\
+    &= `r beta3_0_hat` `r beta3_1_hat` \times BillDepth_i\\
+    &+ `r beta3_2_hat` \times I(Species = Chinstrap)\\
+    &+ `r beta3_3_hat` \times I(Species = Gentoo)\\
+    &+ `r beta3_4_hat` \times BillDepth_i \times I(Species = Chinstrap)\\
+    &+ `r beta3_5_hat` \times BillDepth_i \times I(Species = Gentoo)
+  \end{split}
+\end{equation*}
+
+## Example Model 3
+
+```{r}
+ggplot(penguins, aes(x = bill_dep, y = bill_len, color = species)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+## Example Model 3
+
+- For every 1 mm increase in bill depth, a Chinstrap penguin's bill length is expected to change by an additional `r beta3_4_hat` millimeters compared to an Adelie penguin.
+- For every 1 mm increase in bill depth, a Gentoo penguin's bill length is expected to change by an additional `r beta3_5_hat` millimeters compared to an Adelie penguin.
+
+*What type of test could I do to test if there should be an interaction between bill depth and species?*

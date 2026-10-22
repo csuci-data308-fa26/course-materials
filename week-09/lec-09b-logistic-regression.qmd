@@ -1,0 +1,592 @@
+---
+title: "DATA 308: Lecture 9b"
+subtitle: "Logistic regression"
+author: "CSUCI - Dr. Catalina Medina"
+execute:
+  echo: true
+format: 
+  revealjs:
+    theme: [sky, ../slide-style.scss]
+    slide-number: true
+---
+
+```{r}
+#| echo: false
+
+library(tidyverse)
+library(janitor)
+```
+
+
+
+## Examples of Outcome Variables
+
+Specify variable type (think about the possible values)
+
+- Temperature \newline <!-- (Possible values $\mathbb{R}$) - Continuous -->
+
+- Presence of Alzheimer's \newline <!-- (Possible values: No,Yes) - Binary -->
+
+- Rent \newline <!-- (Possible values $(0, \infty)$) -->
+
+- Computer operating system \newline <!-- (Possible values: Windows, Linux, Mac) - Unordered categorical / Nomimal --> 
+
+- Daily number of customers \newline <!-- (Possible values:0, 1, 2) - Discrete/Count -->
+
+- Income class \newline <!-- (Possible values: Lower, Middle, Upper class) - Ordered Categorical / Ordinal -->
+
+. . .
+
+Which could we model with **linear regression**?
+
+##
+
+Identify the response variable type:
+
+- A car insurance company is trying to predict if an applicant will have a car crash in the next 5 years, based on their income.
+
+. . .
+
+Can we model using linear regression anyways?
+
+##
+
+Let's simulate data...
+
+```{r}
+#| echo: false
+set.seed(359)
+
+n <- 300
+
+sim_crash_data <- data.frame(
+  #has_child = rbinom(n = n, size = 1, prob = 0.4), 
+  income = sample(25000:100000 / 1000, size = n, replace = TRUE) # Uniformly randomly samples
+) |> 
+  mutate(xb = -19 + 0.4 * income) |> 
+  #mutate(xb2 = -19 - 2 * has_child + 0.4 * income) |> 
+  mutate(pi =  1 / (1 + exp(-xb))) #|> 
+  #mutate(has_child = ifelse(has_child == 1, yes = TRUE, no = FALSE))
+
+sim_crash_data$car_crash <- sim_crash_data$pi |> 
+  map_int(\(x) rbinom(n = 1, size = 1, prob = x))
+
+```
+
+
+```{r}
+#| echo: false
+#| out-width: "50%"
+ggplot(sim_crash_data, aes(x = income, y = car_crash)) +
+  geom_point() +
+  labs(
+    x = "Income (in $1000s)",
+    y = "Car crash"
+  )
+```
+
+##
+
+What does it mean to fit a line to this data?
+
+```{r}
+#| echo: false
+#| out-width: "50%"
+ggplot(sim_crash_data, aes(x = income, y = car_crash)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(
+    x = "Income (in $1000s)",
+    y = "Car crash"
+  )
+```
+
+. . .
+
+We don't get an error, but ...
+
+<!-- ## Expectations -->
+
+<!-- In order to understand the GLMs we will talk about, it is helpful to understand expectations -->
+
+<!-- We said  -->
+
+<!-- - $E[Y]$ = the long run average value for $Y$ and  -->
+<!-- - $E[Y | X]$ = long run average value for $Y$ for a given $X$ value -->
+
+<!-- . . . -->
+
+<!-- Linearity of expectations: if $E[Z] = z$, then $E[aZ + b]=aE[Z]+b$ -->
+
+
+##
+
+```{r}
+#| echo: false
+#| fig-align: "center"
+#| fig-width: 8
+
+ggplot(sim_crash_data, aes(x = income, y = pi)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(
+    x = "Income (in $1000s)",
+    y = "Probability of car crash"
+  )
+```
+
+
+## 
+
+What is our expecation for people with an income of $45,000?
+
+```{r}
+crash_model <- lm(car_crash ~ income, data = sim_crash_data)
+
+new_data <- data.frame(income = 45)
+
+predict(crash_model, newdata = new_data)
+```
+
+```{r}
+#| echo: false
+#| fig-align: "center"
+#| fig-width: 8
+pred_45000 <- predict(crash_model, newdata = new_data)
+
+ggplot(sim_crash_data, aes(x = income, y = pi)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  geom_point(
+    data = data.frame(income = new_data$income, pi = pred_45000),
+    color = "red",
+    size = 3
+  ) +
+  labs(
+    x = "Income (in $1000s)",
+    y = "Expectation of car crash"
+  )
+```
+
+## 
+
+What is our expecation for people with an income of $90,000?
+
+```{r}
+crash_model <- lm(car_crash ~ income, data = sim_crash_data)
+
+new_data <- data.frame(income = 90)
+
+predict(crash_model, newdata = new_data)
+```
+
+```{r}
+#| echo: false
+#| fig-align: "center"
+#| fig-width: 8
+pred_90000 <- predict(crash_model, newdata = new_data)
+
+ggplot(sim_crash_data, aes(x = income, y = pi)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  geom_point(
+    data = data.frame(income = new_data$income, pi = pred_90000),
+    color = "red",
+    size = 3
+  ) +
+  labs(
+    x = "Income (in $1000s)",
+    y = "Expectation of car crash"
+  )
+```
+
+## 
+
+Linear regression assumes 
+$$E[Y_i | X_i ] = \beta_0 + \beta_1 X_{1, i} + ... + \beta_p X_{p, i} + \epsilon_i \text{ and } \epsilon_i\sim N(0, \sigma^2)$$
+
+so 
+
+$$E[Y_i | X_{1, i}, ..., X_{p, i}] = \beta_0 + \beta_1 X_{1, i} + ... + \beta_p X_{p, i}$$
+
+. . .
+
+What is the expectation of a binary variable?
+
+##
+
+We can fit a linear model for a binary response, but:
+
+- the line is really fitting the $E[Y_i|X_i]$, the probability
+- the range of $E[Y_i|X_i] = \beta_0 + \beta_1 X_{1, i} + ... + \beta_p X_{p, i}$ is $(-\infty, \infty)$
+- we may get invalid predictions
+
+. . .
+
+We can use a logistic model instead!
+
+## Logistic function
+
+The logistic function ranges from 0 to 1
+
+$$\text{logistic}(Z) = \frac{e^Z}{1 + e^Z}$$
+
+```{r}
+#| echo: false
+data.frame(Z = seq(-10, 10, by = 0.01)) |> 
+  mutate(logistic_Z = exp(Z) / (1 + exp(Z))) |> 
+  ggplot(aes(x = Z, y = logistic_Z)) +
+  geom_point() +
+  labs(x = "Z", y = "Logistic(Z)")
+```
+
+
+## Logistic regression: form 1
+
+Let $Y_i | X_{1, i}, ..., X_{p, i} \sim Bernoulli(\pi_i)$, which means $E[Y_i | X_{1, i}, ..., X_{p, i}] = \pi_i$
+
+The logistic regression model is
+$$E[Y_i | X_{1, i}, ..., X_{p, i}] = \pi_i = \frac{e^{\beta_0 + \beta_1 X_{1, i} + ... + \beta_p X_{p, i}}}{1 + e^{\beta_0 + \beta_1 X_{1, i} + ... + \beta_p X_{p, i}}}$$
+
+## Logistic Response Function Rewritten
+
+$$\pi_i = \frac{e^{\beta_0 + \beta_1 X_{1, i} + ... + \beta_p X_{p, i}}}{1 + e^{\beta_0 + \beta_1 X_{1, i} + ... + \beta_p X_{p, i}}}$$
+
+<!-- \begin{equation} -->
+<!--   \begin{split} -->
+<!--     \pi &= \frac{e^{\beta_0 + \beta_1 X_1 + ... + \beta_{p-1} X_{p-1}}}{1 + e^{\beta_0 + \beta_1 X_1 + ... + \beta_{p-1} X_{p-1}}}\\ -->
+<!-- \pi + \pi e^{\beta_0 + \beta_1 X_1 + ... + \beta_{p-1} X_{p-1}} &= e^{\beta_0 + \beta_1 X_1 + ... + \beta_{p-1} X_{p-1}}\\ -->
+<!-- \pi &= e^{\beta_0 + \beta_1 X_1 + ... + \beta_{p-1} X_{p-1}} - \pi e^{\beta_0 + \beta_1 X_1 + ... + \beta_{p-1} X_{p-1}}\\ -->
+<!-- \pi &= e^{\beta_0 + \beta_1 X_1 + ... + \beta_{p-1} X_{p-1}} (1 - \pi)\\ -->
+<!-- \frac{\pi}{1 - \pi} &= e^{\beta_0 + \beta_1 X_1 + ... + \beta_{p-1} X_{p-1}}\\ -->
+<!-- \log(\frac{\pi}{1 - \pi}) &= \beta_0 + \beta_1 X_1 + ... + \beta_{p-1} X_{p-1} -->
+<!--   \end{split} -->
+<!-- \end{equation} -->
+
+
+## Logistic regression: form 2
+
+Through some algebra we can rewrite the model as
+$$\log(\frac{\pi_i}{1 - \pi_i})  = \beta_0 + \beta_1 X_{1, i} + ... + \beta_p X_{p, i}$$
+
+. . .
+
+- Form 1 is useful for understanding why we use the logistic function
+- Form 2 is useful for interpretation
+
+## Logistic regression: form 2
+
+$$\log(\frac{\pi_i}{1 - \pi_i})  = \beta_0 + \beta_1 X_{1, i} + ... + \beta_p X_{p, i}$$
+
+- Left side is called the *log odds* or *logit*
+
+
+
+## Probability and Odds
+
+What are odds?
+<!-- $$Odds = \frac{\text{Probability of success}}{\text{Probability of failure}} = \frac{P(Y = 1)}{P(Y = 0)} = \frac{P(Y=1)}{1 - P(Y=1)} $$ -->
+
+\vspace*{1.5cm}
+
+Relationship between probability and odds
+<!-- $$\text{Probability} = \frac{\text{Odds}}{1 + \text{Odds}}$$ -->
+
+\vspace*{1.5cm}
+
+
+```{r}
+#| fig-height: 3.75
+#| echo: false
+
+prob_seq <- seq(0, 1, by = 0.01)
+
+prob_odds_df <- data.frame(
+  "probability" = prob_seq,
+  "odds" = prob_seq / (1 - prob_seq),
+  "log_odds" = log(prob_seq / (1 - prob_seq))
+)
+
+gridExtra::grid.arrange(
+  ggplot(prob_odds_df, aes(x = probability, y = odds)) +
+    geom_point() +
+    labs(x = "Probability", y = "Odds") +
+    theme_bw(base_size = 20),
+  ggplot(prob_odds_df, aes(x = probability, y = log_odds)) +
+    geom_point() +
+    labs(x = "Probability", y = "Log Odds") +
+    theme_bw(base_size = 20),
+  nrow = 1
+)
+```
+
+## Parameter Interpretation: Solving for $\beta_1$
+
+$$\log(\frac{\pi}{1 - \pi}) = \beta_0 + \beta_1 X_1 + ... + \beta_{p-1} X_{p-1}$$
+Now we have a model that connects $E[Y|X] = \pi$ to our data, but how do we interpret the parameters, $\beta_j$'s?
+
+Recall for linear regression: $E[Y|X] = \beta_0 + \beta_1 X$
+
+<!-- \begin{equation*} -->
+<!--   \begin{split} -->
+<!--     &\color{blue}{E[Y|X=x+1]} - \color{purple}{E[Y|X=x]}\\ -->
+<!--     &=\color{blue}{\beta_0 + \beta_1(x + 1)} - (\color{purple}{\beta_0 + \beta_1x})\\ -->
+<!--     &=\color{blue}{\beta_0} + \color{blue}{\beta_1x} + \color{blue}{\beta_1} - \color{purple}{\beta_0} - \color{purple}{\beta_1x}\\ -->
+<!--     & = \beta_1 -->
+<!--   \end{split} -->
+<!-- \end{equation*} -->
+<!-- So -->
+<!-- $\beta_1$ = change in expected value of Y associated with a 1 unit change in X. -->
+
+## Parameter Interpretation: Solving for $\beta_1$
+
+$$\log(\frac{E[Y_i|X_i]}{1 - E[Y_i|X_i]}) = \beta_0 + \beta_1 X_i$$
+
+<!-- \begin{equation*} -->
+<!--   \begin{split} -->
+<!--     &\color{blue}{\log(\frac{E[Y|X = x + 1]}{1 - E[Y|X = x + 1]})} - \color{purple}{\log(\frac{E[Y|X = x]}{1 - E[Y|X = x]})}\\ -->
+<!--     &= \color{blue}{\beta_0 + \beta_1 (x + 1)} - (\color{purple}{\beta_0 + \beta_1 x)}\\ -->
+<!--     &= \color{blue}{\beta_0} + \color{blue}{\beta_1 x} + \color{blue}{\beta_1} - \color{purple}{\beta_0} - \color{purple}{\beta_1 x}\\ -->
+<!--     &= \beta_1 -->
+<!--   \end{split} -->
+<!-- \end{equation*} -->
+
+<!-- Let $\color{blue}{\pi_a = E[Y | X = x + 1]}$ and $\color{purple}{\pi_b = E[Y | X = x]}$, -->
+
+<!-- \begin{equation*} -->
+<!--   \begin{split} -->
+<!--     \color{blue}{\log(\frac{\pi_a}{1 - \pi_a})} - \color{purple}{\log(\frac{\pi_b}{1 - \pi_b})} &= \beta_1\\ -->
+<!--     \log(\color{blue}{\frac{\pi_a}{1 - \pi_a}} / \color{purple}{\frac{\pi_a}{1 - \pi_a}}) & = \beta_1 -->
+<!--   \end{split} -->
+<!-- \end{equation*} -->
+
+## Parameter Interpretation: Explaining $\beta_1$
+
+Odds Ratio
+
+$e^{\beta_1} = \frac{\pi_a}{1-\pi_a} / \frac{\pi_b}{1-\pi_b}$
+
+We typically interpret the odds ratio $e^{\beta_1}$ instead of log odds ratio $\beta_1$
+
+<br>
+
+If $e^{\beta_1}$ = 1
+
+<br>
+
+If $e^{\beta_1}$ < 1
+
+<br>
+
+If $e^{\beta_1}$ > 1
+
+
+## Obtaining estimates
+
+- For simple linear regression we can directly solve for the estimators
+- For logistic regression we can't directly calculate the estimators, we have to use optimization algorithms. Luckily those are implemented for us!
+
+
+## Inference With Logistic Regression
+
+In linear regression we used a t-test to test for statistically significant features.
+
+Beware in logistic regression there are different tests that can be used (we will talk about these)
+
+- Likelihood Ratio Test
+- Wald Test
+
+Know which one your software is using!
+
+
+## Logisitic regression
+
+$$\log\left(\frac{E[Y_i | X_{1i}, ..., X_{pi}]}{1 - E[Y_i | X_{1i}, ..., X_{pi}]}\right) = \beta_0 + \beta_1 X_{1i} + ... + \beta_p X_{pi}$$
+
+We often let $\pi_i = E[Y_i | X_{1i}, ..., X_{pi}]$ so our model is written
+
+$$\log\left(\frac{\pi_i}{1 - \pi_i}\right) = \beta_0 + \beta_1 X_{1i} + ... + \beta_p X_{pi}$$
+
+# Interpreting coefficients
+
+##
+
+$\beta_0$ is the log odds for when all $X_i$'s are zero.
+
+## 
+
+$\beta_1$ is the log odds ratio associated with a one unit increase in $X_1$
+
+- $e^{\beta_1}$ is the odds ratio associated with a one unit increase in $X_1$
+- $e^{\beta_1}$ is the multiplicative change / factor change in odds associated with a one unit increase in $X_i$
+- For $e^{\beta_1} > 1$, $100 * (e^{\beta_1} - 1)$% is the increase in odds associated with a one unit increase in $X_1$. For $e^{\beta_1} < 1$, we have $100 * (1 - e^{\beta_1})$% decrease in odds associated with a one unit increase in $X_1$
+
+... with all other $X_i$'s held constant.
+
+# Inference
+
+In our class we will focus on two common methods for hypothesis tests and confidence intervals
+
+- Wald 
+- Likelihood ratio (preferred for this class to avoid the instability of the Wald)
+
+
+## Coronary heart disease (cdh) data
+
+A retrospective sample of males in a heart-disease high-risk region of the Western Cape, South Africa. 
+These data are taken from a larger dataset, described in  Rousseauw et al, 1983, South African Medical Journal.
+
+
+## 
+
+- `sbp`		systolic blood pressure
+- `tobacco`		cumulative tobacco (kg)
+- `ldl`		low density lipoprotein cholesterol
+- `adiposity` body fat
+- `famhist`		family history of heart disease
+- `typea`		type-A behavior
+- `obesity` 
+- `alcohol`		current alcohol consumption
+- `age`		age at onset
+
+##
+
+```{r}
+heart_data <- read_csv(
+  "https://hastie.su.domains/ElemStatLearn/datasets/SAheart.data", 
+  show_col_types = FALSE
+)
+
+glimpse(heart_data)
+```
+
+## Fitting the model
+
+\begin{equation*}
+  \begin{split}
+    \log(\frac{\pi_i}{1 - \pi_i}) &= \beta_0 + \beta_1 X_{\text{Blood pressure}, i}\\
+    &+ \beta_2 X_{\text{Family history}, i} + \beta_1 X_{\text{Age}, i}
+  \end{split}
+\end{equation*}
+
+```{r}
+heart_model <- glm(
+  chd ~ sbp + famhist + age,
+  data = heart_data,
+  family = binomial # This tells it to do logisitic regression
+)
+```
+
+##
+
+```{r}
+summary(heart_model)
+```
+
+# Testing example 1
+
+Let's test if systolic blood pressure should be in the model
+
+$H_0: \beta_1 = 0$
+
+$H_A: \beta_1 \neq 0$
+
+We can do this with a Wald or Likelihood ratio test
+
+```{r}
+heart_full_model <- glm(
+  chd ~ sbp + famhist + age,
+  data = heart_data,
+  family = binomial # This tells it to do logisitic regression
+)
+```
+
+
+## Performing Wald Test
+
+```{r}
+summary(heart_full_model)
+```
+
+*The `summary()` function displays Wald Statistics.*
+
+## Performing Likelihood Ratio Tests
+
+```{r}
+heart_reduced_model <- glm(
+  chd ~ famhist + age,
+  data = heart_data,
+  family = binomial # This tells it to do logisitic regression
+)
+
+anova(heart_reduced_model, heart_full_model, test = "LRT")
+```
+
+## 
+
+- The p-value for Wald test: 0.235
+- The p-value for the Likelihood Ratio Test: 0.2344
+- The two p-values won't necessarily equal the same. In practice you would choose one test to perform, you wouldn't fit both.
+
+A probability of 0.02344 is not unlikely, so fail to reject $H_0$.
+
+We found no evidence (Likelihood ratio test p-value = 0.2344) that the model with systolic blood pressure significantly improves the fit compared to the model with just family history and age.
+
+# Testing example 2
+
+Let's test if systolic blood pressure and family history should be in the model
+
+$H_0: \beta_1 = \beta_2 = 0$
+
+$H_A:$ At least one of $\beta_1$ or $\beta_2$ are zero
+
+We can do this with a Wald or Likelihood ratio test
+
+
+## Wald test
+
+```{r}
+library(aod)
+
+wald.test(
+  Sigma = vcov(heart_full_model), 
+  b = coef(heart_full_model), 
+  Terms = c(1, 2)
+)
+```
+
+. . .
+
+So we can test subsets of predictors with a Wald test, but it is different...
+
+## Likelihood ratio test
+```{r}
+heart_reduced_model2 <- glm(
+  chd ~ age,
+  data = heart_data,
+  family = binomial
+)
+
+anova(heart_reduced_model2, heart_full_model, test = "LRT")
+```
+
+##
+
+Let's use the likelihood ratio test.
+
+We found very strong evidence (likelihood ratio test p-value 3.9e-05) that including systolic blood pressure and family history improve the model fit, over a model with age only.
+
+
+## Confidence intervals 
+
+Via Likelihood Ratio: We can used the `confint()` function like we did with linear regression
+
+```{r}
+confint(heart_full_model)
+```
+
+Via Wald: We can used the `confint.default()` function
+
+```{r}
+confint.default(heart_full_model)
+```

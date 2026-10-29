@@ -1,0 +1,137 @@
+---
+title: ""
+format: 
+  pdf:
+    echo: true
+    message: false
+    warning: false
+    geometry:
+      - bottom=1in
+header-includes:
+  - \usepackage{lastpage}
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancyhf{}
+  - \fancyhead[L]{DATA 308 Fall 2026 -- \textbf{Lab 10a}}
+  - \fancyhead[R]{Logistic Regression}
+  - \fancyfoot[C]{\thepage\ of \pageref{LastPage}}
+  - \renewcommand{\headrulewidth}{0.4pt}
+---
+
+Name:
+
+```{r}
+#| echo: false
+library(tidyverse)
+```
+
+Researchers studied households in Bangladesh that were using wells identified as unsafe because of arsenic contamination. Households were encouraged to switch wells, and researchers later recorded whether they did, along wiht some additional variables.
+We can use this data to try to learn about factors related to a household deciding to switch wells.
+Public health officials could use investigations like ours to target related factors and hopefully convinve more households to switch to safe wells.
+
+We will start by exploring:
+
+> Is participation in a community organization associated with the probability that a household switches from an unsafe well?
+
+I want you to focus on the concepts for this lab, so I have included all necessary code and output at the end for you to reference.
+
+## Question 1
+
+Write a simple logistic regression model for the relationship between participation in a community organization and the probability that a household switches from an unsafe well. Express the model in terms of the log odds of switching. Define the probability and predictor in context, clearly specifying how participation in a community organization is coded.
+
+\vspace*{2in}
+
+## Question 2
+
+Report the estimated / fitted regression equation.
+
+\newpage
+
+## Question 3
+
+Interpret the coefficient. Which statement correctly describes $\beta_1$? Select all that apply.
+
+- [ ] The difference in the log odds of switching wells for households with a participating member compared with households without a participating member.
+- [ ] The difference in the probability of switching wells for households with a participating member compared with households without a participating member.
+- [ ] The ratio of the odds of switching wells for households with a participating member to the odds for households without a participating member.
+- [ ] The log odds ratio of switching wells for households with a participating member to the odds for households without a participating member.
+- [ ] The difference in the odds of switching wells for households with a participating member compared with households without a participating member.
+
+## Question 4
+
+Obtain a 95% confidence interval for $\beta_1$ using profile likelihood (instead of Wald statistic). Write out your interpretation of $\beta_1$ in context including your 95% confidence interval.
+
+\vspace*{2in}
+
+
+## Question 5
+
+Calculate $e^{\hat{\beta}_1}$. Obtain a 95% confidence interval for $e^{\beta_1}$ by exponentiating both endpoints of the interval from Question 4. Interpret $e^{\hat{\beta}_1}$ and its confidence interval in context.
+
+\vspace*{1in}
+
+## Question 6
+
+Use a likelihood ratio test at the $\alpha=0.05$ significance level to address the research question. State the null and alternative hypotheses in terms of $\beta_1$, identify and fit the reduced model, and report the test statistic, degrees of freedom, and p-value. State your conclusion in context.
+
+\vspace*{3in}
+
+## Question 7
+
+What value of $\beta_1$ represents no association? What value of $e^{\beta_1}$ represents no association? Explain whether your confidence intervals and hypothesis test lead to the same conclusion.
+
+\vspace*{1in}
+
+## Question 8
+
+What is the estimate log odds of switching wells for a household without any members involved in a community organization? Write out the math necessary to calculate corresponding estimated probability of switching wells for a household without any members involved in a community organization.
+
+\newpage
+
+## Question 9 (Extra credit)
+
+We have mostly been focusing on simple logistic regression, where there is only one predictor. Let's explore what happens when there are multiple predictors with logistic regression.
+
+$$\log(\frac{E[Y_i| X_{1i}\text{ and }X_{2i}]}{1 - E[Y_i| X_{1i} \text{ and } X_{2i}]}) = \beta_0 + \beta_1 X_{1i} + \beta_2 X_{2i}$$
+
+Prove 
+
+$$\log(\frac{E[Y_i| X_{1i} = x_1+1\text{ and }X_{2i} = x_2]}{1 - E[Y_i| X_{1i} = x_1+1\text{ and }X_{2i} = x_2]} / \frac{E[Y_i| X_{1i} = x_1\text{ and }X_{2i} = x_2]}{1 - E[Y_i| X_{1i} = x_1 \text{ and } X_{2i} = x_2]} ) = \beta_1$$
+Hint: Review the proof for simple logisitic regression from the lecture slides.
+
+\newpage
+
+# Appendix
+
+```{r}
+library(broom)
+library(carData)
+library(tidyverse)
+
+data("Wells")
+
+wells <- Wells |>
+  mutate(
+    switch = factor(switch, levels = c("no", "yes")),
+    association = factor(association, levels = c("no", "yes"))
+  )
+
+wells_model <- glm(switch ~ association, data = wells,family = binomial)
+
+wells_reduced_model <- glm(switch ~ 1, data = wells, family = binomial)
+
+anova(wells_reduced_model, wells_model, test = "LRT")
+
+tidy(wells_model, conf.int = TRUE)
+
+confint(wells_model)
+
+tidy(wells_model, conf.int = TRUE) |> 
+  mutate(
+    exp_beta_hat = exp(estimate), 
+    exp_conf_low = exp(conf.low), 
+    exp_conf_high = exp(conf.high)
+  ) |> 
+  select(term, exp_beta_hat, exp_conf_low, exp_conf_high)
+```
+

@@ -530,7 +530,7 @@ anova(heart_reduced_model, heart_full_model, test = "LRT")
 
 A probability of 0.02344 is not unlikely, so fail to reject $H_0$.
 
-We found no evidence (Likelihood ratio test p-value = 0.2344) that the model with systolic blood pressure significantly improves the fit compared to the model with just family history and age.
+We found no evidence (Likelihood ratio test p-value = 0.2344, df = 2) that the model with systolic blood pressure significantly improves the fit compared to the model with just family history and age.
 
 # Testing example 2
 

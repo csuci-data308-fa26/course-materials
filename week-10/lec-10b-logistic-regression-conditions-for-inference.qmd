@@ -1,0 +1,48 @@
+---
+title: "DATA 308: Lecture 10b"
+subtitle: "Logistic regression conditions for inference"
+author: "CSUCI - Dr. Catalina Medina"
+execute:
+  echo: true
+format: 
+  revealjs:
+    theme: [sky, ../slide-style.scss]
+    slide-number: true
+---
+
+# Conditions for inference
+
+1. Binary response variable
+2. Logistic relationship between Y and X$\beta$'s
+3. Independent observations
+4. Low multicolinearity between $X$ variables
+5. Large enough sample size
+6. No strong outliers or influential points
+
+## 1. Binary response variable
+
+Only two possible values for the response variable
+
+## 2. Logistic relationship between Y and X$\beta$'s
+
+When we include a numerical predictor as a single linear term, we assume that each one-unit increase has the same effect on the log odds, holding other predictors constant.
+
+
+##. 3. Independent observations
+
+We want a simple random sample without dependence between observations (e.g., no repeat sampling from an observational unit)
+
+
+## 4. Low multicolinearity between $X$ variables
+
+You can plot the x variables against each other and see if there is high correlation using
+the `pairs()` function on your data.
+
+
+## 5. Large enough sample size
+
+Rule of thumb: At least 10 observations for each coefficient in the model for each level of $Y$
+
+## 6. No strong outliers or influential points
+
+We can look for influential points similarly to what we did with linear regression using `plot(model, which = 4)` to flag observations we should examine closer.

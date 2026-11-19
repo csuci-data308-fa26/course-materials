@@ -1,0 +1,139 @@
+---
+title: "DATA 308: Lab 11b" 
+subtitle: "Poisson regression"
+author: "your name here"
+format: pdf
+execute: 
+  message: false
+  warning: false
+---
+
+```{r}
+library(performance)
+library(broom)
+library(tidyverse)
+```
+
+Neurons may fire selectively for particular types of stimuli.
+A visual-selective neuron is a brain cell that fires or responds strongly to specific features of a visual scene—such as a particular orientation, edge, motion direction, color, or complete object.
+To understand whether a neuron is a visual-selective neuron, 20 trials were run for each of the five image categories: animal, fruit, kids, military, space.
+In each trial, the number of spikes (the number of times that the neuron fired) within a 1-second window was recorded.
+
+
+Let's run the code below to read in and examine our data.
+
+```{r}
+neuron_data <- read_csv(
+  "https://www.ics.uci.edu/~zhaoxia/Data/chosen_neuron_data.csv",
+  show_col_types = FALSE
+)
+
+glimpse(neuron_data)
+```
+
+
+## Question 1
+
+Fit a model regressing number of neuron spikes on image category.
+
+### Response
+
+
+
+## Question 2
+
+Write out the fitted regression model in context.
+
+### Response
+
+
+
+## Question 3
+
+Identify the estimate and 95% confidence interval for $\beta_j$ for the kids category. Provide an interpretation in context.
+
+### Response
+
+
+
+## Question 4
+
+Identify the estimate and 95% confidence interval for $e^{\beta_j}$ for the kids category. Provide an interpretation in context.
+
+### Response
+
+
+
+## Question 5
+
+Let's conduct a hypothesis test to determine if there is evidence that the expected number of spikes in a one-second window associated with image category?
+
+### Question 5a
+
+What are the null and alternative hypotheses?
+
+### Response
+
+
+
+### Question 5b
+
+Conduct the appropriate test and report you p-value with your statistical decision.
+Hint: There are no predictors for the reduced model, so you can just specify `n_spikes ~ 1` as the formula.
+
+### Response
+
+
+
+### Question 5c
+
+Report your conclusion in context for your hypothesis test.
+
+### Response
+
+
+
+## Question 6: Independence of observations condition
+
+A model condition for every model we have learned is independence of observations. 
+We have repeated trials from one neuron. 
+Based on the information provided, can we establish that spike counts from different trials are independent?
+Identify one reason that counts could be related across trials and one additional detail about the experiment that would help you evaluate this condition.
+
+### Response
+
+
+
+## Question 7: Scope of the conclusion
+
+Do these 100 trials provide information about 100 different neurons? Explain how this may or may not limit generalization to many neurons.
+
+### Response
+
+
+## Question 8 (Challenge your understanding) : Removing the intercept
+
+The only variable we have in our original model is categorical, so we have $k-1$ indicators as predictors in our model. If we wanted to be able to interpret the relationship between an image category and the response variable without comparing to a reference group, we can remove the intercept by specifying `n_spikes ~ -1 + imgage_categ` as the formula.
+
+### Question 8a
+
+Fit this model write out the fitted model.
+
+### Response
+
+
+
+### Question 8b
+
+Identify and interpret your estimate for $e^{\beta_j}$ for the kids predictor. 
+
+### Response
+
+
+### Question 8c
+
+How does your original model compare to this model? Are there any similarities?
+
+### Response
+
+

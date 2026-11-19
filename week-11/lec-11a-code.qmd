@@ -1,0 +1,65 @@
+---
+title: "Lec 11a Code"
+format: html
+---
+
+```{r}
+library(GLMsData) # For the data
+library(performance) # For the overdispersion check
+library(broom) # To use tidy()
+library(janitor) # For clean_names()
+library(tidyverse) 
+
+data(ants)
+```
+
+
+```{r}
+forest_ants <- ants |> 
+  clean_names() |> 
+  filter(habitat == "Forest")
+
+glimpse(forest_ants)
+```
+
+```{r}
+ant_model <- glm(
+  srich ~ latitude,
+  family = poisson,
+  data = forest_ants
+)
+```
+
+```{r}
+tidy(
+  ant_model,
+  conf.int = TRUE
+)
+```
+
+```{r}
+tidy(
+  ant_model,
+  conf.int = TRUE,
+  exponentiate = TRUE
+)
+```
+
+Hypothesis test for $\beta_1 = 0$
+
+```{r}
+reduced_ant_model <- glm(
+  srich ~ 1,
+  family = poisson,
+  data = forest_ants
+)
+
+anova(reduced_ant_model, ant_model, test = "LRT")
+```
+
+
+
+
+```{r}
+check_overdispersion(ant_model)
+```

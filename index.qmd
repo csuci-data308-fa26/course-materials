@@ -13,5 +13,8 @@ format: html
 | 6 | Model conditions & diagnostics | [Lec 6](https://csuci-data308-fa26.github.io/course-materials/week-06/lec-06a-conditions-for-inference-with-slr.html) | 
 | 7 | Multiple linear regression | [Lec 7a](https://csuci-data308-fa26.github.io/course-materials/week-07/lec-07a-multiple-linear-regression.html) & [Lec 7b](https://csuci-data308-fa26.github.io/course-materials/week-07/lec-07b-multiple-linear-regression-part2.html) | 
 | 8 | Choosing your variables & interactions  | [Lec 8](https://csuci-data308-fa26.github.io/course-materials/week-08/lec-08a-choosing-your-variables.html) | 
-
-
+| 9 | Logistic regression  | [Lec 8](https://csuci-data308-fa26.github.io/course-materials/week-09/lec-09b-logistic-regression.html) | 
+| 10 | Logistic regression Continued  | [Lec 10](https://csuci-data308-fa26.github.io/course-materials/week-10/lec-10b-logistic-regression-conditions-for-inference.html) | 
+| 11 | Poisson Regression  | [Lec 11](https://csuci-data308-fa26.github.io/course-materials/week-11/lec-11a-poisson-regression.pdf) | 
+| 12 | Linear mixed effect models | [Lab 12b](data308-lab-12b.pdf) |
+| 13 | Final project examples  | [LIHTC Program and Tenure Segregation](https://causeweb.org/usproc/sites/default/files/usclap/2026-1/usclap%203799.pdf), [Limited English Proficiency and Uninsurance](https://causeweb.org/usproc/sites/default/files/usclap/2026-1/usclap%203811.pdf), [Global Inequalities in Tuberculosis Mortality](https://causeweb.org/usproc/sites/default/files/usclap/2025-2/usclap%203569%20-%20global%20inequalities%20in%20tuberculosis.pdf) | 

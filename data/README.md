@@ -12,3 +12,7 @@ The elephants data was obtained from the SRM textbook. Peter K. Dunn (2024). Sci
 - Lalande, Lucas D., Virpi Lummaa, Htoo H. Aung, et al. 2022a. “Sex-Specific Body Mass Ageing Trajectories in Adult Asian Elephants.” Journal of Evolutionary Biology 35 (5): 752–62.
 
 - Lalande, Lucas D., Virpi Lummaa, Htoo H. Aung, et al. 2022b. “Sex-Specific Body Mass Aging Trajectories in Adult Asian Elephants.” Dryad, ahead of print. <https://doi.org/10.5061/dryad.5dv41ns59>.
+
+## `chocen_neuron_data.csv`
+
+This neuron spike data is from Dr. Zhaoxia Yu <https://www.ics.uci.edu/~zhaoxia/Data/chosen_neuron_data.csv>
